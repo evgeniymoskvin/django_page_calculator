@@ -1,0 +1,138 @@
+{% extends "page_calculator_app/base.html" %}
+{% load static %}
+{% block title %}
+    Jkjj
+{% endblock %}
+
+
+
+{% block content %}
+    <div class="d-flex flex-column w-100 align-items-center justify-content-center" id="all_file_block">
+        <form method="POST" class="my_form d-flex w-100 flex-column align-items-center justify-content-center"
+              id="form_send_file"
+              enctype="multipart/form-data">
+            <div class="w-100 d-flex" id="start_body">
+                <div class="d-flex w-100 align-items-center justify-content-center">
+                    <div class="d-flex text-48px-bold">
+                        Подсчет листов и форматов
+                    </div>
+
+                </div>
+
+                <div class="d-flex w-100">
+                    {% csrf_token %}
+                    {{ form }}
+                    <!-- <button type="submit">ok</button> -->
+                </div>
+            </div>
+
+            <div class="d-none" id="inside" style="opacity: 0" data-ajax-url="{% url 'get-answer' %}">
+
+            </div>
+
+
+        </form>
+    </div>
+    <script>
+        const dropZone = document.body;
+
+        if (dropZone) {
+            let hoverClassName = 'hover';
+
+            dropZone.addEventListener("dragenter", function (e) {
+                e.preventDefault();
+                dropZone.classList.add(hoverClassName);
+            });
+
+            dropZone.addEventListener("dragover", function (e) {
+                e.preventDefault();
+                dropZone.classList.add(hoverClassName);
+            });
+
+            dropZone.addEventListener("dragleave", function (e) {
+                e.preventDefault();
+                dropZone.classList.remove(hoverClassName);
+            });
+
+            // Это самое важное событие, событие, которое дает доступ к файлам
+            dropZone.addEventListener("drop", function (e) {
+                e.preventDefault();
+                dropZone.classList.remove(hoverClassName);
+                var fileInput = document.getElementById('id_file')
+                fileInput.files = e.dataTransfer.files;
+                $('#form_send_file').submit();
+            });
+        }
+
+        $('#id_file').change(function () {
+            console.log('asdsad')
+            $('#form_send_file').submit();
+            //sendFile()
+        });
+
+        $('#form_send_file').submit(function (e) {
+            e.preventDefault()
+            var data = new FormData($('#form_send_file').get(0))
+            //var form = $(this)
+            var form_send_file = $("#inside").attr("data-ajax-url")
+            console.log('form_send_file')
+            $.ajax({
+                type: "POST",
+                url: form_send_file,
+                data: data,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    $("#inside").html(data)
+                    $('#inside').removeClass('d-none')
+                    $('#all_file_block').removeClass('align-items-center')
+                    $('#all_file_block').removeClass('justify-content-center')
+                    $('#form_send_file').removeClass('align-items-center')
+                    $('#form_send_file').removeClass('justify-content-center')
+                    $('#inside').addClass('d-flex')
+                    $('#inside').animate({opacity: 1}, 200)
+                    $('#start_body').removeClass('d-flex')
+                    $('#start_body').addClass('d-none')
+                    $('#start_body').animate({opacity: 0}, 200)
+                }
+            });
+        })
+
+        /*$('#form_send_file').submit(function (e) {
+            console.log('asas')
+            e.preventDefault()
+            let form = $('#form_send_file')
+            var form_send_file = $("#form_send_file").attr("data-ajax-url")
+            let Data = new FormData();
+            $.ajax({
+                type: "POST",
+                url: form_send_file,
+                data: form.serialize(),
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $("#inside").html(data)
+                }
+            });
+        };
+
+        function sendFile(){
+            console.log('asas')
+            e.preventDefault()
+            let form = $('#form_send_file')
+            var form_send_file = $("#form_send_file").attr("data-ajax-url")
+            let Data = new FormData();
+            $.ajax({
+                type: "POST",
+                url: form_send_file,
+                data: form.serialize(),
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $("#inside").html(data)
+                }
+            });
+        };*/
+    </script>
+{% endblock %}

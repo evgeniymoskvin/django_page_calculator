@@ -1,0 +1,144 @@
+from django.shortcuts import render, redirect
+from django.views import View
+from .forms import UploadFileForm
+from django.http import HttpResponse
+
+import math
+import PyPDF2
+
+PAGE_SIZE_STANDARD = {
+    'A0': (841, 1189, 16),
+    'A0x2': (1189, 1682, 32),
+    'A0x3': (1189, 2523, 48),
+    'A1': (594, 841, 8),
+    'A1x3': (841, 1783, 24),
+    'A1x4': (841, 2378, 32),
+    'A2': (420, 594, 4),
+    'A2x3': (594, 1261, 12),
+    'A2x4': (594, 1682, 16),
+    'A2x5': (594, 2102, 20),
+    'A3': (297, 420, 2),
+    'A3x3': (420, 891, 6),
+    'A3x4': (420, 1189, 8),
+    'A3x5': (420, 1486, 10),
+    'A3x6': (420, 1783, 12),
+    'A3x7': (420, 2080, 14),
+    'A4': (210, 297, 1),
+    'A4x3': (297, 630, 3),
+    'A4x4': (297, 841, 4),
+    'A4x5': (297, 1051, 5),
+    'A4x6': (297, 1261, 6),
+    'A4x7': (297, 1471, 7),
+    'A4x8': (297, 1682, 8),
+    'A4x9': (297, 1892, 9),
+}
+
+
+def handle_uploaded_file(f):
+    with open(f"{f.name}", "wb+") as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
+
+class IndexView(View):
+    def get(self, request):
+        form = UploadFileForm()
+        content = {'form': form}
+        return render(request, 'page_calculator_app/index.html', content)
+
+
+class GetAnswerView(View):
+    def post(self, request):
+        print(f'request.POST: {request.POST}')
+        print(f'request.FILES: {request.FILES}')
+
+        exit_dict = {}
+
+        for file in request.FILES.getlist('file'):
+            print(file)
+            # Пустой словарь для подсчета листов
+            pdf_size_file = {
+                'A0': 0,
+                'A0x2': 0,
+                'A0x3': 0,
+                'A1': 0,
+                'A1x3': 0,
+                'A1x4': 0,
+                'A2': 0,
+                'A2x3': 0,
+                'A2x4': 0,
+                'A2x5': 0,
+                'A3': 0,
+                'A3x3': 0,
+                'A3x4': 0,
+                'A3x5': 0,
+                'A3x6': 0,
+                'A3x7': 0,
+                'A4': 0,
+                'A4x3': 0,
+                'A4x4': 0,
+                'A4x5': 0,
+                'A4x6': 0,
+                'A4x7': 0,
+                'A4x8': 0,
+                'A4x9': 0,
+            }
+
+            a4_count = 0  # Счетчик форматов А4
+            normal_pages = 0  # Счетчик распознанных листов
+            list_pages = []  # Список листов
+
+            pdf_reader = PyPDF2.PdfReader(file)
+            num_pages = len(pdf_reader.pages)
+            for i in range(num_pages):
+                checker = 0
+                box = pdf_reader.pages[i]
+                # Переводим значения в миллиметры
+                width = math.ceil(float(box.mediabox.width) * 0.35273159)
+                height = math.ceil(float(box.mediabox.height) * 0.35273159)
+                list_pages.append([height, width])
+                # Приводим к одной ориентации
+                if width < height:
+                    small = width
+                    long = height
+                else:
+                    small = height
+                    long = width
+                # Проверяем вхождение данных размеров в стандартные, с допуском 15мм
+                for key, value in PAGE_SIZE_STANDARD.items():
+                    if (value[0] >= small - 15) and (value[0] <= small + 15) and (value[1] <= long + 15) and (
+                            value[1] >= long - 15):
+                        normal_pages += 1
+                        a4_count += value[2]
+                        pdf_size_file[key] += 1
+                        checker = 1
+                # Если в стандартные значения не вошли
+                if checker == 0:
+                    size = f'{small}x{long}'
+                    try:
+                        pdf_size_file[size] += 1  # Если такой размер уже есть в словаре
+                    except:
+                        pdf_size_file[size] = 1
+
+            temp_list = []
+            # Создаем словарь с пустыми значениями.
+            for key, value in pdf_size_file.items():
+                if value == 0:
+                    temp_list.append(key)
+            # Удаляем из словаря все пустые значения
+            for i in temp_list:
+                del pdf_size_file[i]
+            final_list = []
+            for key, value in pdf_size_file.items():
+                if value > 0:
+                    final_list.append([key, value])
+
+            num_pages = len(pdf_reader.pages)
+            print(num_pages)
+            exit_dict[file.name] = pdf_size_file
+        content = {'num_pages': num_pages,
+                   'pdf_size_file': pdf_size_file,
+                   'exit_dict': exit_dict}
+        # content = {
+        #            'pdf_size_file': pdf_size_file}
+        return render(request, 'page_calculator_app/answer.html', content)
