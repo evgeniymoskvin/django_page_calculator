@@ -159,6 +159,7 @@ html {
     display: flex;
     min-width: 100%;
     min-height: 100px;
+    margin-top: 25px;
     justify-content: center;
     align-items: center;
     text-align: center;
@@ -166,7 +167,7 @@ html {
     border-radius: 8px;
     background-color: rgba(108, 172, 228, 0.6);
     font-size: 18px;
-    font-family: "Rosatom_bold", serif;
+    font-family: "Rosatom_regular", serif;
     text-transform: uppercase;
     color: white;
     transition-duration: .15s;
@@ -179,4 +180,13 @@ html {
 .my_form label:active {
     background: rgb(93, 148, 196);
     box-shadow: 2px 4px 11px -3px rgba(2, 94, 161, 0.45);
+}
+
+.grey_background{
+    background-color: rgba(128, 128, 128, 0.1);
+}
+
+.border_body{
+    padding: 25px;
+    border: dashed black;
 }

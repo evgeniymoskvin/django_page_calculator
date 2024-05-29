@@ -1,20 +1,74 @@
-<div class="d-flex flex-column">
-    <div class="d-flex text-18px-light">
-        <ul>
-            {% for key, value in pdf_size_file.items %}
-                <li>{{ key }} - {{ value }}</li>
-            {% endfor %}
-        </ul>
+<div class="d-flex flex-column w-100 mt-5">
+
+    <div class="d-flex text-36px-bold" style="text-transform: uppercase">
+        Готово
     </div>
-    <div class="d-flex">
-        {{ final_list }}
-        <button onclick="clearResult()">Очистить</button>
+    <div class="d-flex flex-row mt-3">
+        <div class="d-flex text-18px-regular">Всего файлов:&nbsp;</div>
+        <div class="d-flex text-18px-bold">{{ files_count }}</div>
+    </div>
+    <div class="d-flex flex-row">
+        <div class="d-flex text-18px-regular">Всего листов в файлах:&nbsp;</div>
+        <div class="d-flex text-18px-bold">{{ all_lists_count }}</div>
+    </div>
+    <div class="d-flex flex-row">
+        <div class="d-flex text-18px-regular">Всего распознано листов:&nbsp;</div>
+        <div class="d-flex text-18px-bold">{{ all_lists_approve }}</div>
+    </div>
+    <div class="d-flex flex-row">
+        <div class="d-flex text-18px-regular">Всего форматов А4:&nbsp;</div>
+        <div class="d-flex text-18px-bold">{{ all_files_format }}</div>
     </div>
 
-    {{ exit_dict }}
+
+    <div class="accordion w-100 mt-5" id="accordion">
+        {% for key, value in exit_dict.items %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="panelsStayOpen-headingOne{{ forloop.counter }}">
+                    <button class="accordion-button {% if files_count > 1 %}collapsed{% endif %}" type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseOne{{ forloop.counter }}" aria-expanded="false"
+                            aria-controls="panelsStayOpen-collapseOne{{ forloop.counter }}"
+                            data-bs-parent="#accordion">
+                        <div class="text-18px-light">{{ forloop.counter }}) {{ key }}</div>
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseOne{{ forloop.counter }}"
+                     class="accordion-collapse {% if files_count > 1 %}collapse{% endif %}{% if files_count == 0 %}{% endif %}"
+                     aria-labelledby="panelsStayOpen-headingOne{{ forloop.counter }}">
+                    <div class="accordion-body">
+                        {% for keey_size, count in value.items %}
+                            {% if keey_size != 'count_pages' and keey_size != 'normal_pages' and keey_size != 'a4_count' and keey_size != 'error'%}
+                                <div class="text-18px-light">{{ keey_size }} - {{ count }}</div>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if value.error != 1 %}
+                            <div>Количество листов</div>
+                            <div class="text-36px-bold">{{ value.count_pages }}</div>
+                            <div>Распознано листов</div>
+                            <div class="text-36px-bold">{{ value.normal_pages }}</div>
+                            <div>Количество форматов А4</div>
+                            <div class="text-36px-bold">{{ value.a4_count }}</div>
+                        {% else %}
+                            Файл не является PDF Файлом
+                        {% endif %}
+
+                    </div>
+
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+
+    <div class="d-flex mt-5">
+        <button onclick="clearResult()">Очистить</button>
+    </div>
 </div>
 
 <script>
+
     function clearResult() {
         $('#inside').removeClass('d-flex')
         $('#inside').addClass('d-none')
@@ -23,10 +77,11 @@
         $('#all_file_block').addClass('justify-content-center')
         $('#form_send_file').addClass('align-items-center')
         $('#form_send_file').addClass('justify-content-center')
-
+        $('body').removeClass('grey_background')
         $('#start_body').addClass('d-flex')
         $('#start_body').removeClass('d-none')
         $('#start_body').animate({opacity: 1}, 200)
         $('#id_file').val('');
+        status_calc = 0
     }
 </script>

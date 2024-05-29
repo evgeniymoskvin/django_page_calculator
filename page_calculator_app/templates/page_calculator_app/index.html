@@ -11,9 +11,9 @@
         <form method="POST" class="my_form d-flex w-100 flex-column align-items-center justify-content-center"
               id="form_send_file"
               enctype="multipart/form-data">
-            <div class="w-100 d-flex" id="start_body">
+            <div class="w-50 d-flex flex-column" id="start_body">
                 <div class="d-flex w-100 align-items-center justify-content-center">
-                    <div class="d-flex text-48px-bold">
+                    <div class="d-flex text-36px-bold" style="text-transform: uppercase">
                         Подсчет листов и форматов
                     </div>
 
@@ -26,15 +26,29 @@
                 </div>
             </div>
 
-            <div class="d-none" id="inside" style="opacity: 0" data-ajax-url="{% url 'get-answer' %}">
+            <div class="d-none w-100" id="inside" style="opacity: 0" data-ajax-url="{% url 'get-answer' %}">
 
             </div>
 
 
         </form>
+
+        <div id="loader-big" class=" w-100 align-items-center justify-content-center d-none flex-column">
+            {#            <p class="text-18px-bold d-flex" style="color: #202022">Работаем</p>#}
+            <span class="loader-big d-flex"></span>
+        </div>
+
+        <div id="drop_file" class=" w-100 align-items-center justify-content-center d-none flex-column">
+            {#            <p class="text-18px-bold d-flex" style="color: #202022">Отпустите файл здесь</p>#}
+            <span class="drop_file d-flex"></span>
+        </div>
+
+
     </div>
     <script>
+
         const dropZone = document.body;
+        let status_calc = 0;
 
         if (dropZone) {
             let hoverClassName = 'hover';
@@ -42,21 +56,88 @@
             dropZone.addEventListener("dragenter", function (e) {
                 e.preventDefault();
                 dropZone.classList.add(hoverClassName);
+                $('#start_body').removeClass('d-flex')
+                $('#start_body').addClass('d-none')
+                $('#inside').removeClass('d-flex')
+                $('#inside').addClass('d-none')
+
+                $('#all_file_block').addClass('align-items-center')
+                $('#all_file_block').addClass('justify-content-center')
+                $('#form_send_file').addClass('align-items-center')
+                $('#form_send_file').addClass('justify-content-center')
+                $('#drop_file').removeClass('d-none')
+                $('#drop_file').addClass('d-flex')
+                $('body').addClass('grey_background')
+                console.log('dragenter event')
+            });
+
+            dropZone.addEventListener("dragend", function (e) {
+                e.preventDefault();
+                dropZone.classList.add(hoverClassName);
+                if (status_calc === 0) {
+                    $('#start_body').removeClass('d-none')
+                    $('#start_body').addClass('d-flex')
+                    $('body').removeClass('grey_background')
+                } else {
+                    $('#all_file_block').removeClass('align-items-center')
+                    $('#all_file_block').removeClass('justify-content-center')
+                    $('#form_send_file').removeClass('align-items-center')
+                    $('#form_send_file').removeClass('justify-content-center')
+                    $('#inside').removeClass('d-none')
+                    $('#inside').addClass('d-flex')
+                    $('body').removeClass('grey_background')
+                }
+                $('#drop_file').removeClass('d-flex')
+                $('#drop_file').addClass('d-none')
+                console.log('dragend event')
             });
 
             dropZone.addEventListener("dragover", function (e) {
                 e.preventDefault();
+                $('#start_body').removeClass('d-flex')
+                $('#start_body').addClass('d-none')
+                $('#inside').removeClass('d-flex')
+                $('#inside').addClass('d-none')
+
+                $('#all_file_block').addClass('align-items-center')
+                $('#all_file_block').addClass('justify-content-center')
+                $('#form_send_file').addClass('align-items-center')
+                $('#form_send_file').addClass('justify-content-center')
+                $('#drop_file').removeClass('d-none')
+                $('#drop_file').addClass('d-flex')
+                $('body').addClass('grey_background')
+
+                console.log('dragover event')
                 dropZone.classList.add(hoverClassName);
             });
 
             dropZone.addEventListener("dragleave", function (e) {
                 e.preventDefault();
+                console.log('dragleave event')
+                if (status_calc === 0) {
+                    $('#start_body').removeClass('d-none')
+                    $('#start_body').addClass('d-flex')
+                } else {
+                    $('#all_file_block').removeClass('align-items-center')
+                    $('#all_file_block').removeClass('justify-content-center')
+                    $('#form_send_file').removeClass('align-items-center')
+                    $('#form_send_file').removeClass('justify-content-center')
+                    $('#inside').removeClass('d-none')
+                    $('#inside').addClass('d-flex')
+                }
+                $('body').removeClass('grey_background')
+                $('#drop_file').removeClass('d-flex')
+                $('#drop_file').addClass('d-none')
+                {#$('#start_body').removeClass('d-flex')#}
+                {#$('#start_body').addClass('d-none')#}
                 dropZone.classList.remove(hoverClassName);
+
             });
 
             // Это самое важное событие, событие, которое дает доступ к файлам
             dropZone.addEventListener("drop", function (e) {
                 e.preventDefault();
+                $('body').addClass('grey_background')
                 dropZone.classList.remove(hoverClassName);
                 var fileInput = document.getElementById('id_file')
                 fileInput.files = e.dataTransfer.files;
@@ -71,6 +152,13 @@
         });
 
         $('#form_send_file').submit(function (e) {
+            $('#start_body').removeClass('d-flex')
+            $('#start_body').addClass('d-none')
+            $('#drop_file').removeClass('d-flex')
+            $('#drop_file').addClass('d-none')
+            $('body').addClass('grey_background')
+            $('#loader-big').removeClass('d-none')
+            $('#loader-big').addClass('d-flex')
             e.preventDefault()
             var data = new FormData($('#form_send_file').get(0))
             //var form = $(this)
@@ -85,6 +173,8 @@
                 contentType: false,
                 success: function (data) {
                     $("#inside").html(data)
+                    $('#loader-big').removeClass('d-flex')
+                    $('#loader-big').addClass('d-none')
                     $('#inside').removeClass('d-none')
                     $('#all_file_block').removeClass('align-items-center')
                     $('#all_file_block').removeClass('justify-content-center')
@@ -92,8 +182,9 @@
                     $('#form_send_file').removeClass('justify-content-center')
                     $('#inside').addClass('d-flex')
                     $('#inside').animate({opacity: 1}, 200)
-                    $('#start_body').removeClass('d-flex')
-                    $('#start_body').addClass('d-none')
+                    status_calc = 1
+                    $('body').removeClass('grey_background')
+
                     $('#start_body').animate({opacity: 0}, 200)
                 }
             });
