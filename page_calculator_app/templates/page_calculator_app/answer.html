@@ -38,20 +38,30 @@
                      aria-labelledby="panelsStayOpen-headingOne{{ forloop.counter }}">
                     <div class="accordion-body">
                         {% for keey_size, count in value.items %}
-                            {% if keey_size != 'count_pages' and keey_size != 'normal_pages' and keey_size != 'a4_count' and keey_size != 'error'%}
+                            {% if keey_size != 'count_pages' and keey_size != 'normal_pages' and keey_size != 'a4_count' and keey_size != 'error' %}
                                 <div class="text-18px-light">{{ keey_size }} - {{ count }}</div>
                             {% endif %}
                         {% endfor %}
 
                         {% if value.error != 1 %}
-                            <div>Количество листов</div>
-                            <div class="text-36px-bold">{{ value.count_pages }}</div>
-                            <div>Распознано листов</div>
-                            <div class="text-36px-bold">{{ value.normal_pages }}</div>
-                            <div>Количество форматов А4</div>
-                            <div class="text-36px-bold">{{ value.a4_count }}</div>
+                            <div class="d-flex flex-row justify-content-between mt-3">
+                                <div class="d-flex flex-column align-items-center">
+                                    <div class="text-18px-regular">Количество листов</div>
+                                    <div class="text-36px-bold">{{ value.count_pages }}</div>
+                                </div>
+                                <div class="d-flex flex-column align-items-center">
+                                    <div class="text-18px-regular">Распознано листов</div>
+                                    <div class="text-36px-bold">{{ value.normal_pages }}</div>
+                                </div>
+                                <div class="d-flex flex-column align-items-center">
+                                    <div class="text-18px-regular">Количество форматов А4</div>
+                                    <div class="text-36px-bold">{{ value.a4_count }}</div>
+                                </div>
+                            </div>
                         {% else %}
-                            Файл не является PDF Файлом
+                            <div class="d-flex">
+                                <div class="text-18px-regular">Файл не является PDF файлом</div>
+                            </div>
                         {% endif %}
 
                     </div>

@@ -66,7 +66,7 @@ class GetAnswerView(View):
         for file in request.FILES.getlist('file'):
             files_count += 1
             print(file, file.content_type)
-            if file.content_type == 'application/pdf':
+            try:
                 # Пустой словарь для подсчета листов
                 pdf_size_file = {
                     'A0': 0,
@@ -153,7 +153,7 @@ class GetAnswerView(View):
                 exit_dict[file.name]['a4_count'] = a4_count
                 all_lists_approve += normal_pages
                 all_files_format += a4_count
-            else:
+            except:
                 exit_dict[file.name] = {}
                 exit_dict[file.name]['error'] = 1
         content = {'all_lists_count': all_lists_count,
