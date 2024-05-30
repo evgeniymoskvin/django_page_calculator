@@ -1,51 +1,141 @@
 {% extends "page_calculator_app/base.html" %}
 {% load static %}
 {% block title %}
-    Jkjj
+    Калькулятор форматов
 {% endblock %}
 
 
 
 {% block content %}
     <div class="d-flex flex-column w-100 align-items-center justify-content-center" id="all_file_block">
-        <form method="POST" class="my_form d-flex w-100 flex-column align-items-center justify-content-center"
-              id="form_send_file"
-              enctype="multipart/form-data">
-            <div class="w-50 d-flex flex-column" id="start_body">
-                <div class="d-flex w-100 align-items-center justify-content-center">
-                    <div class="d-flex text-36px-bold" style="text-transform: uppercase">
-                        Подсчет листов и форматов
-                    </div>
-
+    <form method="POST" class="my_form d-flex w-100 flex-column align-items-center justify-content-center"
+          id="form_send_file"
+          enctype="multipart/form-data">
+        <div class="w-50 d-flex flex-column" id="start_body">
+            <div class="d-flex w-100 align-items-center justify-content-center">
+                <div class="d-flex text-36px-bold" style="text-transform: uppercase">
+                    Подсчет листов и форматов
                 </div>
-
-                <div class="d-flex w-100">
-                    {% csrf_token %}
-                    {{ form }}
-                    <!-- <button type="submit">ok</button> -->
-                </div>
-            </div>
-
-            <div class="d-none w-100" id="inside" style="opacity: 0" data-ajax-url="{% url 'get-answer' %}">
 
             </div>
 
-
-        </form>
-
-        <div id="loader-big" class=" w-100 align-items-center justify-content-center d-none flex-column">
-            {#            <p class="text-18px-bold d-flex" style="color: #202022">Работаем</p>#}
-            <span class="loader-big d-flex"></span>
+            <div class="d-flex w-100">
+                {% csrf_token %}
+                {{ form }}
+                <!-- <button type="submit">ok</button> -->
+            </div>
         </div>
 
-        <div id="drop_file" class=" w-100 align-items-center justify-content-center d-none flex-column">
-            {#            <p class="text-18px-bold d-flex" style="color: #202022">Отпустите файл здесь</p>#}
-            <span class="drop_file d-flex"></span>
+        <div class="d-none w-100" id="inside" style="opacity: 0" data-ajax-url="{% url 'get-answer' %}">
+
+        </div>
+
+
+    </form>
+
+    <div class="d-flex w-100 justify-content-center mt-3 text-16px-light link_clearance_info dashed_text"
+         id="clearance_info" onclick="onClickСlearanceModal()"> Подсчет
+        листов выполняется с
+        допуском&nbsp;<span id="clearance_info_index">{{ clearance }}</span>мм.
+    </div>
+
+    <div id="loader-big" class=" w-100 align-items-center justify-content-center d-none flex-column">
+        {#            <p class="text-18px-bold d-flex" style="color: #202022">Работаем</p>#}
+        <span class="loader-big d-flex"></span>
+    </div>
+
+    <div id="drop_file" class=" w-100 align-items-center justify-content-center d-none flex-column">
+        {#            <p class="text-18px-bold d-flex" style="color: #202022">Отпустите файл здесь</p>#}
+        <span class="drop_file d-flex"></span>
+    </div>
+
+    <!-- Модальное окно настройки допуска-->
+    <div class="modal fade" id="clearanceModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Настройка допуска/погрешности</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <form method="POST" data-ajax-url="{% url 'change-clearance' %}" id="id-clearance-modal-form">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="d-flex w-100 justify-content-between align-items-center">
+                            <div class="d-flex text-18px-regular">Укажите допуск в миллиметрах:</div>
+                            <div class="d-flex">
+                                <input class="input_text" type="text" min="0" max="30" id="input_clearance_value"
+                                       name="input_clearance_value"
+                                       required
+                                       maxlength="2" placeholder="{{ clearance }}"
+                                       onkeypress="return onlyNumberKey(event)"
+                                       oninput="checkInput(this)"
+                                       style="text-align: center; width: 100px">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" style="min-width: 200px;" class="button_grey_modal_outline"
+                                data-bs-dismiss="modal"
+                                onclick="$('#show_save_approve').modal('hide');">Отмена
+                        </button>
+
+                        <button class="button_blue_modal_outline" style="min-width: 200px;" type="submit">
+                            Сохранить
+                        </button>
+
+                    </div>
+                </form>
+            </div>
         </div>
 
 
     </div>
     <script>
+
+        function checkInput(el) {
+            if (el.value.length > 2) {
+                el.value = el.value.slice(0, 2);
+            }
+            if (el.value > 30) {
+                el.value = 30;
+            }
+        }
+
+        function onClickСlearanceModal() {
+            $('#clearanceModal').modal('show');
+
+        }
+
+        function onlyNumberKey(evt) {
+
+            // Only ASCII character in that range allowed
+            let ASCIICode = (evt.which) ? evt.which : evt.keyCode
+            if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+                return false;
+            return true;
+        }
+
+
+        $('#id-clearance-modal-form').submit(function (e) {
+            e.preventDefault()
+
+            var form = $(this)
+            var id_clearance_modal_form = $("#id-clearance-modal-form").attr("data-ajax-url")
+
+            $.ajax({
+                type: "POST",
+                url: id_clearance_modal_form,
+                data: form.serialize(),
+                success: function (data) {
+                    var cookieObjectValue = (document.cookie.match('(^|; )' + encodeURIComponent('clearance') + '=([^;]+)') || []).pop() || null;
+                    console.log(cookieObjectValue)
+                    $('#clearance_info_index').text(cookieObjectValue)
+                    $('#clearanceModal').modal('hide');
+                }
+            })
+        })
+
 
         const dropZone = document.body;
         let status_calc = 0;
@@ -58,6 +148,7 @@
                 dropZone.classList.add(hoverClassName);
                 $('#start_body').removeClass('d-flex')
                 $('#start_body').addClass('d-none')
+                $('#clearance_info').addClass('d-none')
                 $('#inside').removeClass('d-flex')
                 $('#inside').addClass('d-none')
 
@@ -77,6 +168,7 @@
                 if (status_calc === 0) {
                     $('#start_body').removeClass('d-none')
                     $('#start_body').addClass('d-flex')
+                    $('#clearance_info').addClass('d-flex')
                     $('body').removeClass('grey_background')
                 } else {
                     $('#all_file_block').removeClass('align-items-center')
@@ -96,6 +188,7 @@
                 e.preventDefault();
                 $('#start_body').removeClass('d-flex')
                 $('#start_body').addClass('d-none')
+                $('#clearance_info').addClass('d-none')
                 $('#inside').removeClass('d-flex')
                 $('#inside').addClass('d-none')
 
@@ -117,6 +210,7 @@
                 if (status_calc === 0) {
                     $('#start_body').removeClass('d-none')
                     $('#start_body').addClass('d-flex')
+                    $('#clearance_info').addClass('d-flex')
                 } else {
                     $('#all_file_block').removeClass('align-items-center')
                     $('#all_file_block').removeClass('justify-content-center')
@@ -190,40 +284,5 @@
             });
         })
 
-        /*$('#form_send_file').submit(function (e) {
-            console.log('asas')
-            e.preventDefault()
-            let form = $('#form_send_file')
-            var form_send_file = $("#form_send_file").attr("data-ajax-url")
-            let Data = new FormData();
-            $.ajax({
-                type: "POST",
-                url: form_send_file,
-                data: form.serialize(),
-                contentType: false,
-                processData: false,
-                success: function (data) {
-                    $("#inside").html(data)
-                }
-            });
-        };
-
-        function sendFile(){
-            console.log('asas')
-            e.preventDefault()
-            let form = $('#form_send_file')
-            var form_send_file = $("#form_send_file").attr("data-ajax-url")
-            let Data = new FormData();
-            $.ajax({
-                type: "POST",
-                url: form_send_file,
-                data: form.serialize(),
-                contentType: false,
-                processData: false,
-                success: function (data) {
-                    $("#inside").html(data)
-                }
-            });
-        };*/
     </script>
 {% endblock %}

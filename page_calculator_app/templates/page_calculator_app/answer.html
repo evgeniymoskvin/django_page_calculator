@@ -4,6 +4,10 @@
         Готово
     </div>
     <div class="d-flex flex-row mt-3">
+        <div class="d-flex text-18px-regular">Допуск/погрешность:&nbsp;</div>
+        <div class="d-flex text-18px-bold">{{ clearance }} мм</div>
+    </div>
+    <div class="d-flex flex-row">
         <div class="d-flex text-18px-regular">Всего файлов:&nbsp;</div>
         <div class="d-flex text-18px-bold">{{ files_count }}</div>
     </div>
@@ -29,7 +33,13 @@
                             data-bs-toggle="collapse"
                             data-bs-target="#panelsStayOpen-collapseOne{{ forloop.counter }}" aria-expanded="false"
                             aria-controls="panelsStayOpen-collapseOne{{ forloop.counter }}"
-                            data-bs-parent="#accordion">
+                            data-bs-parent="#accordion"
+                            {% if value.error %}
+                            style="background-color: rgba(227,84,84,0.1)"
+                            {% else %}
+                            style="background-color: rgba(95,173,5,0.1)"
+                            {% endif %}
+                    >
                         <div class="text-18px-light">{{ forloop.counter }}) {{ key }}</div>
                     </button>
                 </h2>
@@ -38,7 +48,7 @@
                      aria-labelledby="panelsStayOpen-headingOne{{ forloop.counter }}">
                     <div class="accordion-body">
                         {% for keey_size, count in value.items %}
-                            {% if keey_size != 'count_pages' and keey_size != 'normal_pages' and keey_size != 'a4_count' and keey_size != 'error' %}
+                            {% if keey_size != 'count_pages' and keey_size != 'list_pages' and keey_size != 'normal_pages' and keey_size != 'a4_count' and keey_size != 'error' %}
                                 <div class="text-18px-light">{{ keey_size }} - {{ count }}</div>
                             {% endif %}
                         {% endfor %}
@@ -58,12 +68,42 @@
                                     <div class="text-36px-bold">{{ value.a4_count }}</div>
                                 </div>
                             </div>
+                            <div>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#detailFileInfo{{ forloop.counter }}">
+                                    Информация по листам
+                                </button>
+                            </div>
                         {% else %}
                             <div class="d-flex">
                                 <div class="text-18px-regular">Файл не является PDF файлом</div>
                             </div>
                         {% endif %}
 
+
+                        <!-- Модальное окно для {{ key }}-->
+
+                        <div class="modal fade" id="detailFileInfo{{ forloop.counter }}" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">{{ key }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {% for list in value.list_pages %}
+                                            {{ forloop.counter }}{{ list }}<br>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                        </button>
+                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -75,9 +115,20 @@
     <div class="d-flex mt-5">
         <button onclick="clearResult()">Очистить</button>
     </div>
+
+
 </div>
 
 <script>
+    $(function () {
+        var cookieObjectValue = (document.cookie.match('(^|; )' + encodeURIComponent('clearance') + '=([^;]+)') || []).pop() || null;
+        console.log(cookieObjectValue)
+    })
+
+    function onClickDetails() {
+        $('#detailFileInfo').modal('show');
+
+    }
 
     function clearResult() {
         $('#inside').removeClass('d-flex')
@@ -89,7 +140,9 @@
         $('#form_send_file').addClass('justify-content-center')
         $('body').removeClass('grey_background')
         $('#start_body').addClass('d-flex')
+        $('#clearance_info').addClass('d-flex')
         $('#start_body').removeClass('d-none')
+        $('#clearance_info').removeClass('d-none')
         $('#start_body').animate({opacity: 1}, 200)
         $('#id_file').val('');
         status_calc = 0

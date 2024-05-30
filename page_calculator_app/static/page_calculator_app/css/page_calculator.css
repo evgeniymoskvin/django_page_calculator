@@ -138,6 +138,28 @@ html {
     color: #1D222A;
 }
 
+.text-16px-light {
+    font-size: 16px;
+    font-family: "Rosatom_light", serif;
+    color: #1D222A;
+}
+
+.dashed_text {
+    /*font-size: 25px;*/
+    /*text-decoration: none;*/
+    /*border-bottom: 1px dashed rgb(108, 172, 228);*/
+    cursor: pointer;
+    color: rgb(108, 172, 228);
+    text-decoration: underline;
+    text-decoration-style: dotted;
+}
+
+.dashed_text:hover {
+    color: #025EA1;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+}
+
 
 .box__dragndrop,
 .box__uploading,
@@ -189,4 +211,63 @@ html {
 .border_body{
     padding: 25px;
     border: dashed black;
+}
+
+
+
+.button_blue_modal_outline {
+    background: white;
+    padding: 8px;
+    min-height: 25px;
+    border: 1px solid rgb(108, 172, 228);
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: "Rosatom_light", serif;
+    color: #1D222A;
+    transition-duration: .15s;
+}
+
+.button_blue_modal_outline:hover {
+    box-shadow: 2px 4px 11px -3px rgba(2, 94, 161, 0.45);
+}
+
+
+.button_grey_modal_outline {
+    background: white;
+    padding: 8px;
+    min-height: 25px;
+    border: 1px solid grey;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: "Rosatom_light", serif;
+    color: #1D222A;
+    transition-duration: .15s;
+}
+
+.button_grey_modal_outline:hover {
+    box-shadow: 2px 4px 11px -3px;
+}
+
+.input_text {
+    width: auto;
+    height: 45px;
+    padding: 12px 20px;
+    /*width: 100%;*/
+    border: 1px solid rgb(108, 172, 228);
+    border-radius: 8px;
+    box-shadow: 2px 4px 11px -3px rgba(2, 94, 161, 0.45);
+    font-size: 18px;
+    font-family: "Rosatom_regular", serif;
+}
+
+.input_text:disabled {
+    border: 1px solid rgb(176, 181, 185);
+    box-shadow: 2px 4px 11px -3px rgba(149, 150, 150, 0.45);
+    color: grey;
+}
+
+.input_text[type="text"]:disabled {
+    border: 1px solid rgb(176, 181, 185);
+    box-shadow: 2px 4px 11px -3px rgba(149, 150, 150, 0.45);
+    color: grey;
 }

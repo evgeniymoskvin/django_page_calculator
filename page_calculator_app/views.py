@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from .forms import UploadFileForm
 import time
+from django.http import HttpResponse
 import mimetypes
 from django.http import HttpResponse
 
@@ -44,23 +45,34 @@ def handle_uploaded_file(f):
 
 class IndexView(View):
     def get(self, request):
+        try:
+            clearance = int(request.COOKIES['clearance'])
+        except:
+            clearance = 15
         form = UploadFileForm()
-        content = {'form': form}
+        content = {'form': form,
+                   'clearance': clearance}
         return render(request, 'page_calculator_app/index.html', content)
 
 
 class GetAnswerView(View):
     def post(self, request):
         time.sleep(1)
-
-        files_count = 0
-        all_files_format = 0
-        all_lists_approve = 0
-        all_lists_count = 0
+        try:
+            clearance = int(request.COOKIES['clearance'])
+        except:
+            clearance = 15
+        files_count = 0  # Счетчик файлов
+        all_files_format = 0  # Счетчик форматов А4 по всем файлам
+        all_lists_approve = 0  # Счетчик распознанных листов
+        all_lists_count = 0  # Всего листов во всех файлах
 
         print(f'request.POST: {request.POST}')
         print(f'request.FILES: {request.FILES}')
+        print(f'request.COOKIES: {request.COOKIES}')
+        print(f'Подсчет с допуском {clearance}мм')
 
+        # Итоговый словарь с перечнем файлов
         exit_dict = {}
 
         for file in request.FILES.getlist('file'):
@@ -108,7 +120,7 @@ class GetAnswerView(View):
                     # Переводим значения в миллиметры
                     width = math.ceil(float(box.mediabox.width) * 0.35273159)
                     height = math.ceil(float(box.mediabox.height) * 0.35273159)
-                    list_pages.append([height, width])
+                    # list_pages.append([height, width])
                     # Приводим к одной ориентации
                     if width < height:
                         small = width
@@ -118,15 +130,18 @@ class GetAnswerView(View):
                         long = width
                     # Проверяем вхождение данных размеров в стандартные, с допуском 15мм
                     for key, value in PAGE_SIZE_STANDARD.items():
-                        if (value[0] >= small - 15) and (value[0] <= small + 15) and (value[1] <= long + 15) and (
-                                value[1] >= long - 15):
+                        if (value[0] >= small - clearance) and (value[0] <= small + clearance) and (
+                                value[1] <= long + clearance) and (
+                                value[1] >= long - clearance):
                             normal_pages += 1
                             a4_count += value[2]
                             pdf_size_file[key] += 1
                             checker = 1
+                            list_pages.append([height, width, key])
                     # Если в стандартные значения не вошли
                     if checker == 0:
                         size = f'{small}x{long}'
+                        list_pages.append([height, width, 0])
                         try:
                             pdf_size_file[size] += 1  # Если такой размер уже есть в словаре
                         except:
@@ -149,6 +164,7 @@ class GetAnswerView(View):
                 print(num_pages)
                 exit_dict[file.name] = pdf_size_file
                 exit_dict[file.name]['count_pages'] = num_pages
+                exit_dict[file.name]['list_pages'] = list_pages
                 exit_dict[file.name]['normal_pages'] = normal_pages
                 exit_dict[file.name]['a4_count'] = a4_count
                 all_lists_approve += normal_pages
@@ -161,7 +177,23 @@ class GetAnswerView(View):
                    'all_lists_approve': all_lists_approve,
                    'all_files_format': all_files_format,
                    # 'pdf_size_file': pdf_size_file,
-                   'exit_dict': exit_dict}
+                   'exit_dict': exit_dict,
+                   'clearance': clearance}
         # content = {
         #            'pdf_size_file': pdf_size_file}
-        return render(request, 'page_calculator_app/answer.html', content)
+        resp = render(request, 'page_calculator_app/answer.html', content)
+        resp.set_cookie(key='clearance', value=clearance)
+        return resp
+
+
+class ChangeClearanceView(View):
+    def post(self, request):
+        clearance = int(request.POST.get('input_clearance_value'))
+        print(clearance)
+        print(f'request.POST: {request.POST}')
+        print(f'request.FILES: {request.FILES}')
+        print(f'request.COOKIES: {request.COOKIES}')
+        resp = HttpResponse(status=200)
+        resp.set_cookie('clearance', clearance)
+        return resp
+

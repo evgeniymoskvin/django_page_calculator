@@ -20,5 +20,6 @@ from . import views
 
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
-    path('ajax/answer', views.GetAnswerView.as_view(), name='get-answer')
+    path('ajax/answer', views.GetAnswerView.as_view(), name='get-answer'),
+    path('ajax/change-clearance', views.ChangeClearanceView.as_view(), name='change-clearance'),
 ]
