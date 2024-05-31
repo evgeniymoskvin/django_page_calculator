@@ -7,17 +7,21 @@
         <div class="d-flex text-18px-regular">Допуск/погрешность:&nbsp;</div>
         <div class="d-flex text-18px-bold">{{ clearance }} мм</div>
     </div>
+    {#    <div class="d-flex flex-row">#}
+    {#        <div class="d-flex text-18px-regular">Всего загружено файлов:&nbsp;</div>#}
+    {#        <div class="d-flex text-18px-bold">{{ files_count }}</div>#}
+    {#    </div>#}
     <div class="d-flex flex-row">
-        <div class="d-flex text-18px-regular">Всего файлов:&nbsp;</div>
-        <div class="d-flex text-18px-bold">{{ files_count }}</div>
+        <div class="d-flex text-18px-regular">Обработано файлов:&nbsp;</div>
+        <div class="d-flex text-18px-bold">{{ good_files }} из {{ files_count }}</div>
     </div>
+    {#    <div class="d-flex flex-row">#}
+    {#        <div class="d-flex text-18px-regular">Всего листов в файлах:&nbsp;</div>#}
+    {#        <div class="d-flex text-18px-bold">{{ all_lists_count }}</div>#}
+    {#    </div>#}
     <div class="d-flex flex-row">
-        <div class="d-flex text-18px-regular">Всего листов в файлах:&nbsp;</div>
-        <div class="d-flex text-18px-bold">{{ all_lists_count }}</div>
-    </div>
-    <div class="d-flex flex-row">
-        <div class="d-flex text-18px-regular">Всего распознано листов:&nbsp;</div>
-        <div class="d-flex text-18px-bold">{{ all_lists_approve }}</div>
+        <div class="d-flex text-18px-regular">Распознано листов:&nbsp;</div>
+        <div class="d-flex text-18px-bold">{{ all_lists_approve }} из {{ all_lists_count }}</div>
     </div>
     <div class="d-flex flex-row">
         <div class="d-flex text-18px-regular">Всего форматов А4:&nbsp;</div>
@@ -27,7 +31,7 @@
 
     <div class="accordion w-100 mt-5" id="accordion">
         {% for key, value in exit_dict.items %}
-            <div class="accordion-item">
+            <div class="accordion-item mt-2">
                 <h2 class="accordion-header" id="panelsStayOpen-headingOne{{ forloop.counter }}">
                     <button class="accordion-button {% if files_count > 1 %}collapsed{% endif %}" type="button"
                             data-bs-toggle="collapse"
@@ -35,9 +39,9 @@
                             aria-controls="panelsStayOpen-collapseOne{{ forloop.counter }}"
                             data-bs-parent="#accordion"
                             {% if value.error %}
-                            style="background-color: rgba(227,84,84,0.1)"
+                            style="background-color: rgba(227,84,84,0.05);"
                             {% else %}
-                            style="background-color: rgba(95,173,5,0.1)"
+                            style="background-color: rgba(108, 172, 228,0.07)"
                             {% endif %}
                     >
                         <div class="text-18px-light">{{ forloop.counter }}) {{ key }}</div>
@@ -55,22 +59,23 @@
 
                         {% if value.error != 1 %}
                             <div class="d-flex flex-row justify-content-between mt-3">
-                                <div class="d-flex flex-column align-items-center">
-                                    <div class="text-18px-regular">Количество листов</div>
+                                <div class="d-flex flex-column align-items-center justify-content-center" style="text-align: center">
+                                    <div class="text-18px-regular">Количество <br> листов</div>
                                     <div class="text-36px-bold">{{ value.count_pages }}</div>
                                 </div>
-                                <div class="d-flex flex-column align-items-center">
-                                    <div class="text-18px-regular">Распознано листов</div>
-                                    <div class="text-36px-bold">{{ value.normal_pages }}</div>
+                                <div class="d-flex flex-column align-items-center justify-content-center" style="text-align: center">
+                                    <div class="text-18px-regular">Распознано <br> листов</div>
+                                    <div class="text-36px-bold">{{ value.normal_pages }} </div>
                                 </div>
-                                <div class="d-flex flex-column align-items-center">
-                                    <div class="text-18px-regular">Количество форматов А4</div>
+                                <div class="d-flex flex-column align-items-center justify-content-center" style="text-align: center">
+                                    <div class="text-18px-regular">Количество <br> форматов А4</div>
                                     <div class="text-36px-bold">{{ value.a4_count }}</div>
                                 </div>
                             </div>
-                            <div>
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#detailFileInfo{{ forloop.counter }}">
+                            <div class="d-flex w-100 justify-content-center align-items-center">
+                                <button type="button" class="button_blue_modal_outline" data-bs-toggle="modal"
+                                        data-bs-target="#detailFileInfo{{ forloop.counter }}"
+                                        style="width: 20%">
                                     Информация по листам
                                 </button>
                             </div>
@@ -84,7 +89,7 @@
                         <!-- Модальное окно для {{ key }}-->
 
                         <div class="modal fade" id="detailFileInfo{{ forloop.counter }}" tabindex="-1">
-                            <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title">{{ key }}</h5>
@@ -96,11 +101,11 @@
                                             {{ forloop.counter }}{{ list }}<br>
                                         {% endfor %}
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
-                                        </button>
-                                        <button type="button" class="btn btn-primary">Save changes</button>
-                                    </div>
+{#                                    <div class="modal-footer">#}
+{#                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close#}
+{#                                        </button>#}
+{#                                        <button type="button" class="btn btn-primary">Save changes</button>#}
+{#                                    </div>#}
                                 </div>
                             </div>
                         </div>
@@ -112,8 +117,10 @@
     </div>
 
 
-    <div class="d-flex mt-5">
-        <button onclick="clearResult()">Очистить</button>
+    <div class="d-flex mt-5 w-100 mb-5">
+        <button onclick="clearResult()" class="button_blue_modal_outline" style="height: 50px; width: 100%">Очистить
+            результат
+        </button>
     </div>
 
 

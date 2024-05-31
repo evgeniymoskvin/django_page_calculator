@@ -66,6 +66,7 @@ class GetAnswerView(View):
         all_files_format = 0  # Счетчик форматов А4 по всем файлам
         all_lists_approve = 0  # Счетчик распознанных листов
         all_lists_count = 0  # Всего листов во всех файлах
+        errors = 0  # Ошибок по файлам
 
         print(f'request.POST: {request.POST}')
         print(f'request.FILES: {request.FILES}')
@@ -172,13 +173,17 @@ class GetAnswerView(View):
             except:
                 exit_dict[file.name] = {}
                 exit_dict[file.name]['error'] = 1
+                errors += 1
         content = {'all_lists_count': all_lists_count,
                    'files_count': files_count,
                    'all_lists_approve': all_lists_approve,
                    'all_files_format': all_files_format,
                    # 'pdf_size_file': pdf_size_file,
                    'exit_dict': exit_dict,
-                   'clearance': clearance}
+                   'clearance': clearance,
+                   'errors': errors,
+                   'good_files': files_count - errors,
+                   }
         # content = {
         #            'pdf_size_file': pdf_size_file}
         resp = render(request, 'page_calculator_app/answer.html', content)
@@ -196,4 +201,3 @@ class ChangeClearanceView(View):
         resp = HttpResponse(status=200)
         resp.set_cookie('clearance', clearance)
         return resp
-

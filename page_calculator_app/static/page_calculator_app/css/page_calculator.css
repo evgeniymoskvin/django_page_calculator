@@ -271,3 +271,24 @@ html {
     box-shadow: 2px 4px 11px -3px rgba(149, 150, 150, 0.45);
     color: grey;
 }
+
+.button_blue {
+    min-width: 200px;
+    border: 0;
+    border-radius: 8px;
+    background-color: rgb(108, 172, 228);
+    font-size: 18px;
+    font-family: "Rosatom_regular", serif;
+    color: white;
+    transition-duration: .15s;
+}
+
+.button_blue:hover {
+    box-shadow: 2px 4px 11px -3px rgba(2, 94, 161, 0.45);
+}
+
+.button_blue:active {
+    background: rgb(93, 148, 196);
+    box-shadow: 2px 4px 11px -3px rgba(2, 94, 161, 0.45);
+
+}
