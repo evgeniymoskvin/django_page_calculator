@@ -102,6 +102,24 @@ html {
     color: #1D222A;
 }
 
+.text-32px-bold {
+    font-size: 32px;
+    font-family: "Rosatom_bold", serif;
+    color: #1D222A;
+}
+
+.text-32px-regular {
+    font-size: 32px;
+    font-family: "Rosatom_regular", serif;
+    color: #1D222A;
+}
+
+.text-32px-light {
+    font-size: 32px;
+    font-family: "Rosatom_light", serif;
+    color: #1D222A;
+}
+
 .text-24px-bold {
     font-size: 24px;
     font-family: "Rosatom_bold", serif;
@@ -119,6 +137,26 @@ html {
     font-family: "Rosatom_light", serif;
     color: #1D222A;
 }
+
+
+.text-20px-bold {
+    font-size: 20px;
+    font-family: "Rosatom_bold", serif;
+    color: #1D222A;
+}
+
+.text-20px-regular {
+    font-size: 20px;
+    font-family: "Rosatom_regular", serif;
+    color: #1D222A;
+}
+
+.text-20px-light {
+    font-size: 20px;
+    font-family: "Rosatom_light", serif;
+    color: #1D222A;
+}
+
 
 .text-18px-bold {
     font-size: 18px;
@@ -181,17 +219,20 @@ html {
     display: flex;
     min-width: 100%;
     min-height: 100px;
-    margin-top: 25px;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    border: 0;
+    margin-top: 35px;
+    justify-content: start;
+    align-items: start;
+    text-align: start;
+    padding-left: 11px;
+    padding-top: 5px;
+    /*border: 0;*/
     border-radius: 8px;
-    background-color: rgba(108, 172, 228, 0.6);
-    font-size: 18px;
-    font-family: "Rosatom_regular", serif;
-    text-transform: uppercase;
-    color: white;
+    background-color: rgb(249, 249, 249);
+    border: 1.5px solid rgb(108, 172, 228);
+    font-size: 20px;
+    font-family: "Rosatom_light", serif;
+    /*text-transform: uppercase;*/
+    color: rgb(108, 172, 228);
     transition-duration: .15s;
 }
 
@@ -200,19 +241,18 @@ html {
 }
 
 .my_form label:active {
-    background: rgb(93, 148, 196);
+    background-color: rgb(234, 234, 234);
     box-shadow: 2px 4px 11px -3px rgba(2, 94, 161, 0.45);
 }
 
-.grey_background{
+.grey_background {
     background-color: rgba(128, 128, 128, 0.1);
 }
 
-.border_body{
+.border_body {
     padding: 25px;
     border: dashed black;
 }
-
 
 
 .button_blue_modal_outline {
@@ -272,6 +312,32 @@ html {
     color: grey;
 }
 
+
+.input_text_clearance {
+    width: auto;
+    height: 45px;
+    /*padding: 12px 20px;*/
+    /*width: 100%;*/
+    border: 1px solid rgb(108, 172, 228);
+    border-radius: 8px;
+    /*box-shadow: 2px 4px 11px -3px rgba(2, 94, 161, 0.45);*/
+    font-size: 20px;
+    font-family: "Rosatom_regular", serif;
+}
+
+.input_text_clearance:disabled {
+    border: 1px solid rgb(176, 181, 185);
+    /*box-shadow: 2px 4px 11px -3px rgba(149, 150, 150, 0.45);*/
+    color: grey;
+}
+
+.input_text_clearance[type="text"]:disabled {
+    border: 1px solid rgb(176, 181, 185);
+    /*box-shadow: 2px 4px 11px -3px rgba(149, 150, 150, 0.45);*/
+    color: grey;
+}
+
+
 .button_blue {
     min-width: 200px;
     border: 0;
@@ -290,5 +356,81 @@ html {
 .button_blue:active {
     background: rgb(93, 148, 196);
     box-shadow: 2px 4px 11px -3px rgba(2, 94, 161, 0.45);
+
+}
+
+.modal_clearance {
+    border: 1px solid rgb(174, 211, 242);
+}
+
+.modal-backdrop {
+    background-color: rgb(239, 239, 239);
+    opacity: 1;
+}
+
+.modal-header_clearance {
+    border: 0;
+    padding-top: 20px;
+    padding-bottom: 1rem;
+    padding-left: 30px;
+    padding-right: 30px;
+
+}
+
+.modal-body_clearance {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+
+.modal-footer_clearance {
+    border: 0;
+    padding-top: 1rem;
+    padding-bottom: 25px;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.modal-footer > * {
+    margin: 0
+}
+
+.button_blue_clearance {
+    width: 123px;
+    height: 40px;
+    border: rgb(174, 211, 242);
+    border-radius: 8px;
+    background: rgb(174, 211, 242);
+    font-size: 20px;
+    font-family: "Rosatom_regular", serif;
+    color: white;
+    transition-duration: .15s;
+}
+
+.button_blue_clearance:hover {
+    box-shadow: 2px 4px 11px -3px rgba(2, 94, 161, 0.45);
+}
+
+.button_grey_clearance {
+    width: 123px;
+    height: 40px;
+    border: rgb(212, 213, 217);;
+    border-radius: 8px;
+    background: rgb(212, 213, 217);;
+    font-size: 20px;
+    font-family: "Rosatom_regular", serif;
+    color: white;
+    transition-duration: .15s;
+}
+
+.button_grey_clearance:hover {
+    box-shadow: 2px 4px 11px -3px rgba(171, 171, 171, 0.45);
+}
+
+.modal-dialog_clearance {
+    width: 450px;
+    height: 225px;
 
 }
