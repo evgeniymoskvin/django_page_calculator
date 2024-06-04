@@ -1,4 +1,3 @@
-
 @font-face {
     font-family: 'Rosatom_light';
     src: url('../fonts/rosatom/Rosatom-Light.woff2') format('woff2'),
@@ -32,6 +31,8 @@
 html {
     width: 100vw;
     overflow-x: hidden;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 .content-fade {
@@ -169,6 +170,13 @@ html {
     font-size: 16px;
     font-family: "Rosatom_light", serif;
     color: #1D222A;
+}
+
+.red_text_error {
+    margin-right: 90px;
+    color: rgb(255, 214, 214);
+    font-size: 24px;
+    font-family: "Rosatom_bold", serif;
 }
 
 .dashed_text {

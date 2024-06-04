@@ -40,69 +40,75 @@
                             aria-controls="panelsStayOpen-collapseOne{{ forloop.counter }}"
                             data-bs-parent="#accordion"
                             {% if value.error %}
-                            style="background-color: rgba(227,84,84,0.05);"
+                            style="background-color: rgb(255, 243, 243)"
                             {% else %}
                             style="background-color: rgb(242, 249, 255)"
                             {% endif %}
                     >
-                        <div class="text-20px-regular">{{ forloop.counter }}. {{ key }}</div>
+                        <div class="w-100 d-flex flex-row justify-content-between">
+                            <span class="d-flex text-20px-regular">{{ forloop.counter }}. {{ key }}</span>
+                            <span class="d-flex red_text_error">{% if value.error %}Файл не распознан как
+                                PDF{% endif %}</span>
+                        </div>
                     </button>
                 </h2>
+
                 <div id="panelsStayOpen-collapseOne{{ forloop.counter }}"
                      class="accordion-collapse {% if files_count > 1 %}collapse{% endif %}{% if files_count == 0 %}{% endif %}"
                      aria-labelledby="panelsStayOpen-headingOne{{ forloop.counter }}">
-                    <div class="accordion-body">
-                        {% if value.error != 1 %}
-                            <div class="d-flex w-100 flex-lg-row flex-wrap flex-lg-nowrap">
-                                <div class="d-flex flex-column flex-lg-row">
-                                    <div class="d-flex flex-column border_right">
-                                        <div class="col d-flex flex-column green_el">
-                                            <div class="d-flex text-20px-regular">Распознанные&nbspформаты</div>
-                                            <div class="d-flex flex-wrap" style='margin-top: 13px'>
-                                                {% for keey_size, count in value.items %}
-                                                    {% if keey_size != 'count_pages' and keey_size != 'pdf_unknown_size_file' and keey_size != 'list_pages' and keey_size != 'normal_pages' and keey_size != 'a4_count' and keey_size != 'error' %}
-                                                        <div class="col-5 text-20px-light">{{ keey_size }}:&nbsp;<span
+                    {% if value.error != 1 %}
+                        <div class="accordion-body">
+                            {% if value.error != 1 %}
+                                <div class="d-flex w-100 flex-lg-row flex-wrap flex-lg-nowrap">
+                                    <div class="d-flex flex-column flex-lg-row">
+                                        <div class="d-flex flex-column border_right">
+                                            <div class="col d-flex flex-column green_el">
+                                                <div class="d-flex text-20px-regular">Распознанные&nbspформаты</div>
+                                                <div class="d-flex flex-wrap" style='margin-top: 13px'>
+                                                    {% for keey_size, count in value.items %}
+                                                        {% if keey_size != 'count_pages' and keey_size != 'pdf_unknown_size_file' and keey_size != 'list_pages' and keey_size != 'normal_pages' and keey_size != 'a4_count' and keey_size != 'error' %}
+                                                            <div class="col-5 text-20px-light">{{ keey_size }}:&nbsp;<span
+                                                                    class="text-20px-regular">{{ count }}</span></div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <div class="col d-flex flex-column red_el">
+                                                <div class="d-flex text-20px-regular">Нераспознанные&nbspформаты</div>
+                                                <div class="d-flex flex-column" style='margin-top: 13px'>
+                                                    {% for keey_size, count in value.pdf_unknown_size_file.items %}
+                                                        <div class="text-20px-light">{{ keey_size }}:&nbsp;<span
                                                                 class="text-20px-regular">{{ count }}</span></div>
-                                                    {% endif %}
-                                                {% endfor %}
+                                                    {% endfor %}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="d-flex flex-column">
-                                        <div class="col d-flex flex-column red_el">
-                                            <div class="d-flex text-20px-regular">Нераспознанные&nbspформаты</div>
-                                            <div class="d-flex flex-column" style='margin-top: 13px'>
-                                                {% for keey_size, count in value.pdf_unknown_size_file.items %}
-                                                    <div class="text-20px-light">{{ keey_size }}:&nbsp;<span
-                                                            class="text-20px-regular">{{ count }}</span></div>
-                                                {% endfor %}
-                                            </div>
+
+                                    <div class="col d-flex flex-column justify-content-between">
+                                        <div class="d-flex flex-column border_left" style="margin-top: 53px">
+                                            <div class="text-20px-light">Количество листов:&nbsp;<span
+                                                    class="text-20px-regular">{{ value.count_pages }}</span></div>
+                                            <div class="text-20px-light">Распознано листов:&nbsp;<span
+                                                    class="text-20px-regular">{{ value.normal_pages }}</span></div>
+                                            <div class="text-20px-light">Количество форматов А4:&nbsp;<span
+                                                    class="text-20px-regular">{{ value.a4_count }}</span></div>
+                                        </div>
+                                        <div class="d-flex mt-3" style="padding-left: 18px">
+                                            <button type="button" class="button_blue_details_outline"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#detailFileInfo{{ forloop.counter }}">
+                                                Информация о листах
+                                            </button>
                                         </div>
                                     </div>
+
+
                                 </div>
 
-                                <div class="col d-flex flex-column justify-content-between">
-                                    <div class="d-flex flex-column border_left" style="margin-top: 53px">
-                                        <div class="text-20px-light">Количество листов:&nbsp;<span
-                                                class="text-20px-regular">{{ value.count_pages }}</span></div>
-                                        <div class="text-20px-light">Распознано листов:&nbsp;<span
-                                                class="text-20px-regular">{{ value.normal_pages }}</span></div>
-                                        <div class="text-20px-light">Количество форматов А4:&nbsp;<span
-                                                class="text-20px-regular">{{ value.a4_count }}</span></div>
-                                    </div>
-                                    <div class="d-flex mt-3" style="padding-left: 18px">
-                                        <button type="button" class="button_blue_details_outline"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#detailFileInfo{{ forloop.counter }}">
-                                            Информация о листах
-                                        </button>
-                                    </div>
-                                </div>
-
-
-                            </div>
-
-                            {% comment %}
+                                {% comment %}
                         {% for keey_size, count in value.items %}
                             {% if keey_size != 'count_pages' and keey_size != 'list_pages' and keey_size != 'normal_pages' and keey_size != 'a4_count' and keey_size != 'error' %}
                                 <div class="text-18px-light">{{ keey_size }} - {{ count }}</div>
@@ -136,38 +142,38 @@
                                 </button>
                             </div>
                             {% endcomment %}
-                        {% else %}
-                            <div class="d-flex">
-                                <div class="text-18px-regular">Файл не является PDF файлом</div>
-                            </div>
-                        {% endif %}
+                            {% else %}
+                                <div class="d-flex">
+                                    <div class="text-18px-regular">Файл не является PDF файлом</div>
+                                </div>
+                            {% endif %}
 
 
-                        <!-- Модальное окно для {{ key }}-->
+                            <!-- Модальное окно для {{ key }}-->
 
-                        <div class="modal fade" id="detailFileInfo{{ forloop.counter }}" tabindex="-1">
-                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">{{ key }}</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
+                            <div class="modal fade" id="detailFileInfo{{ forloop.counter }}" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">{{ key }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {% for list in value.list_pages %}
+                                                {{ forloop.counter }}{{ list }}<br>
+                                            {% endfor %}
+                                        </div>
+                                        {#                                    <div class="modal-footer">#}
+                                        {#                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close#}
+                                        {#                                        </button>#}
+                                        {#                                        <button type="button" class="btn btn-primary">Save changes</button>#}
+                                        {#                                    </div>#}
                                     </div>
-                                    <div class="modal-body">
-                                        {% for list in value.list_pages %}
-                                            {{ forloop.counter }}{{ list }}<br>
-                                        {% endfor %}
-                                    </div>
-                                    {#                                    <div class="modal-footer">#}
-                                    {#                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close#}
-                                    {#                                        </button>#}
-                                    {#                                        <button type="button" class="btn btn-primary">Save changes</button>#}
-                                    {#                                    </div>#}
                                 </div>
                             </div>
                         </div>
-                    </div>
-
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}
