@@ -107,7 +107,7 @@ class GetAnswerView(View):
                     'A4x8': 0,
                     'A4x9': 0,
                 }
-
+                pdf_unknown_size_file = {}
                 a4_count = 0  # Счетчик форматов А4
                 normal_pages = 0  # Счетчик распознанных листов
                 list_pages = []  # Список листов
@@ -144,9 +144,9 @@ class GetAnswerView(View):
                         size = f'{small}x{long}'
                         list_pages.append([height, width, 0])
                         try:
-                            pdf_size_file[size] += 1  # Если такой размер уже есть в словаре
+                            pdf_unknown_size_file[size] += 1  # Если такой размер уже есть в словаре
                         except:
-                            pdf_size_file[size] = 1
+                            pdf_unknown_size_file[size] = 1
 
                 temp_list = []
                 # Создаем словарь с пустыми значениями.
@@ -165,6 +165,7 @@ class GetAnswerView(View):
                 print(num_pages)
                 exit_dict[file.name] = pdf_size_file
                 exit_dict[file.name]['count_pages'] = num_pages
+                exit_dict[file.name]['pdf_unknown_size_file'] = pdf_unknown_size_file
                 exit_dict[file.name]['list_pages'] = list_pages
                 exit_dict[file.name]['normal_pages'] = normal_pages
                 exit_dict[file.name]['a4_count'] = a4_count

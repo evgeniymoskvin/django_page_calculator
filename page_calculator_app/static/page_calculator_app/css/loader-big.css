@@ -100,11 +100,11 @@
 .drop_file {
     display: flex;
     cursor: pointer;
-    -webkit-mask-image: url("../icons/drop-svgrepo-com_2.svg");
-    mask-image: url("../icons/drop-svgrepo-com_2.svg");
+    -webkit-mask-image: url("../icons/arrow_drug_and_drop.svg");
+    mask-image: url("../icons/arrow_drug_and_drop.svg");
     width: 500px;
     height: 500px;
-    background-color: rgba(2, 94, 161, 0.4);
+    background-color: rgb(174, 211, 242);
     -webkit-mask-position: center center;
     mask-position: center center;
     -webkit-mask-repeat: no-repeat;
@@ -115,14 +115,14 @@
 @keyframes animdrop {
     0% {
         /*left: -50%;*/
-        transform: scale(.2);
+        transform: scale(.8);
     }
     50% {
         /*left: 50%;*/
-        transform: scale(.4);
+        transform: scale(1);
     }
     100% {
         /*left: 50%;*/
-        transform: scale(.2);
+        transform: scale(.8);
     }
 }

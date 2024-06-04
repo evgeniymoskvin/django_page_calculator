@@ -26,7 +26,7 @@
             </div>
         </div>
 
-        <div class="d-none w-100" id="inside" style="opacity: 0" data-ajax-url="{% url 'get-answer' %}">
+        <div class="d-none w-100 justify-content-center" id="inside" style="opacity: 0" data-ajax-url="{% url 'get-answer' %}">
 
         </div>
 
@@ -50,7 +50,7 @@
     <!-- Модальное окно настройки допуска-->
     <div class="modal fade" id="clearanceModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-dialog_clearance">
-            <div class="modal-content" style='border: 1px solid rgb(174, 211, 242);'>
+            <div class="modal-content modal-content_clearance">
                 <div class="modal-header modal-header_clearance" >
                     <h5 class="modal-title text-24px-regular">Настройка допуска</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -146,6 +146,7 @@
                 dropZone.classList.add(hoverClassName);
                 $('#start_body').removeClass('d-flex')
                 $('#start_body').addClass('d-none')
+                $('#clearance_info').removeClass('d-flex')
                 $('#clearance_info').addClass('d-none')
                 $('#inside').removeClass('d-flex')
                 $('#inside').addClass('d-none')
@@ -166,6 +167,7 @@
                 if (status_calc === 0) {
                     $('#start_body').removeClass('d-none')
                     $('#start_body').addClass('d-flex')
+                    $('#clearance_info').removeClass('d-none')
                     $('#clearance_info').addClass('d-flex')
                     $('body').removeClass('grey_background')
                 } else {
@@ -186,6 +188,7 @@
                 e.preventDefault();
                 $('#start_body').removeClass('d-flex')
                 $('#start_body').addClass('d-none')
+                $('#clearance_info').removeClass('d-flex')
                 $('#clearance_info').addClass('d-none')
                 $('#inside').removeClass('d-flex')
                 $('#inside').addClass('d-none')
@@ -208,6 +211,7 @@
                 if (status_calc === 0) {
                     $('#start_body').removeClass('d-none')
                     $('#start_body').addClass('d-flex')
+                    $('#clearance_info').removeClass('d-none')
                     $('#clearance_info').addClass('d-flex')
                 } else {
                     $('#all_file_block').removeClass('align-items-center')
@@ -246,6 +250,8 @@
         $('#form_send_file').submit(function (e) {
             $('#start_body').removeClass('d-flex')
             $('#start_body').addClass('d-none')
+            $('#clearance_info').removeClass('d-flex')
+            $('#clearance_info').addClass('d-none')
             $('#drop_file').removeClass('d-flex')
             $('#drop_file').addClass('d-none')
             $('body').addClass('grey_background')
@@ -278,6 +284,7 @@
                     $('body').removeClass('grey_background')
 
                     $('#start_body').animate({opacity: 0}, 200)
+                    $('#clearance_info').animate({opacity: 0}, 200)
                 }
             });
         })
