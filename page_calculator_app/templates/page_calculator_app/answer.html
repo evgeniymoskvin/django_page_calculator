@@ -67,7 +67,7 @@
                         <div class="accordion-body">
                             {% if value.error != 1 %}
                                 <div class="d-flex w-100 flex-lg-row flex-wrap flex-lg-nowrap">
-                                    <div class="d-flex flex-column flex-lg-row">
+                                    <div class="d-flex flex-column flex-lg-row row__color">
                                         <div class="d-flex flex-column border_right">
                                             <div class="col d-flex flex-column green_el">
                                                 <div class="d-flex text-20px-regular">Распознанные&nbspформаты</div>
@@ -119,40 +119,6 @@
 
                                 </div>
 
-                                {% comment %}
-                        {% for keey_size, count in value.items %}
-                            {% if keey_size != 'count_pages' and keey_size != 'list_pages' and keey_size != 'normal_pages' and keey_size != 'a4_count' and keey_size != 'error' %}
-                                <div class="text-18px-light">{{ keey_size }} - {{ count }}</div>
-                            {% endif %}
-                        {% endfor %}
-
-
-                            <div class="d-flex flex-row justify-content-between mt-3">
-
-                                <div class="d-flex flex-column align-items-center justify-content-center"
-                                     style="text-align: center">
-                                    <div class="text-18px-regular">Количество <br> листов</div>
-                                    <div class="text-36px-bold">{{ value.count_pages }}</div>
-                                </div>
-                                <div class="d-flex flex-column align-items-center justify-content-center"
-                                     style="text-align: center">
-                                    <div class="text-18px-regular">Распознано <br> листов</div>
-                                    <div class="text-36px-bold">{{ value.normal_pages }} </div>
-                                </div>
-                                <div class="d-flex flex-column align-items-center justify-content-center"
-                                     style="text-align: center">
-                                    <div class="text-18px-regular">Количество <br> форматов А4</div>
-                                    <div class="text-36px-bold">{{ value.a4_count }}</div>
-                                </div>
-                            </div>
-                            <div class="d-flex w-100 justify-content-center align-items-center">
-                                <button type="button" class="button_blue_modal_outline" data-bs-toggle="modal"
-                                        data-bs-target="#detailFileInfo{{ forloop.counter }}"
-                                        style="width: 20%">
-                                    Информация по листам
-                                </button>
-                            </div>
-                            {% endcomment %}
                             {% else %}
                                 <div class="d-flex">
                                     <div class="text-18px-regular">Файл не является PDF файлом</div>
@@ -166,44 +132,51 @@
                                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
                                     <div class="modal-content modal-content_details">
                                         <div class="modal-header modal-header_details">
-                                            <h5 class="modal-title">{{ key }}</h5>
-                                            {% comment %}
+                                            <h5 class="modal-title">{{ forloop.counter }}. {{ key }}</h5>
+
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
-                                            {% endcomment %}
+
                                         </div>
                                         <div class="modal-body d-flex justify-content-center w-100 scroll scroll-width-thin">
-                                            <div class="d-flex w-100">
-                                                <table id="example" class="table table-hover" style="width:100%">
+                                            <div class="d-flex w-100 justify-content-center">
+                                                <table id="example" class="table table-hover table_result_info">
                                                     <thead>
                                                     <tr>
-                                                        <th style="text-align: center">№</th>
-                                                        <th style="text-align: center">Размер листа</th>
-                                                        <th style="text-align: center">Формат</th>
+                                                        <th class="th_info">№</th>
+                                                        <th class="th_info">Размер листа</th>
+                                                        <th class="th_info">Формат</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
 
                                                     {% for list in value.list_pages %}
-                                                        <tr>
-                                                            <td style="text-align: center">{{ forloop.counter }}</td>
-                                                            <td style="text-align: center">{{ list.0 }}*{{ list.1 }}</td>
-                                                            {% if list.2 != 0 %}
-                                                                <td style="text-align: center">{{ list.2 }}</td>
-                                                            {% else %}
-                                                                <td style="text-align: center">Не определен</td>
-                                                            {% endif %}
-                                                        </tr>
+                                                        {% if list.2 == 0 %}
+                                                            <tr style="background-color: rgb(255, 243, 243);">
+                                                                {% else %}
+                                                            <tr>
+                                                        {% endif %}
+
+                                                    <td class="td_info">{{ forloop.counter }}</td>
+                                                    <td class="td_info">{{ list.0 }}*{{ list.1 }}</td>
+                                                    {% if list.2 != 0 %}
+                                                        <td class="td_info">{{ list.2 }}</td>
+                                                    {% else %}
+                                                        <td class="td_info">Не определен</td>
+                                                    {% endif %}
+                                                    </tr>
                                                     {% endfor %}
                                                     </tbody>
                                                 </table>
                                             </div>
                                         </div>
-                                        {#                                    <div class="modal-footer">#}
-                                        {#                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close#}
-                                        {#                                        </button>#}
-                                        {#                                        <button type="button" class="btn btn-primary">Save changes</button>#}
-                                        {#                                    </div>#}
+                                        {% comment %}
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                                </button>
+                                                <button type="button" class="btn btn-primary">Save changes</button>
+                                            </div>
+                                        {% endcomment %}
                                     </div>
                                 </div>
                             </div>
@@ -225,16 +198,17 @@
 </div>
 
 <script>
-
+    //Перемещение окна
     $('.modal-dialog').draggable({
         handle: ".modal-header"
     });
 
-
+    //Значение допуска печатаем в консоль для проверки
     $(function () {
         var cookieObjectValue = (document.cookie.match('(^|; )' + encodeURIComponent('clearance') + '=([^;]+)') || []).pop() || null;
         console.log(cookieObjectValue)
     })
+
 
     function onClickDetails() {
         $('#detailFileInfo').modal('show');

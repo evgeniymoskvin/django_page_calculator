@@ -557,21 +557,40 @@ html {
     padding-left: 18px
 }
 
+.table_result_info {
+    width: 50%
+}
+
+row__color {
+
+}
+
 @media (max-width: 767px) {
 
+    .row__color {
+        width: 100%;
+    }
+
+    .table_result_info {
+        width: 90%
+    }
+
     .green_el {
-        background-color: white;
-        padding-left: 0;
+        /*background-color: white;*/
+        padding-left: 13px;
+        width: 100%
     }
 
     .red_el {
-        background-color: white;
+        /*background-color: white;*/
+        width: 100%;
+        margin-top: 16px;
         margin-left: 0;
-        padding-left: 0;
+        padding-left: 13px;
     }
 
     .count_margin_top {
-        margin-top: 10px;
+        margin-top: 25px;
         padding-top: 13px;
     }
 
@@ -585,7 +604,7 @@ html {
         border: 0;
     }
 
-    .div__button_info{
+    .div__button_info {
         padding-left: 0;
     }
 
@@ -593,13 +612,22 @@ html {
 
 @media (min-width: 768px) and (max-width: 991px) {
 
+    .table_result_info {
+        width: 75%
+    }
+
     .green_el {
-        background-color: white;
+        width: 100%;
+        padding-right: 0;
+        /*margin-right: 0;*/
+        /*background-color: white;*/
     }
 
     .red_el {
-        background-color: white;
+        /*background-color: white;*/
+        width: 100%;
         margin-left: 0;
+        margin-top: 13px;
     }
 
     .border_right {
@@ -654,6 +682,19 @@ html {
 /*}*/
 .scroll-width-thin {
     scrollbar-width: thin;
-    scrollbar-color: rgb(215, 215, 215) rgb(241, 241, 241);
+    scrollbar-color: rgb(174, 211, 242) rgb(241, 241, 241);
     scrollbar-gutter: stable both-edges;
+}
+
+
+.th_info {
+    text-align: center;
+    font-size: 18px;
+    font-family: "Rosatom_regular", serif;
+}
+
+.td_info {
+    text-align: center;
+    font-size: 18px;
+    font-family: "Rosatom_light", serif;
 }
