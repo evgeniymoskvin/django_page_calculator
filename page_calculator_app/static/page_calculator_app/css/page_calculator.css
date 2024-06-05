@@ -351,6 +351,7 @@ html {
 }
 
 .button_blue:active {
+    color: white;
     background: rgb(93, 148, 196);
     box-shadow: 2px 4px 11px -3px rgba(2, 94, 161, 0.45);
 
@@ -511,6 +512,7 @@ html {
 }
 
 .button_blue_details_outline:active {
+    color: white;
     background: rgb(93, 148, 196);
     box-shadow: 2px 4px 11px -3px rgba(2, 94, 161, 0.45);
 
@@ -533,6 +535,7 @@ html {
     width: 290px;
 }
 
+
 .inside_result {
     width: 1075px
 }
@@ -546,7 +549,50 @@ html {
     padding-left: 18px
 }
 
-@media (max-width: 991px) {
+.count_margin_top {
+    margin-top: 53px
+}
+
+.div__button_info {
+    padding-left: 18px
+}
+
+@media (max-width: 767px) {
+
+    .green_el {
+        background-color: white;
+        padding-left: 0;
+    }
+
+    .red_el {
+        background-color: white;
+        margin-left: 0;
+        padding-left: 0;
+    }
+
+    .count_margin_top {
+        margin-top: 10px;
+        padding-top: 13px;
+    }
+
+    .border_left {
+        border-left: 0;
+        border-top: 1px solid rgb(212, 213, 217);
+        padding-left: 0px
+    }
+
+    .border_right {
+        border: 0;
+    }
+
+    .div__button_info{
+        padding-left: 0;
+    }
+
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+
     .green_el {
         background-color: white;
     }
@@ -556,16 +602,15 @@ html {
         margin-left: 0;
     }
 
-    .border_left {
-        border: 0;
-    }
-
     .border_right {
         border: 0;
     }
 
-
+    .border_left {
+        border: 0;
+    }
 }
+
 
 @media (min-width: 992px) {
     .modal-lg, .modal-xl {
@@ -609,6 +654,6 @@ html {
 /*}*/
 .scroll-width-thin {
     scrollbar-width: thin;
-    scrollbar-color: blue orange;
+    scrollbar-color: rgb(215, 215, 215) rgb(241, 241, 241);
     scrollbar-gutter: stable both-edges;
 }

@@ -162,10 +162,12 @@ class GetAnswerView(View):
                         final_list.append([key, value])
 
                 num_pages = len(pdf_reader.pages)
-                print(num_pages)
+                print(f'pdf_unknown_size_file: {pdf_unknown_size_file}')
+                print(f'len_pdf_unknown_size_file: {len(pdf_unknown_size_file)}')
                 exit_dict[file.name] = pdf_size_file
                 exit_dict[file.name]['count_pages'] = num_pages
                 exit_dict[file.name]['pdf_unknown_size_file'] = pdf_unknown_size_file
+                exit_dict[file.name]['len_pdf_unknown_size_file'] = len(pdf_unknown_size_file)
                 exit_dict[file.name]['list_pages'] = list_pages
                 exit_dict[file.name]['normal_pages'] = normal_pages
                 exit_dict[file.name]['a4_count'] = a4_count
