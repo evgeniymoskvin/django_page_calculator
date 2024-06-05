@@ -32,25 +32,32 @@
     <div class="accordion w-100" id="accordion" style="margin-top: 60px">
         {#    <div class="accordion w-100 mt-5" id="accordion">#}
         {% for key, value in exit_dict.items %}
-            <div class="accordion-item mt-2">
+            <div class="accordion-item" style="margin-top: 6px">
                 <h2 class="accordion-header" id="panelsStayOpen-headingOne{{ forloop.counter }}">
-                    <button class="accordion-button {% if files_count > 1 %}collapsed{% endif %}" type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#panelsStayOpen-collapseOne{{ forloop.counter }}" aria-expanded="false"
-                            aria-controls="panelsStayOpen-collapseOne{{ forloop.counter }}"
-                            data-bs-parent="#accordion"
+                    <div class="accordion-button {% if files_count > 1 %}collapsed{% endif %}" type="button"
+                         data-bs-toggle="collapse"
+                         data-bs-target="#panelsStayOpen-collapseOne{{ forloop.counter }}" aria-expanded="false"
+                         aria-controls="panelsStayOpen-collapseOne{{ forloop.counter }}"
+                         data-bs-parent="#accordion"
                             {% if value.error %}
-                            style="background-color: rgb(255, 243, 243)"
+                         style="background-color: rgb(255, 243, 243); cursor: context-menu"
                             {% else %}
-                            style="background-color: rgb(242, 249, 255)"
+                         style="background-color: rgb(242, 249, 255)"
                             {% endif %}
+                         id="accordion{{ forloop.counter }}"
                     >
+                        {% if value.error %}
+                            <script>
+                                console.log('sdfs')
+                                $('#accordion{{ forloop.counter }}').addClass('without-after-element');
+                            </script>
+                        {% endif %}
                         <div class="w-100 d-flex flex-row justify-content-between">
                             <span class="d-flex text-20px-regular">{{ forloop.counter }}. {{ key }}</span>
-                            <span class="d-flex red_text_error">{% if value.error %}Файл не распознан как
+                            <span class="d-flex red_text_error noselect">{% if value.error %}Файл не распознан как
                                 PDF{% endif %}</span>
                         </div>
-                    </button>
+                    </div>
                 </h2>
 
                 <div id="panelsStayOpen-collapseOne{{ forloop.counter }}"
@@ -153,16 +160,38 @@
 
                             <div class="modal fade" id="detailFileInfo{{ forloop.counter }}" tabindex="-1">
                                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
+                                    <div class="modal-content modal-content_details">
+                                        <div class="modal-header modal-header_details">
                                             <h5 class="modal-title">{{ key }}</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                         </div>
-                                        <div class="modal-body">
-                                            {% for list in value.list_pages %}
-                                                {{ forloop.counter }}{{ list }}<br>
-                                            {% endfor %}
+                                        <div class="modal-body d-flex justify-content-center w-100 scroll scroll-width-thin">
+                                            <div class="d-flex w-50">
+                                            <table id="example" class="table table-hover" style="width:100%">
+                                                <thead>
+                                                <tr>
+                                                    <th style="text-align: center">№</th>
+                                                    <th style="text-align: center">Размер листа</th>
+                                                    <th style="text-align: center">Формат</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                {% for list in value.list_pages %}
+                                                    <tr>
+                                                        <td style="text-align: center">{{ forloop.counter }}</td>
+                                                        <td style="text-align: center">{{ list.0 }}*{{ list.1 }}</td>
+                                                        {% if list.2 != 0 %}
+                                                            <td style="text-align: center">{{ list.2 }}</td>
+                                                        {% else %}
+                                                            <td style="text-align: center">Не определен</td>
+                                                        {% endif %}
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                            </div>
                                         </div>
                                         {#                                    <div class="modal-footer">#}
                                         {#                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close#}
