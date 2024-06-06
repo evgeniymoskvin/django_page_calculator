@@ -57,7 +57,7 @@ class IndexView(View):
 
 class GetAnswerView(View):
     def post(self, request):
-        time.sleep(1)
+        # time.sleep(1)
         try:
             clearance = int(request.COOKIES['clearance'])
         except:
