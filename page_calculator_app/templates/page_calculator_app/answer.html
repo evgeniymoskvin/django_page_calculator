@@ -53,8 +53,11 @@
                             </script>
                         {% endif %}
                         <div class="w-100 d-flex flex-row justify-content-between">
-                            <span class="d-flex text-20px-regular">{{ forloop.counter }}. {{ key }}</span>
-                            <span class="d-flex red_text_error noselect">{% if value.error %}Файл не распознан как
+                        <div class="d-flex">
+                            <span class="d-flex text-20px-regular">{{ forloop.counter }}.&nbsp;</span>
+                            <span class="d-flex text-20px-regular">{{ key }}</span>
+                        </div>
+                            <span class="d-none d-md-flex red_text_error noselect">{% if value.error %}Файл не распознан как
                                 PDF{% endif %}</span>
                         </div>
                     </div>

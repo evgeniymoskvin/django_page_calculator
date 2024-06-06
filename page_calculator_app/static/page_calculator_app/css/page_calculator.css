@@ -173,9 +173,10 @@ html {
 }
 
 .red_text_error {
+    text-align: end;
     margin-right: 45px;
-    color: rgb(255, 214, 214);
-    font-size: 24px;
+    color: rgb(224, 150, 150);
+    font-size: 20px;
     font-family: "Rosatom_bold", serif;
 }
 
@@ -640,7 +641,16 @@ row__color {
 }
 
 
+@media (max-width: 991px) {
+    .red_text_error {
+        margin-right: 0;
+    }
+
+}
+
+
 @media (min-width: 992px) {
+
     .modal-lg, .modal-xl {
         max-width: 850px;
     }

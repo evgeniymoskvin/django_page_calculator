@@ -71,8 +71,9 @@ class GetAnswerView(View):
         print(f'request.POST: {request.POST}')
         print(f'request.FILES: {request.FILES}')
         print(f'request.COOKIES: {request.COOKIES}')
+        print('-----------------------')
         print(f'Подсчет с допуском {clearance}мм')
-
+        print('-----------------------')
         # Итоговый словарь с перечнем файлов
         exit_dict = {}
 
@@ -175,6 +176,7 @@ class GetAnswerView(View):
                 exit_dict[file.name] = {}
                 exit_dict[file.name]['error'] = 1
                 errors += 1
+            print('-----------------------')
         content = {'all_lists_count': all_lists_count,
                    'files_count': files_count,
                    'all_lists_approve': all_lists_approve,
