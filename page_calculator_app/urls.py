@@ -22,4 +22,6 @@ urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
     path('ajax/answer', views.GetAnswerView.as_view(), name='get-answer'),
     path('ajax/change-clearance', views.ChangeClearanceView.as_view(), name='change-clearance'),
+    path('ajax/get-blanc', views.GetBlancView.as_view(), name='get-blanc'),
+    path('ajax/print-send', views.PrintView.as_view(), name='print-send'),
 ]

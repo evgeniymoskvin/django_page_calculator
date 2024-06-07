@@ -6,6 +6,9 @@ from django.http import HttpResponse
 import mimetypes
 from django.http import HttpResponse
 
+import json
+import ast
+
 import math
 import PyPDF2
 
@@ -161,9 +164,12 @@ class GetAnswerView(View):
                 for key, value in pdf_size_file.items():
                     if value > 0:
                         final_list.append([key, value])
+                print(f'pdf_size_file {pdf_size_file}')
+                good_lists = pdf_size_file.copy()
 
                 num_pages = len(pdf_reader.pages)
                 exit_dict[file.name] = pdf_size_file
+                exit_dict[file.name]['good_lists'] = good_lists
                 exit_dict[file.name]['count_pages'] = num_pages
                 exit_dict[file.name]['pdf_unknown_size_file'] = pdf_unknown_size_file
                 exit_dict[file.name]['len_pdf_unknown_size_file'] = len(pdf_unknown_size_file)
@@ -204,3 +210,25 @@ class ChangeClearanceView(View):
         resp = HttpResponse(status=200)
         resp.set_cookie('clearance', clearance)
         return resp
+
+class GetBlancView(View):
+    def get (self, request):
+        print(f'request.GET: {request.GET}')
+        print(f'request.FILES: {request.FILES}')
+        print(f'request.COOKIES: {request.COOKIES}')
+        json_result = request.GET['json']
+        print(json_result)
+        print(type(json_result))
+        dict_result = ast.literal_eval(json_result)
+        print(dict_result)
+        print(type(dict_result))
+
+        return HttpResponse(status=200)
+
+class PrintView(View):
+    def get (self, request):
+        print(f'request.GET: {request.GET}')
+        print(f'request.FILES: {request.FILES}')
+        print(f'request.COOKIES: {request.COOKIES}')
+
+        return HttpResponse(status=200)

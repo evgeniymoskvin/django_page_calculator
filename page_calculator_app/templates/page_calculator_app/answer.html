@@ -48,16 +48,16 @@
                     >
                         {% if value.error %}
                             <script>
-                                console.log('sdfs')
                                 $('#accordion{{ forloop.counter }}').addClass('without-after-element');
                             </script>
                         {% endif %}
                         <div class="w-100 d-flex flex-row justify-content-between">
-                        <div class="d-flex">
-                            <span class="d-flex text-20px-regular">{{ forloop.counter }}.&nbsp;</span>
-                            <span class="d-flex text-20px-regular">{{ key }}</span>
-                        </div>
-                            <span class="d-none d-md-flex red_text_error noselect">{% if value.error %}Файл не распознан как
+                            <div class="d-flex">
+                                <span class="d-flex text-20px-regular">{{ forloop.counter }}.&nbsp;</span>
+                                <span class="d-flex text-20px-regular">{{ key }}</span>
+                            </div>
+                            <span class="d-none d-md-flex red_text_error noselect">{% if value.error %}Файл не распознан
+                                как
                                 PDF{% endif %}</span>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
                                                 <div class="d-flex text-20px-regular">Распознанные&nbspформаты</div>
                                                 <div class="d-flex flex-wrap" style='margin-top: 13px'>
                                                     {% for keey_size, count in value.items %}
-                                                        {% if keey_size != 'count_pages' and keey_size != 'pdf_unknown_size_file' and keey_size != 'len_pdf_unknown_size_file' and keey_size != 'list_pages' and keey_size != 'normal_pages' and keey_size != 'a4_count' and keey_size != 'error' %}
+                                                        {% if keey_size != 'count_pages' and keey_size != 'pdf_unknown_size_file' and keey_size != 'good_lists' and keey_size != 'len_pdf_unknown_size_file' and keey_size != 'list_pages' and keey_size != 'normal_pages' and keey_size != 'a4_count' and keey_size != 'error' %}
                                                             <div class="col-5 text-20px-light">{{ keey_size }}:&nbsp;<span
                                                                     class="text-20px-regular">{{ count }}</span></div>
                                                         {% endif %}
@@ -110,12 +110,35 @@
                                             <div class="text-20px-light">Количество форматов А4:&nbsp;<span
                                                     class="text-20px-regular">{{ value.a4_count }}</span></div>
                                         </div>
-                                        <div class="d-flex mt-3 div__button_info">
-                                            <button type="button" class="button_blue_details_outline"
+                                        <div class="d-flex flex-column mt-3 div__button_info">
+                                            <button type="button" class="d-flex button_blue_details_outline"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#detailFileInfo{{ forloop.counter }}">
                                                 Информация о листах
                                             </button>
+                                            {% comment %}
+                                            <button type="button" class="d-flex mt-3 button_blue_details_outline"
+                                                    data-ajax-name='{{ key }}'
+                                                    data-ajax-url="{% url 'get-blanc' %}"
+                                                    data-ajax-json ='{{ value.good_lists }}'
+                                                    onclick="downloadBlanc(this)">
+                                                Заявка на печать
+                                            </button>
+
+                                            <button type="button" class="d-flex button_blue_details_outline button_blue_details_outline_word"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#detailFileInfo{{ forloop.counter }}">
+                                                <i class="fa icon-pen-menu"></i>
+                                            </button>
+
+                                            <button type="button" class="d-flex mt-3 button_blue_details_outline"
+                                                    data-ajax-name='{{ key }}'
+                                                    data-ajax-url="{% url 'get-blanc' %}"
+                                                    data-ajax-json='{{ value.good_lists }}'
+                                                    onclick="sendFile(this)">
+                                                Заявка на печать
+                                            </button>
+                                            {% endcomment %}
                                         </div>
                                     </div>
 
@@ -173,13 +196,6 @@
                                                 </table>
                                             </div>
                                         </div>
-                                        {% comment %}
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
-                                                </button>
-                                                <button type="button" class="btn btn-primary">Save changes</button>
-                                            </div>
-                                        {% endcomment %}
                                     </div>
                                 </div>
                             </div>
@@ -190,7 +206,6 @@
         {% endfor %}
     </div>
 
-
     <div class="d-flex mt-5 w-100 mb-5">
         <button onclick="clearResult()" class="button_blue_clean_result">Очистить
             результат
@@ -200,16 +215,32 @@
 
 </div>
 
+
+<form method="POST" action="">
+    {% csrf_token %}
+    <input id="send_file" name="file" hidden>
+
+</form>
+
+
 <script>
     //Перемещение окна
     $('.modal-dialog').draggable({
         handle: ".modal-header"
     });
+    let allFiles = new DataTransfer()
 
     //Значение допуска печатаем в консоль для проверки
     $(function () {
         var cookieObjectValue = (document.cookie.match('(^|; )' + encodeURIComponent('clearance') + '=([^;]+)') || []).pop() || null;
         console.log(cookieObjectValue)
+        var fileInput = document.getElementById('id_file')
+        console.log('fileInput.files', fileInput.files)
+        for (let i = 0; i < fileInput.files.length; i++){
+            const file = fileInput.files[i]
+            allFiles.items.add(file)
+        }
+        console.log('allFiles.files', allFiles.files)
     })
 
 
@@ -238,5 +269,37 @@
         $('#clearance_info').animate({opacity: 1}, 400)
 
         status_calc = 0
+    }
+
+    function downloadBlanc(blancName) {
+        var name_file = $(blancName).attr("data-ajax-name")
+        var url_blanc = $(blancName).attr("data-ajax-url")
+        var data_ajax_json = $(blancName).attr("data-ajax-json")
+        console.log(blancName)
+        console.log(name_file)
+        console.log(url_blanc)
+        console.log(data_ajax_json)
+
+        $.ajax({
+            type: "GET",// формируем AJAX запрос
+            url: url_blanc,                    // подгружаем URL адрес для запроса
+            data: {
+                'file_name': name_file,
+                'json': data_ajax_json// добавляем objectID в query параметры GET запроса
+            },
+            success: function (data) {   // `data` результат выполнения  функции `load_contract`
+                console.log('Done')
+            }
+        })
+    }
+
+
+    function sendFile(el) {
+        var fileInput = document.getElementById('id_file')
+        console.log(fileInput.files)
+        console.log(allFiles.files)
+        console.log(el)
+        var name_file = $(el).attr("data-ajax-name")
+
     }
 </script>

@@ -237,6 +237,7 @@
                 dropZone.classList.remove(hoverClassName);
                 var fileInput = document.getElementById('id_file')
                 fileInput.files = e.dataTransfer.files;
+                console.log('fileInput', fileInput.files)
                 $('#form_send_file').submit();
             });
         }

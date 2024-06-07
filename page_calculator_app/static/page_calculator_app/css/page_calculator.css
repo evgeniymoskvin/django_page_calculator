@@ -496,13 +496,14 @@ html {
     /*background: rgb(174, 211, 242);*/
     background: white;
     /*padding: 8px;*/
+    justify-content: center;
     width: 280px;
     height: 44px;
     border: 1px solid rgb(108, 172, 228);
     border-radius: 8px;
     font-size: 20px;
     font-family: "Rosatom_regular", serif;
-    color: rgb(108, 172, 228);;
+    color: rgb(108, 172, 228);
     transition-duration: .15s;
     align-items: center;
     text-align: center;
@@ -518,6 +519,18 @@ html {
     box-shadow: 2px 4px 11px -3px rgba(2, 94, 161, 0.45);
 
 }
+
+
+.button_blue_details_outline_info{
+    border-radius: 8px 0 0 8px
+}
+
+.button_blue_details_outline_word{
+    width: 70px;
+    border-left: 0;
+    border-radius: 0 8px 8px 0;
+}
+
 
 .green_el {
     background-color: rgb(227, 243, 216);
@@ -707,4 +720,27 @@ row__color {
     text-align: center;
     font-size: 18px;
     font-family: "Rosatom_light", serif;
+}
+
+
+.fa {
+    position: relative;
+    display: table-cell;
+    width: 60px;
+    height: 50px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 20px;
+}
+
+.icon-pen-menu {
+    -webkit-mask-image: url("../icons/file-word-regular.svg");
+    mask-image: url("../icons/file-word-regular.svg");
+    background-color: rgb(108, 172, 228);
+    -webkit-mask-position: center center;
+    mask-position: center center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    height: 21px;
+    padding-left: 16px; /* Or size of icon + spacing */
 }
