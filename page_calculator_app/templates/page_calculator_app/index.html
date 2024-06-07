@@ -26,7 +26,8 @@
             </div>
         </div>
 
-        <div class="d-none w-100 justify-content-center" id="inside" style="opacity: 0" data-ajax-url="{% url 'get-answer' %}">
+        <div class="d-none w-100 justify-content-center" id="inside" style="opacity: 0"
+             data-ajax-url="{% url 'get-answer' %}">
 
         </div>
 
@@ -34,7 +35,8 @@
     </form>
 
     <div class="d-flex w-50 justify-content-start text-16px-light link_clearance_info dashed_text mt-3"
-         id="clearance_info" onclick="onClickСlearanceModal()"> Допуск подсчета&nbsp±<span id="clearance_info_index">{{ clearance }}</span>мм.
+         id="clearance_info" onclick="onClickСlearanceModal()"> Допуск подсчета&nbsp±<span
+            id="clearance_info_index">{{ clearance }}</span>мм.
     </div>
 
     <div id="loader-big" class=" w-100 align-items-center justify-content-center d-none flex-column">
@@ -47,11 +49,19 @@
         <span class="drop_file d-flex"></span>
     </div>
 
+
+    <form id="form_send_one_file" method="POST" action="">
+        {% csrf_token %}
+        <input type="file" multiple id="send_file" name="file" data-ajax-url="{% url 'print-send' %}" hidden>
+
+    </form>
+
+
     <!-- Модальное окно настройки допуска-->
     <div class="modal fade" id="clearanceModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-dialog_clearance">
             <div class="modal-content modal-content_clearance">
-                <div class="modal-header modal-header_clearance" >
+                <div class="modal-header modal-header_clearance">
                     <h5 class="modal-title text-24px-regular" style="cursor: context-menu">Настройка допуска</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
@@ -62,7 +72,8 @@
                         <div class="d-flex w-100 justify-content-between align-items-center">
                             <div class="d-flex text-20px-light">Укажите допуск в миллиметрах</div>
                             <div class="d-flex">
-                                <input class="input_text_clearance" type="text" min="0" max="30" id="input_clearance_value"
+                                <input class="input_text_clearance" type="text" min="0" max="30"
+                                       id="input_clearance_value"
                                        name="input_clearance_value"
                                        required
                                        maxlength="2" placeholder="{{ clearance }}"

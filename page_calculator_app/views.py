@@ -226,8 +226,8 @@ class GetBlancView(View):
         return HttpResponse(status=200)
 
 class PrintView(View):
-    def get (self, request):
-        print(f'request.GET: {request.GET}')
+    def post (self, request):
+        print(f'request.POST: {request.POST}')
         print(f'request.FILES: {request.FILES}')
         print(f'request.COOKIES: {request.COOKIES}')
 

@@ -138,7 +138,7 @@
                                                     onclick="sendFile(this)">
                                                 Заявка на печать
                                             </button>
-                                            {% endcomment %}
+{% endcomment %}
                                         </div>
                                     </div>
 
@@ -216,13 +216,6 @@
 </div>
 
 
-<form method="POST" action="">
-    {% csrf_token %}
-    <input id="send_file" name="file" hidden>
-
-</form>
-
-
 <script>
     //Перемещение окна
     $('.modal-dialog').draggable({
@@ -236,7 +229,7 @@
         console.log(cookieObjectValue)
         var fileInput = document.getElementById('id_file')
         console.log('fileInput.files', fileInput.files)
-        for (let i = 0; i < fileInput.files.length; i++){
+        for (let i = 0; i < fileInput.files.length; i++) {
             const file = fileInput.files[i]
             allFiles.items.add(file)
         }
@@ -299,7 +292,36 @@
         console.log(fileInput.files)
         console.log(allFiles.files)
         console.log(el)
+        var inputSendFile = document.getElementById('send_file')
+        let sendfile = new DataTransfer()
         var name_file = $(el).attr("data-ajax-name")
 
+        for (let i = 0; i < allFiles.files.length; i++) {
+            const file = fileInput.files[i]
+            if (file.name === name_file) {
+                sendfile.items.add(file)
+            }
+        }
+        console.log('sendfile', sendfile.files);
+        inputSendFile.files = sendfile.files;
+        console.log('inputSendFile', inputSendFile.files)
+
+
+        var url = $(inputSendFile).attr('data-ajax-url')
+        var data = new FormData($('#form_send_one_file').get(0))
+
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: data,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                console.log('done')
+            }
+
+        })
     }
 </script>
