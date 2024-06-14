@@ -255,6 +255,7 @@ class PrintView(View):
         last_task_in_db = CountTasksModel.objects.latest('id')
         last_task_in_db.count += 1
         last_task_in_db.save()
+        user_clearance = int(request.COOKIES['clearance'])
         new_task_to_print = PrintFilesModel(
             filename=request.FILES['file'].name,
             inventory_number_file=request.POST.get('input_inventory_number_file_value'),
@@ -268,7 +269,8 @@ class PrintView(View):
             inventory_number_request=f'{last_task_in_db.date_of_print}-{last_task_in_db.count}',
             type_task=2,
             count_pages=request.POST.get('temp_file_count_pages'),
-            a4_count_formats=int(request.POST.get('temp_file_a4_formats'))
+            a4_count_formats=int(request.POST.get('temp_file_a4_formats')),
+            user_clearance=user_clearance,
         )
         new_task_to_print.save()
 

@@ -23,6 +23,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('index_print', views.IndexView.as_view(), name='index_print'),
     path('ajax/get-list', views.get_tasks, name='get-tasks-print'),
-    path('ajax/get-info', views.GetInfoPrintTaskView.as_view(), name='get-info-task-print')
+    path('ajax/get-info', views.GetInfoPrintTaskView.as_view(), name='get-info-task-print'),
+    path('download_file/<int:pk>', views.DownloadFileView.as_view(), name='download_file'),
 
 ]

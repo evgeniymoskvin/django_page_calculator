@@ -454,6 +454,12 @@ html {
 
 }
 
+.modal-dialog_change-status {
+    width: 850px;
+    height: 225px;
+
+}
+
 .modal-dialog_details {
     width: 850px;
     height: 225px;
@@ -571,6 +577,14 @@ html {
 
 .border_right {
     border-right: 1px solid rgb(212, 213, 217);
+}
+
+.padding-left-30{
+    padding-left: 30px;
+}
+
+.text-align-end {
+    text-align: end;
 }
 
 .border_left {

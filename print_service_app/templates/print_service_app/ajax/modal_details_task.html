@@ -1,27 +1,273 @@
-<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog_send-file">
+<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog_change-status">
     <div class="modal-content modal-content_clearance">
         <div class="modal-header modal-header_clearance">
-            <h5 class="modal-title text-24px-regular" style="cursor: context-menu">{{ obj.inventory_number_file }}</h5>
+            <h5 class="modal-title text-24px-regular"
+                style="cursor: context-menu">{{ obj.inventory_number_request }}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal"
                     aria-label="Close"></button>
         </div>
-        <form id="form_send_one_file" method="POST" data-ajax-url="{% url 'get-tasks-print' %}">
+        <form id="form_send_status_file" method="POST" action="" data-ajax-url="{% url 'get-tasks-print' %}">
             {% csrf_token %}
             <div class="modal-body modal-body_clearance">
-                <div class="d-flex w-100 justify-content-between align-items-center flex-column">
+                <div class="d-flex row flex-row w-100">
+                    <!-- Левая часть-->
+                    <div class="d-flex col-7 justify-content-between align-items-center flex-column border_right">
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center">
+                            <div class="d-flex text-20px-light ">Инв. №</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.inventory_number_file }}</div>
+                        </div>
 
-                    {{ obj }}
-                    <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex text-20px-light">Автор</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.emp_upload_file.last_name }} {{ obj.emp_upload_file.first_name|slice:':1' }}.{{ obj.emp_upload_file.middle_name|slice:':1' }}.</div>
+                        </div>
+
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex text-20px-light">Отдел</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.emp_upload_file.department.command_number }}, {{ obj.emp_upload_file.department_group.group_dep_abr }}</div>
+                        </div>
+
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex text-20px-light">Заказ</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.order }}</div>
+                        </div>
+
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex text-20px-light">Объект</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.object }}</div>
+                        </div>
+
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex text-20px-light">Договор</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.contract.contract_name }}</div>
+                        </div>
+
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex text-20px-light">Допуск подсчета</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">±{{ obj.user_clearance }}мм.</div>
+                        </div>
+
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex text-20px-light">Количество листов</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.count_pages }}</div>
+                        </div>
+
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex text-20px-light">Количество форматов А4</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.a4_count_formats }}</div>
+                        </div>
+
+
+                    </div>
+                    <!-- Правая часть-->
+                    <div class="d-flex col-5 flex-column">
+                        <div class="d-flex text-20px-light">Распознанные форматы:</div>
+                        <div class="d-flex w-100 flex-row flex-wrap justify-content-between">
+                            {% if obj_info.a0 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A0:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a0 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a0x2 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A0x2:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a0x2 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a0x3 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A0x3:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a0x3 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a1 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A1:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a1 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a1x3 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A1x3:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a1x3 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a1x4 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A1x4:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a1x4 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a2 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A2:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a2 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a2x3 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A2x3:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a2x3 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a2x4 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A2x4:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a2x4 }}</div>
+                                </div>
+                            {% endif %}
+
+
+                            {% if obj_info.a2x5 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A2x5:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a2x5 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a3 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A3:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a3 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a3x3 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A3x3:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a3x3 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a3x4 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A3x4:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a3x4 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a3x5 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A3x5:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a3x5 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a3x6 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A3x6:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a3x6 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a3x7 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A3x7:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a3x7 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a4 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A4:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a4 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a4x3 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A4x3:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a4x3 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a4x4 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A4x4:</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a4x4 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a4x5 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A4x5:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a4x5 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a4x6 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A4x6:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a4x6 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a4x7 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A4x7:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a4x7 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a4x8 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A4x8:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a4x8 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if obj_info.a4x9 > 0 %}
+                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">A4x9:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ obj_info.a4x9 }}</div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex text-20px-light mt-2">Нераспознанные форматы:</div>
+                        <div class="d-flex w-100 flex-row flex-wrap justify-content-between">
+
+                            {% for key, value in bad_lists.items %}
+                                <div class="d-flex col-12 col-lg-5 flex-row justify-content-start align-items-center mt-2">
+                                    <div class="d-flex text-20px-regular">{{ key }}:&nbsp;</div>
+                                    <div class="d-flex text-20px-light">{{ value }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Нижняя чатсь окна -->
+
+                <div class="d-flex w-100 justify-content-center align-items-center flex-column mt-3">
+                    <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex text-20px-light">Файл</div>
+                        <div class="d-flex text-20px-light"><a href="{% url 'download_file' obj.id %}" download>Скачать</a></div>
+                    </div>
+                    <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex text-20px-light">Бланк</div>
+                        <div class="d-flex text-20px-light">Ссылка</div>
+                    </div>
+
+                    <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
                         <div class="d-flex text-20px-light">Статус</div>
+                        <div class="d-none" id="hidden-div-obj-info" data-ajax-change="{{ obj.id }}"></div>
+                        <input class="d-none" name='obj_id_for_change_status' id="obj_id_for_change_status">
                         <div class="d-flex">
                             <select class="form-select" style="min-width: 300px"
                                     name="TypeWorkTask_id"
                                     id="TypeWorkTask_id">
-                                <option value="0" selected>Не указан</option>
-                                <option value="1">Рабочая документация</option>
-                                <option value="2">Проектная документация</option>
-                                <option value="3">ОБИН</option>
-                                <option value="4">НИОКР</option>
+                                <option value="0">Аннулирован</option>
+                                <option value="1" selected>Актуален</option>
+                                <option value="2">Готов</option>
                             </select>
                         </div>
                     </div>
@@ -41,3 +287,21 @@
         </form>
     </div>
 </div>
+
+<script>
+    $('#form_send_status_file').submit(function (e) {
+        e.preventDefault()
+        document.getElementById('obj_id_for_change_status').value = $("#hidden-div-obj-info").attr("data-ajax-change")
+        var form = $(this)
+        var form_url = $("#detailModalWindow").attr("data-ajax-url")
+
+        $.ajax({
+            type: "POST",
+            url: form_url,
+            data: form.serialize(),
+            success: function (data) {
+                $('#detailModalWindow').modal('hide');
+            }
+        })
+    })
+</script>

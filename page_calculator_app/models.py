@@ -246,6 +246,7 @@ class PrintFilesModel(models.Model):
     type_task = models.IntegerField(verbose_name="Тип задачи", choices=TypeTask.choices, default=0)
     count_pages = models.IntegerField(verbose_name="Количество листов", null=True, blank=True, default=0)
     a4_count_formats = models.IntegerField(verbose_name="Количество форматов а4", null=True, blank=True, default=0)
+    user_clearance = models.IntegerField(verbose_name='Допуск подсчета у пользователя', null=True, blank=True, default=0)
 
     class Meta:
         verbose_name = _('файл на печать')
