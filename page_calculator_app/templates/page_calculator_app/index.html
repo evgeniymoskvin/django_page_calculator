@@ -49,12 +49,120 @@
         <span class="drop_file d-flex"></span>
     </div>
 
+    <!-- Модальное окно отправки файла-->
 
-    <form id="form_send_one_file" method="POST" action="">
-        {% csrf_token %}
-        <input type="file" multiple id="send_file" name="file" data-ajax-url="{% url 'print-send' %}" hidden>
+    <div class="modal fade" id="sendFileModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog_send-file">
+            <div class="modal-content modal-content_clearance">
+                <div class="modal-header modal-header_clearance">
+                    <h5 class="modal-title text-24px-regular" style="cursor: context-menu">Отправка на печать</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <form id="form_send_one_file" method="POST" data-ajax-url="{% url 'print-send' %}">
+                    {% csrf_token %}
+                    <div class="modal-body modal-body_clearance">
+                        <div class="d-flex w-100 justify-content-between align-items-center flex-column">
+                            <div class="d-flex flex-row">
+                                <input type="file" id="send_file" name="file"
+                                       data-ajax-url="{% url 'print-send' %}"
+                                       hidden>
+                                <div class="d-flex text-18px-bold" id="temp_file_name"></div>
+                                <input class="d-none" name='temp_file_json' id="temp_file_json" >
+                                <input class="d-none" name="temp_file_bad_json" id="temp_file_bad_json" >
+                                <input class="d-none" name="temp_file_count_pages" id="temp_file_count_pages">
+                                <input class="d-none" name="temp_file_a4_formats" id="temp_file_a4_formats">
+                            </div>
 
-    </form>
+                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                <div class="d-flex text-20px-light">Инв. №</div>
+                                <div class="d-flex">
+                                    <input class="input_text_clearance" type="text"
+                                           id="input_inventory_number_file_value"
+                                           name="input_inventory_number_file_value"
+                                           required
+                                           style="text-align: center; width: 300px">
+                                </div>
+                            </div>
+                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                <div class="d-flex text-20px-light">Заказ</div>
+                                <div class="d-flex">
+                                    <select class="form-select" style="min-width: 300px"
+                                            name="order_id"
+                                            id="order_id">
+                                        <option selected>№ заказа</option>
+                                        {% for obj in orders %}
+                                            <option value="{{ obj.id }}">{{ obj }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                <div class="d-flex text-20px-light">Объект</div>
+                                <div class="d-flex">
+                                    <select class="form-select" style="min-width: 300px"
+                                            name="object_id"
+                                            id="object_id" data-contracts-url="{% url 'get-contracts' %}">
+                                        <option selected>Объект</option>
+                                        {% for obj in objects %}
+                                            <option value="{{ obj.id }}">{{ obj }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                <div class="d-flex text-20px-light">Договор</div>
+                                <div class="d-flex">
+                                    <select class="form-select" style="width: 300px"
+                                            name="contract_id"
+                                            id="contract_id" disabled>
+                                        <option selected>Договор</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                <div class="d-flex text-20px-light">Тираж</div>
+                                <div class="d-flex">
+                                    <input class="input_text_clearance" type="text"
+                                           id="copy_count_value"
+                                           name="copy_count_value"
+                                           required
+                                           style="text-align: center; width: 300px">
+                                </div>
+                            </div>
+                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                <div class="d-flex text-20px-light">Вид документации</div>
+                                <div class="d-flex">
+                                    <select class="form-select" style="min-width: 300px"
+                                            name="TypeWorkTask_id"
+                                            id="TypeWorkTask_id">
+                                        <option value="0" selected>Не указан</option>
+                                        <option value="1">Рабочая документация</option>
+                                        <option value="2">Проектная документация</option>
+                                        <option value="3">ОБИН</option>
+                                        <option value="4">НИОКР</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer modal-footer_clearance justify-content-between">
+
+                        <button type="button" class="button_grey_clearance"
+                                data-bs-dismiss="modal"
+                                onclick="$('#sendFileModal').modal('hide');">Отмена
+                        </button>
+                        <button class="button_blue_clearance button_blue_clearance_send_file" type="submit">
+                            Отправить
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+    </div>
 
 
     <!-- Модальное окно настройки допуска-->
@@ -97,9 +205,63 @@
                 </form>
             </div>
         </div>
-
-
     </div>
+
+
+    <!-- Модальное окно успешной отправки-->
+    <div class="modal fade" id="good_send_modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog_clearance">
+            <div class="modal-content modal-content_clearance">
+                <div class="modal-header modal-header_clearance">
+                    <h5 class="modal-title text-24px-regular" style="cursor: context-menu">Файл отправлен</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body modal-body_clearance">
+                    <div class="d-flex w-100 justify-content-between align-items-center">
+                        <div class="d-flex text-20px-light">Файл отправлен</div>
+                    </div>
+                </div>
+                <div class="modal-footer modal-footer_clearance justify-content-center">
+
+                    <button class="button_blue_clearance"
+                            onclick="$('#good_send_modal').modal('hide');">
+                        Ок
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Модальное окно НЕ успешной отправки-->
+    <div class="modal fade" id="bad_send_modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog_clearance">
+            <div class="modal-content modal-content_clearance">
+                <div class="modal-header modal-header_clearance">
+                    <h5 class="modal-title text-24px-regular" style="cursor: context-menu">Файл не отправлен</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body modal-body_clearance">
+                    <div class="d-flex w-100 justify-content-between align-items-center">
+                        <div class="d-flex text-20px-light">Файл не отправлен</div>
+                    </div>
+                </div>
+                <div class="modal-footer modal-footer_clearance justify-content-center">
+
+                    <button class="button_blue_clearance"
+                            onclick="$('#bad_send_modal').modal('hide');">
+                        Ок
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
 
         function checkInput(el) {
@@ -300,6 +462,26 @@
                 }
             });
         })
+
+
+
+        $("#object_id").change(function () {
+        var url = $("#object_id").attr("data-contracts-url");
+        var objectId = $(this).val();  // получаем object ID из HTML input
+
+        $.ajax({                       // формируем AJAX запрос
+            url: url,                    // подгружаем URL адрес для запроса
+            data: {
+                'object': objectId       // добавляем objectID в query параметры GET запроса
+            },
+            success: function (data) {   // `data` результат выполнения  функции `load_contract`
+                console.log(data)
+                $("#contract_id").prop('disabled', false);
+                $("#contract_id").html(data);  // помещаем результат в выпадающее меню
+            }
+        });
+
+    });
 
     </script>
 {% endblock %}

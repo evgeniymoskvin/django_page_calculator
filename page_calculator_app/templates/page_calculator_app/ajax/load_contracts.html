@@ -1,0 +1,8 @@
+<select class="form-select" style="min-width: 300px"
+        name="object_id"
+        id="object_id" disabled>
+    <option selected>Договор</option>
+    {% for obj in contracts %}
+    <option value="{{ obj.id }}">{{ obj.contract_name }}</option>
+{% endfor %}
+</select>

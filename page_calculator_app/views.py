@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from .forms import UploadFileForm
-import time
+from .models import PrintFilesModel, EmployeeModel, OrdersModel, ObjectModel, ContractModel, CountTasksModel, \
+    ListsFileModel
+from .functions import check_date_in_db
 from django.http import HttpResponse
 import mimetypes
 from django.http import HttpResponse
 
 import json
+import os
 import ast
 
 import math
@@ -46,6 +49,15 @@ def handle_uploaded_file(f):
             destination.write(chunk)
 
 
+class StartPageView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            print(request.user)
+            return redirect('index')
+        else:
+            return redirect('login')
+
+
 class IndexView(View):
     def get(self, request):
         try:
@@ -53,8 +65,12 @@ class IndexView(View):
         except:
             clearance = 15
         form = UploadFileForm()
+        orders = OrdersModel.objects.get_queryset().order_by('order')
+        objects = ObjectModel.objects.get_queryset().order_by('object_name')
         content = {'form': form,
-                   'clearance': clearance}
+                   "orders": orders,
+                   'clearance': clearance,
+                   'objects': objects}
         return render(request, 'page_calculator_app/index.html', content)
 
 
@@ -211,8 +227,9 @@ class ChangeClearanceView(View):
         resp.set_cookie('clearance', clearance)
         return resp
 
+
 class GetBlancView(View):
-    def get (self, request):
+    def get(self, request):
         print(f'request.GET: {request.GET}')
         print(f'request.FILES: {request.FILES}')
         print(f'request.COOKIES: {request.COOKIES}')
@@ -225,10 +242,104 @@ class GetBlancView(View):
 
         return HttpResponse(status=200)
 
+
 class PrintView(View):
-    def post (self, request):
+    def post(self, request):
         print(f'request.POST: {request.POST}')
         print(f'request.FILES: {request.FILES}')
+        print(f'request.FILES: {request.FILES["file"]}')
         print(f'request.COOKIES: {request.COOKIES}')
 
+        # Формируем запись со счетчиком заявок в день
+        check_date_in_db()
+        last_task_in_db = CountTasksModel.objects.latest('id')
+        last_task_in_db.count += 1
+        last_task_in_db.save()
+        new_task_to_print = PrintFilesModel(
+            filename=request.FILES['file'].name,
+            inventory_number_file=request.POST.get('input_inventory_number_file_value'),
+            order_id=request.POST.get('order_id'),
+            object_id=request.POST.get('object_id'),
+            contract_id=request.POST.get('contract_id'),
+            file_to_print=request.FILES['file'],
+            copy_count=int(request.POST.get('copy_count_value')),
+            task_type_work=request.POST.get('TypeWorkTask_id'),
+            emp_upload_file_id=EmployeeModel.objects.get(user=request.user).id,
+            inventory_number_request=f'{last_task_in_db.date_of_print}-{last_task_in_db.count}',
+            type_task=2,
+            count_pages=request.POST.get('temp_file_count_pages'),
+            a4_count_formats=int(request.POST.get('temp_file_a4_formats'))
+        )
+        new_task_to_print.save()
+
+        # Создаем записи о листах
+        temp_file_json = request.POST['temp_file_json']
+        dict_temp_file_json = ast.literal_eval(temp_file_json)
+        temp_file_bad_json = request.POST['temp_file_bad_json']
+
+        print(dict_temp_file_json)
+
+        print_files_info = ListsFileModel()
+        print_files_info.print_file_id = new_task_to_print.id
+
+        if 'A0' in dict_temp_file_json:
+            print_files_info.a0 = dict_temp_file_json['A0']
+        if 'A0x2' in dict_temp_file_json:
+            print_files_info.a0x2 = dict_temp_file_json['A0x2']
+        if 'A0x3' in dict_temp_file_json:
+            print_files_info.a0x3 = dict_temp_file_json['A0x3']
+        if 'A1' in dict_temp_file_json:
+            print_files_info.a1 = dict_temp_file_json['A1']
+        if 'A1x3' in dict_temp_file_json:
+            print_files_info.a1x3 = dict_temp_file_json['A1x3']
+        if 'A1x4' in dict_temp_file_json:
+            print_files_info.a1x4 = dict_temp_file_json['A1x4']
+        if 'A2' in dict_temp_file_json:
+            print_files_info.a2 = dict_temp_file_json['A2']
+        if 'A2x3' in dict_temp_file_json:
+            print_files_info.a2x3 = dict_temp_file_json['A2x3']
+        if 'A2x4' in dict_temp_file_json:
+            print_files_info.a2x4 = dict_temp_file_json['A2x4']
+        if 'A2x5' in dict_temp_file_json:
+            print_files_info.a2x5 = dict_temp_file_json['A2x5']
+        if 'A3' in dict_temp_file_json:
+            print_files_info.a3 = dict_temp_file_json['A3']
+        if 'A3x3' in dict_temp_file_json:
+            print_files_info.a3x3 = dict_temp_file_json['A3x3']
+        if 'A3x4' in dict_temp_file_json:
+            print_files_info.a3x4 = dict_temp_file_json['A3x4']
+        if 'A3x5' in dict_temp_file_json:
+            print_files_info.a3x5 = dict_temp_file_json['A3x5']
+        if 'A3x6' in dict_temp_file_json:
+            print_files_info.a3x6 = dict_temp_file_json['A3x6']
+        if 'A3x7' in dict_temp_file_json:
+            print_files_info.a3x7 = dict_temp_file_json['A3x7']
+        if 'A4' in dict_temp_file_json:
+            print_files_info.a4 = dict_temp_file_json['A4']
+        if 'A4x3' in dict_temp_file_json:
+            print_files_info.a4x3 = dict_temp_file_json['A4x3']
+        if 'A4x4' in dict_temp_file_json:
+            print_files_info.a4x4 = dict_temp_file_json['A4x4']
+        if 'A4x5' in dict_temp_file_json:
+            print_files_info.a4x5 = dict_temp_file_json['A4x5']
+        if 'A4x6' in dict_temp_file_json:
+            print_files_info.a4x6 = dict_temp_file_json['A4x6']
+        if 'A4x7' in dict_temp_file_json:
+            print_files_info.a4x7 = dict_temp_file_json['A4x7']
+        if 'A4x8' in dict_temp_file_json:
+            print_files_info.a4x8 = dict_temp_file_json['A4x8']
+        if 'A4x9' in dict_temp_file_json:
+            print_files_info.a4x9 = dict_temp_file_json['A4x9']
+        print_files_info.other_pages = temp_file_bad_json
+        print_files_info.save()
+
         return HttpResponse(status=200)
+
+
+def get_contracts(request):
+    print(request.GET)
+    object_id = int(request.GET.get('object'))
+    contracts = ContractModel.objects.get_queryset().filter(contract_object_id=object_id).filter(show=True).order_by(
+        'contract_name')
+    content = {'contracts': contracts}
+    return render(request, 'page_calculator_app/ajax/load_contracts.html', content)

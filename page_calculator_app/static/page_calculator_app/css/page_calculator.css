@@ -413,6 +413,15 @@ html {
     transition-duration: .15s;
 }
 
+.button_blue_clearance_send_file {
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
 .button_blue_clearance:hover {
     box-shadow: 2px 4px 11px -3px rgba(2, 94, 161, 0.45);
 }
@@ -435,6 +444,12 @@ html {
 
 .modal-dialog_clearance {
     width: 450px;
+    height: 225px;
+
+}
+
+.modal-dialog_send-file {
+    width: 600px;
     height: 225px;
 
 }
@@ -521,11 +536,11 @@ html {
 }
 
 
-.button_blue_details_outline_info{
+.button_blue_details_outline_info {
     border-radius: 8px 0 0 8px
 }
 
-.button_blue_details_outline_word{
+.button_blue_details_outline_word {
     width: 70px;
     border-left: 0;
     border-radius: 0 8px 8px 0;
@@ -744,3 +759,16 @@ row__color {
     height: 21px;
     padding-left: 16px; /* Or size of icon + spacing */
 }
+
+/*.form-select-print {*/
+/*    border: 1px solid rgb(108, 172, 228);*/
+/*    border-radius: 8px;*/
+/*    !*box-shadow: 2px 4px 11px -3px rgba(2, 94, 161, 0.45);*!*/
+/*    font-size: 20px;*/
+/*    font-family: "Rosatom_regular", serif;*/
+/*}*/
+
+/*.form-select-print option {*/
+/*    font-size: 20px;*/
+/*    font-family: "Rosatom_regular", serif;*/
+/*}*/

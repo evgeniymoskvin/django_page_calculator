@@ -1,8 +1,7 @@
-"""
-URL configuration for django_page_calculator project.
+"""ToDo_project URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.2/topics/http/urls/
+    https://docs.djangoproject.com/en/4.0/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -17,13 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
+from django.contrib.auth.views import LoginView, LogoutView
 
 urlpatterns = [
-    path('', views.StartPageView.as_view(), name='start'),
-    path('index', views.IndexView.as_view(), name='index'),
-    path('ajax/answer', views.GetAnswerView.as_view(), name='get-answer'),
-    path('ajax/change-clearance', views.ChangeClearanceView.as_view(), name='change-clearance'),
-    path('ajax/get-blanc', views.GetBlancView.as_view(), name='get-blanc'),
-    path('ajax/print-send', views.PrintView.as_view(), name='print-send'),
-    path('ajax/get-contracts', views.get_contracts, name='get-contracts'),
-]
+    path('login/', views.UserLoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(),  name='logout'),
+    path('signup/', views.SignUpView.as_view(), name='signup')
+    ]

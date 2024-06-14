@@ -2346,6 +2346,7 @@ textarea.form-control-lg {
 
 .form-select {
     display: block;
+    min-height: 45px;
     width: 100%;
     padding: .375rem 2.25rem .375rem .75rem;
     -moz-padding-start: calc(0.75rem - 3px);
@@ -2358,12 +2359,14 @@ textarea.form-control-lg {
     background-repeat: no-repeat;
     background-position: right .75rem center;
     background-size: 16px 12px;
-    border: 1px solid #ced4da;
-    border-radius: .25rem;
+    border: 1px solid rgb(108, 172, 228);
+    border-radius: 8px;
+    /*box-shadow: 2px 4px 11px -3px rgba(2, 94, 161, 0.45);*/
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
     -webkit-appearance: none;
     -moz-appearance: none;
-    appearance: none
+    appearance: none;
+
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -130,15 +130,19 @@
                                                     data-bs-target="#detailFileInfo{{ forloop.counter }}">
                                                 <i class="fa icon-pen-menu"></i>
                                             </button>
-
-                                            <button type="button" class="d-flex mt-3 button_blue_details_outline"
-                                                    data-ajax-name='{{ key }}'
-                                                    data-ajax-url="{% url 'get-blanc' %}"
-                                                    data-ajax-json='{{ value.good_lists }}'
-                                                    onclick="sendFile(this)">
-                                                Заявка на печать
-                                            </button>
 {% endcomment %}
+                                            {% if user.is_authenticated %}
+                                                <button type="button" class="d-flex mt-3 button_blue_details_outline"
+                                                        data-ajax-name='{{ key }}'
+                                                        data-ajax-url="{% url 'get-blanc' %}"
+                                                        data-ajax-count-pages = "{{ value.count_pages }}"
+                                                        data-ajax-json='{{ value.good_lists }}'
+                                                        data-ajax-a4formats='{{ value.a4_count }}'
+                                                        data-ajax-bad-json='{{ value.pdf_unknown_size_file }}'
+                                                        onclick="sendFile(this)">
+                                                    Заявка на печать
+                                                </button>
+                                            {% endif %}
                                         </div>
                                     </div>
 
@@ -288,40 +292,62 @@
 
 
     function sendFile(el) {
-        var fileInput = document.getElementById('id_file')
-        console.log(fileInput.files)
-        console.log(allFiles.files)
-        console.log(el)
-        var inputSendFile = document.getElementById('send_file')
-        let sendfile = new DataTransfer()
-        var name_file = $(el).attr("data-ajax-name")
+        document.getElementById('temp_file_name').innerText = $(el).attr("data-ajax-name")
+        document.getElementById('temp_file_json').value = $(el).attr("data-ajax-json")
+        document.getElementById('temp_file_bad_json').value = $(el).attr("data-ajax-bad-json")
+        document.getElementById('temp_file_count_pages').value = $(el).attr("data-ajax-count-pages")
+        document.getElementById('temp_file_a4_formats').value = $(el).attr("data-ajax-a4formats")
+        {#$('#temp_file_name').innerText()#}
+        $('#sendFileModal').modal('show');
 
-        for (let i = 0; i < allFiles.files.length; i++) {
-            const file = fileInput.files[i]
-            if (file.name === name_file) {
-                sendfile.items.add(file)
+    }
+
+    $('#form_send_one_file').submit(function (e) {
+            e.preventDefault()
+            {
+                var fileInput = document.getElementById('id_file')
+                console.log(fileInput.files)
+                console.log(allFiles.files)
+                {#console.log(el)#}
+                var inputSendFile = document.getElementById('send_file')
+                let sendfile = new DataTransfer()
+                var name_file = $('#temp_file_name').text()
+                console.log('name_file', name_file)
+
+                for (let i = 0; i < allFiles.files.length; i++) {
+                    const file = fileInput.files[i]
+                    if (file.name === name_file) {
+                        sendfile.items.add(file)
+                    }
+                }
+                inputSendFile.files = sendfile.files
+                console.log('sendfile', sendfile.files);
+                console.log('inputSendFile', inputSendFile.files)
+
+                var url = $(inputSendFile).attr('data-ajax-url')
+                var data = new FormData($('#form_send_one_file').get(0))
+
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: data,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        console.log('done')
+                        $('#sendFileModal').modal('hide');
+                        $('#good_send_modal').modal('show');
+                    },
+                    error: function () {
+                        $('#sendFileModal').modal('hide');
+                        $('#bad_send_modal').modal('show');
+                    }
+                })
+
+
             }
         }
-        console.log('sendfile', sendfile.files);
-        inputSendFile.files = sendfile.files;
-        console.log('inputSendFile', inputSendFile.files)
-
-
-        var url = $(inputSendFile).attr('data-ajax-url')
-        var data = new FormData($('#form_send_one_file').get(0))
-
-
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: data,
-            cache: false,
-            processData: false,
-            contentType: false,
-            success: function (data) {
-                console.log('done')
-            }
-
-        })
-    }
+    )
 </script>

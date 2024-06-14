@@ -16,13 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from . import views
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-                  path('admin/', admin.site.urls),
-                  path('', include('page_calculator_app.urls')),
-                  path('', include('print_service_app.urls')),
-                  path('', include('login.urls'))
-              ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL,
-                                                                                           document_root=settings.MEDIA_ROOT)
+    path('index_print', views.IndexView.as_view(), name='index_print'),
+    path('ajax/get-list', views.get_tasks, name='get-tasks-print'),
+    path('ajax/get-info', views.GetInfoPrintTaskView.as_view(), name='get-info-task-print')
+
+]

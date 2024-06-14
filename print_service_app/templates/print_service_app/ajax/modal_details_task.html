@@ -1,0 +1,43 @@
+<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog_send-file">
+    <div class="modal-content modal-content_clearance">
+        <div class="modal-header modal-header_clearance">
+            <h5 class="modal-title text-24px-regular" style="cursor: context-menu">{{ obj.inventory_number_file }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+        </div>
+        <form id="form_send_one_file" method="POST" data-ajax-url="{% url 'get-tasks-print' %}">
+            {% csrf_token %}
+            <div class="modal-body modal-body_clearance">
+                <div class="d-flex w-100 justify-content-between align-items-center flex-column">
+
+                    {{ obj }}
+                    <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex text-20px-light">Статус</div>
+                        <div class="d-flex">
+                            <select class="form-select" style="min-width: 300px"
+                                    name="TypeWorkTask_id"
+                                    id="TypeWorkTask_id">
+                                <option value="0" selected>Не указан</option>
+                                <option value="1">Рабочая документация</option>
+                                <option value="2">Проектная документация</option>
+                                <option value="3">ОБИН</option>
+                                <option value="4">НИОКР</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer modal-footer_clearance justify-content-between">
+
+                <button type="button" class="button_grey_clearance"
+                        data-bs-dismiss="modal"
+                        onclick="$('#sendFileModal').modal('hide');">Отмена
+                </button>
+                <button class="button_blue_clearance button_blue_clearance_send_file" type="submit">
+                    Отправить
+                </button>
+
+            </div>
+        </form>
+    </div>
+</div>
