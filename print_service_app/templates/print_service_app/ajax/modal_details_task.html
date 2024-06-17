@@ -34,12 +34,19 @@
 
                         <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
                             <div class="d-flex text-20px-light">Объект</div>
-                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.object }}</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end"
+                                 data-toggle="tooltip" data-bs-placement="bottom"
+                                 rel="txtTooltip" data-bs-html="true"
+                                 title="{{ obj.object }}">
+                                {{ obj.object|slice:':50' }}</div>
                         </div>
 
                         <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
                             <div class="d-flex text-20px-light">Договор</div>
-                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.contract.contract_name }}</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end"
+                                 data-toggle="tooltip" data-bs-placement="bottom"
+                                 rel="txtTooltip" data-bs-html="true"
+                                 title="{{ obj.contract.contract_name }}">{{ obj.contract.contract_name|slice:':50' }}</div>
                         </div>
 
                         <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
@@ -250,7 +257,8 @@
                 <div class="d-flex w-100 justify-content-center align-items-center flex-column mt-3">
                     <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
                         <div class="d-flex text-20px-light">Файл</div>
-                        <div class="d-flex text-20px-light"><a href="{% url 'download_file' obj.id %}" download>Скачать</a></div>
+                        <div class="d-flex text-20px-light"><a href="{% url 'download_file' obj.id %}"
+                                                               download>Скачать</a></div>
                     </div>
                     <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
                         <div class="d-flex text-20px-light">Бланк</div>
@@ -265,9 +273,26 @@
                             <select class="form-select" style="min-width: 300px"
                                     name="TypeWorkTask_id"
                                     id="TypeWorkTask_id">
-                                <option value="0">Аннулирован</option>
-                                <option value="1" selected>Актуален</option>
-                                <option value="2">Готов</option>
+                                {% if obj.status == 0 %}
+                                    <option value="0" selected>Аннулирован</option>
+                                {% else %}
+                                    <option value="0">Аннулирован</option>
+                                {% endif %}
+                                {% if obj.status == 1 %}
+                                    <option value="1" selected>Актуален</option>
+                                {% else %}
+                                    <option value="1">Актуален</option>
+                                {% endif %}
+                                {% if obj.status == 2 %}
+                                    <option value="2" selected>В работе</option>
+                                {% else %}
+                                    <option value="2">В работе</option>
+                                {% endif %}
+                                {% if obj.status == 3 %}
+                                    <option value="3" selected>Готов</option>
+                                {% else %}
+                                    <option value="3">Готов</option>
+                                {% endif %}
                             </select>
                         </div>
                     </div>
@@ -289,6 +314,12 @@
 </div>
 
 <script>
+
+    $(function () {
+        // инициализации подсказок для всех элементов на странице, имеющих атрибут data-toggle="tooltip"
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
     $('#form_send_status_file').submit(function (e) {
         e.preventDefault()
         document.getElementById('obj_id_for_change_status').value = $("#hidden-div-obj-info").attr("data-ajax-change")

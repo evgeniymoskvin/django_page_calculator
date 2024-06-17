@@ -1,0 +1,42 @@
+{% extends "print_service_app/base.html" %}
+{% load static %}
+{% block title %}
+    Сервис печати
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex w-100 flex-column align-items-center justify-content-center" id="display_div" data-ajax-url="{% url 'get-tasks-print' %}">
+        <div class="d-flex w-100 align-items-center justify-content-center text-36px-bold mt-5">
+            Ошибка доступа
+        </div>
+        <div class="d-flex w-100 align-items-center justify-content-center text-16px-light link_clearance_info dashed_text mt-2"
+             id="clearance_info" onclick="window.location.replace('{% url 'index' %}')">
+            На главную
+        </div>
+    </div>
+
+
+
+    <!-- Модальное окно информации о заявка-->
+    <div class="modal fade" id="detailModalWindow" data-ajax-url="{% url 'get-info-task-print' %}" tabindex="-1">
+
+    </div>
+
+
+
+
+{% endblock %}
+
+
+/*href_site = window.location.href
+href_ws = href_site + 'ws/some_url/'
+console.log(href_ws)
+var socket = new WebSocket('ws://localhost:8003/ws/some_url/')
+socket.onmessage = function (event){
+var data = JSON.parse(event.data)
+console.log(data)
+document.getElementById('display_div').innerText = data.message
+document.getElementById('display_div2').innerText = data.orm_result.data
+}
+*/
+

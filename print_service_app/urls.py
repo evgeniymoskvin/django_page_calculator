@@ -21,7 +21,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('index_print', views.IndexView.as_view(), name='index_print'),
+    path('new-tasks-to-print', views.IndexView.as_view(), name='new-tasks'),
+    path('all-tasks', views.AllTaskView.as_view(), name='all-tasks'),
     path('ajax/get-list', views.get_tasks, name='get-tasks-print'),
     path('ajax/get-info', views.GetInfoPrintTaskView.as_view(), name='get-info-task-print'),
     path('download_file/<int:pk>', views.DownloadFileView.as_view(), name='download_file'),

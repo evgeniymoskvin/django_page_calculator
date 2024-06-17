@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from .forms import UploadFileForm
 from .models import PrintFilesModel, EmployeeModel, OrdersModel, ObjectModel, ContractModel, CountTasksModel, \
-    ListsFileModel
+    ListsFileModel, PrintPagePermissionModel
 from .functions import check_date_in_db
 from django.http import HttpResponse
 import mimetypes
@@ -64,13 +64,19 @@ class IndexView(View):
             clearance = int(request.COOKIES['clearance'])
         except:
             clearance = 15
+        try:
+            user = EmployeeModel.objects.get(user=request.user)
+            user_permission = PrintPagePermissionModel.objects.get(emp=user)
+        except:
+            user_permission = False
         form = UploadFileForm()
         orders = OrdersModel.objects.get_queryset().order_by('order')
         objects = ObjectModel.objects.get_queryset().order_by('object_name')
         content = {'form': form,
                    "orders": orders,
                    'clearance': clearance,
-                   'objects': objects}
+                   'objects': objects,
+                   'user_permission': user_permission}
         return render(request, 'page_calculator_app/index.html', content)
 
 

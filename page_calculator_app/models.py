@@ -226,7 +226,8 @@ class PrintFilesModel(models.Model):
         """Статус кода Kks"""
         CANCELED = 0, _('Аннулирован')
         ACTUAL = 1, _('Актуален')
-        DONE = 2, _('Готов')
+        WORK = 2, _('В работе')
+        DONE = 3, _('Готов')
 
     filename = models.CharField(verbose_name="Название файла", max_length=150)
     inventory_number_file = models.CharField(verbose_name="Инвентарный номер", max_length=150)

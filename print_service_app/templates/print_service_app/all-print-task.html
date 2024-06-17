@@ -1,0 +1,100 @@
+{% extends "print_service_app/base.html" %}
+{% load static %}
+{% block title %}
+    Сервис печати
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex w-100" id="display_div">
+        <div style="width: 100%">
+            <div class="text-36px-bold mt-5">
+                Все заявки на печать
+            </div>
+            <div class="mt-3">
+                <table id="all-kks-codes" class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th class="th_tables" scope="col">#</th>
+                        <th class="th_tables" scope="col" style="text-align: center">№ заявки</th>
+                        <th class="th_tables" scope="col" style="text-align: center">Автор</th>
+                        <th class="th_tables" scope="col" style="text-align: center">Заказ</th>
+                        <th class="th_tables" scope="col" style="text-align: center">Количество листов</th>
+                        <th class="th_tables" scope="col" style="text-align: center">Файл</th>
+                        <th class="th_tables" scope="col" style="text-align: center">Статус</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for obj in all_tasks %}
+                        <tr class="tr-tables" style="cursor: context-menu" onclick="openModalWindow({{ obj.id }})">
+                            <th class="th_tables" scope="row" style="width: 30px">{{ forloop.counter }}</th>
+                            <td class="td_tables" style="width: 150px; text-align: center">
+                                {{ obj.inventory_number_request }}</td>
+                            <td class="td_tables" style="width: 150px; text-align: center">
+                                {{ obj.emp_upload_file.last_name }} {{ obj.emp_upload_file.first_name|slice:':1' }}.{{ obj.emp_upload_file.middle_name|slice:':1' }}.
+                            </td>
+                            <td class="td_tables" style="width: 150px; text-align: center">
+                                {{ obj.order }}
+                            </td>
+                            <td class="td_tables" style="width: 150px; text-align: center">
+                                {{ obj.count_pages }}
+                            </td>
+                            <td class="td_tables" style="width: 150px; text-align: center">
+                                {{ obj.file_to_print }}
+                            </td>
+                            <td class="td_tables" style="width: 150px; text-align: center">
+                                {{ obj.get_status_display }}
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Модальное окно информации о заявка-->
+    <div class="modal fade" id="detailModalWindow" data-ajax-url="{% url 'get-info-task-print' %}" tabindex="-1">
+
+    </div>
+
+
+    <script>
+
+
+        function openModalWindow(val) {
+            var url = $("#detailModalWindow").attr("data-ajax-url")
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    'object': val
+                },
+                success: function (data) {
+                    $("#detailModalWindow").html(data)
+                    console.log(val)
+                    $('#detailModalWindow').modal('show');
+                }
+            })
+        }
+    </script>
+
+
+{% endblock %}
+
+
+/*href_site = window.location.href
+href_ws = href_site + 'ws/some_url/'
+console.log(href_ws)
+var socket = new WebSocket('ws://localhost:8003/ws/some_url/')
+socket.onmessage = function (event){
+var data = JSON.parse(event.data)
+console.log(data)
+document.getElementById('display_div').innerText = data.message
+document.getElementById('display_div2').innerText = data.orm_result.data
+}
+*/
+

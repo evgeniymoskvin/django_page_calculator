@@ -1,0 +1,85 @@
+{% load static %}
+{% load print_tags %}
+
+
+<div>
+
+    <nav class="main-menu">
+        <ul>
+            <li>
+                <a href="{% url 'index' %}" style="vertical-align: top">
+
+                    <i class="fa">
+                        <div class="icon-home"></div>
+                    </i>
+
+                    <span class="nav-text text-menu-sidebar" style="text-transform: uppercase">
+                           Главная страница
+                        </span>
+                </a>
+
+            </li>
+
+
+            <li>
+                <a href="">
+                    <i class="fa">
+                        <div class="icon-angle-up-solid-menu"></div>
+                    </i>
+                    <span class="nav-text text-menu-sidebar" style="text-transform: uppercase">
+                            Заявки на печать
+                        </span>
+                </a>
+            </li>
+
+            {#            <li>#}
+            {#                <a href="">#}
+            {#                    <i class="fa">#}
+            {#                        <div class="icon-angles-up-solid-menu"></div>#}
+            {#                    </i>#}
+            {#                    <span class="nav-text text-menu-sidebar" style="text-transform: uppercase">#}
+            {#                           Все kks коды#}
+            {#                        </span>#}
+            {#                </a>#}
+            {#            </li>#}
+        </ul>
+
+
+        <ul class="logout">
+            {% if user_permission %}
+            <li>
+                <a href="{% url 'new-tasks' %}">
+                    <i class="fa">
+                        <div class="icon-gear-menu"></div>
+                    </i>
+                    <span class="nav-text text-menu-sidebar" style="text-transform: uppercase">
+                            Типография
+                        </span>
+                </a>
+            </li>
+            {% endif %}
+            <li>
+                <a href="#">
+                    <i class="fa">
+                        <div class="icon-user-menu"></div>
+                    </i>
+                    <span class="nav-text text-menu-sidebar" style="text-transform: uppercase">
+                            {% get_short_name user.id %}
+                        </span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'logout' %}">
+                    <i class="fa">
+                        <div class="icon-power-off-menu"></div>
+                    </i>
+                    <span class="nav-text text-menu-sidebar" style="text-transform: uppercase">
+                            Выйти
+                        </span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <script type="text/javascript">
+    </script>
+</div>
