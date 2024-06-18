@@ -11,15 +11,16 @@
                 Все заявки на печать
             </div>
             <div class="mt-3">
-                <table id="all-kks-codes" class="table table-hover">
+                <table id="all-print-tasks" class="table table-hover">
                     <thead>
                     <tr>
                         <th class="th_tables" scope="col">#</th>
                         <th class="th_tables" scope="col" style="text-align: center">№ заявки</th>
                         <th class="th_tables" scope="col" style="text-align: center">Автор</th>
                         <th class="th_tables" scope="col" style="text-align: center">Заказ</th>
-                        <th class="th_tables" scope="col" style="text-align: center">Количество листов</th>
-                        <th class="th_tables" scope="col" style="text-align: center">Файл</th>
+                        <th class="th_tables" scope="col" style="text-align: center">Объект</th>
+                        <th class="th_tables" scope="col" style="text-align: center">Кол-во<br>листов</th>
+                        <th class="th_tables" scope="col" style="text-align: center">Дата</th>
                         <th class="th_tables" scope="col" style="text-align: center">Статус</th>
                     </tr>
                     </thead>
@@ -28,21 +29,32 @@
                     {% for obj in all_tasks %}
                         <tr class="tr-tables" style="cursor: context-menu" onclick="openModalWindow({{ obj.id }})">
                             <th class="th_tables" scope="row" style="width: 30px">{{ forloop.counter }}</th>
-                            <td class="td_tables" style="width: 150px; text-align: center">
+                            <td class="td_tables" style="width: 100px; text-align: center">
                                 {{ obj.inventory_number_request }}</td>
                             <td class="td_tables" style="width: 150px; text-align: center">
                                 {{ obj.emp_upload_file.last_name }} {{ obj.emp_upload_file.first_name|slice:':1' }}.{{ obj.emp_upload_file.middle_name|slice:':1' }}.
                             </td>
-                            <td class="td_tables" style="width: 150px; text-align: center">
+                            <td class="td_tables" style="width: 75px; text-align: center">
                                 {{ obj.order }}
+                            </td>
+                            <td class="td_tables" style="width: 250px; text-align: center"
+                                data-toggle="tooltip" data-bs-placement="bottom"
+                                rel="txtTooltip" data-bs-html="true"
+                                title="{{ obj.object }}">
+                                {{ obj.object|slice:':50' }}
                             </td>
                             <td class="td_tables" style="width: 150px; text-align: center">
                                 {{ obj.count_pages }}
                             </td>
                             <td class="td_tables" style="width: 150px; text-align: center">
-                                {{ obj.file_to_print }}
+                                {{ obj.add_file_date }}
                             </td>
-                            <td class="td_tables" style="width: 150px; text-align: center">
+                            <td class="td_tables" style="width: 150px; text-align: center"
+                                    {% if obj.status == 2 or obj.status == 3 %}
+                                data-toggle="tooltip" data-bs-placement="bottom"
+                                rel="txtTooltip" data-bs-html="true"
+                                title="{{ obj.date_change_status }}"
+                                    {% endif %}>
                                 {{ obj.get_status_display }}
                             </td>
 
@@ -63,6 +75,65 @@
 
 
     <script>
+
+        $(document).ready(function () {
+            var table = $('#all-print-tasks').DataTable({
+                    {#order: [[1, 'asc']],#}
+                    dom:
+                    //"<'row'<'col-sm-12'tr>>",
+                    //"<'row'<'col-sm-12 col-md-2'l><'col-sm-2 col-md-2 col-xxl-4'B><'col-sm-12 col-md-6'f>>" +
+                        "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                        "<'row'<'col-sm-12'tr>>" +
+                        //"<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+                        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>" +
+                        "<'col-sm-2 col-md-2 col-xxl-2'B>",
+                    "language":
+                        {
+                            "lengthMenu": "_MENU_",
+                            "zeroRecords": "Записи не найдены",
+                            "info": "Показано с _START_ по _END_ из _TOTAL_ записей",
+                            "search": "Поиск",
+                            "paginate": {
+                                "next": "Следующая",
+                                "previous": "Предыдущая"
+                            }
+                        },
+                    "aLengthMenu": [[1, 5, 10, 15, 20, 25, -1], [1, 5, 10, 15, 20, 25, "Все"]],
+                    "iDisplayLength": 15,
+                    buttons: ['pdf', 'excel']
+                }
+            );
+            table.buttons().container().appendTo($('.col-sm-6:eq(0)', table.table().container()));
+            newStyleButton()
+            {#newStyleButton()#}
+            var all_forms = document.querySelectorAll(".form-select")
+            for (var i = 0; i < all_forms.length; i++) {
+                all_forms[i].style.minHeight = '0px';
+            }
+
+
+        });
+
+
+        function newStyleButton() {
+            const pdf_button = document.getElementsByClassName("btn btn-secondary buttons-pdf buttons-html5")[0]
+            console.log(pdf_button);
+            pdf_button.classList.remove("btn")
+            pdf_button.classList.remove("btn-secondary")
+            pdf_button.classList.remove("buttons-pdf")
+            pdf_button.classList.remove("buttons-html5")
+            pdf_button.textContent = ''
+            pdf_button.classList.add("pdf_button_icon")
+
+            const exel_button = document.getElementsByClassName("btn btn-secondary buttons-excel buttons-html5")[0]
+            console.log(exel_button);
+            exel_button.classList.remove("btn")
+            exel_button.classList.remove("btn-secondary")
+            exel_button.classList.remove("buttons-excel")
+            exel_button.classList.remove("buttons-html5")
+            exel_button.textContent = ''
+            exel_button.classList.add("exel_button_icon")
+        }
 
 
         function openModalWindow(val) {

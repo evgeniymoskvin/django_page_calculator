@@ -1,0 +1,25 @@
+
+
+<script>
+
+    $(function () {
+        // инициализации подсказок для всех элементов на странице, имеющих атрибут data-toggle="tooltip"
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+    $('#form_send_status_file').submit(function (e) {
+        e.preventDefault()
+        document.getElementById('obj_id_for_change_status').value = $("#hidden-div-obj-info").attr("data-ajax-change")
+        var form = $(this)
+        var form_url = $("#detailModalWindow").attr("data-ajax-url")
+
+        $.ajax({
+            type: "POST",
+            url: form_url,
+            data: form.serialize(),
+            success: function (data) {
+                $('#detailModalWindow').modal('hide');
+            }
+        })
+    })
+</script>

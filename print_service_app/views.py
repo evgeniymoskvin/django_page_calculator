@@ -37,7 +37,7 @@ class IndexView(View):
         content = {"tasks_to_print": "Идет загрузка",
                    "user_permission": user_permission}
         if user_permission:
-            return render(request, 'print_service_app/index.html', content)
+            return render(request, 'print_service_app/new-tasks.html', content)
         else:
             return render(request, 'print_service_app/permission-error.html', content)
 

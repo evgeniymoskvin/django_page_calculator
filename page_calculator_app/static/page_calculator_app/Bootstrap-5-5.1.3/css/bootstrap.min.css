@@ -2110,7 +2110,7 @@ progress {
     color: #212529;
     background-color: #fff;
     background-clip: padding-box;
-    border: 1px solid #ced4da;
+    border: 1px solid rgb(108, 172, 228);
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -5046,8 +5046,10 @@ textarea.form-control-lg {
 .page-item.active .page-link {
     z-index: 3;
     color: #fff;
-    background-color: #0d6efd;
-    border-color: #0d6efd
+    background-color: #6CACE4;
+    border-color: #6CACE4;
+    font-size: 16px;
+    font-family: "Rosatom_light", serif;
 }
 
 .page-item.disabled .page-link {

@@ -1,0 +1,166 @@
+{% extends "page_calculator_app/base.html" %}
+{% load static %}
+{% block title %}
+    Заявки на печать
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex w-100" id="display_div">
+        <div style="width: 100%">
+            <div class="text-36px-bold mt-5">
+                Заявки на печать - {{ emp }}
+            </div>
+            <div class="mt-3">
+                <table id="all-kks-codes" class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th class="th_tables" scope="col">#</th>
+                        <th class="th_tables" scope="col" style="text-align: center">№ заявки</th>
+                        <th class="th_tables" scope="col" style="text-align: center">Заказ</th>
+                        <th class="th_tables" scope="col" style="text-align: center">Объект</th>
+                        <th class="th_tables" scope="col" style="text-align: center">Кол-во<br>листов</th>
+                        <th class="th_tables" scope="col" style="text-align: center">Дата</th>
+                        <th class="th_tables" scope="col" style="text-align: center">Статус</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for obj in emp_tasks %}
+                        <tr class="tr-tables" style="cursor: context-menu" onclick="openMyModalWindow({{ obj.id }})">
+                            <th class="th_tables" scope="row" style="width: 30px">{{ forloop.counter }}</th>
+                            <td class="td_tables" style="width: 100px; text-align: center">
+                                {{ obj.inventory_number_request }}</td>
+                            <td class="td_tables" style="width: 75px; text-align: center">
+                                {{ obj.order }}
+                            </td>
+                            <td class="td_tables" style="width: 250px; text-align: center"
+                                data-toggle="tooltip" data-bs-placement="bottom"
+                                rel="txtTooltip" data-bs-html="true"
+                                title="{{ obj.object }}">
+                                {{ obj.object|slice:':50' }}
+                            </td>
+                            <td class="td_tables" style="width: 150px; text-align: center">
+                                {{ obj.count_pages }}
+                            </td>
+                            <td class="td_tables" style="width: 150px; text-align: center">
+                                {{ obj.add_file_date }}
+                            </td>
+                            <td class="td_tables" style="width: 150px; text-align: center"
+                                    {% if obj.status == 2 or obj.status == 3 %}
+                                data-toggle="tooltip" data-bs-placement="bottom"
+                                rel="txtTooltip" data-bs-html="true"
+                                title="{{ obj.date_change_status }}"
+                                    {% endif %}
+                            >
+                                {{ obj.get_status_display }}
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Модальное окно информации о заявка-->
+    <div class="modal fade" id="MyModalWindow" data-ajax-url="{% url 'get-my-task-info' %}" tabindex="-1">
+
+    </div>
+
+    <!-- Модальное окно отмены печати-->
+    <div class="modal fade" id="MyCancelTaskModalWindow" data-ajax-url="{% url 'cancel-task-print' %}" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog_change-status">
+            <div class="modal-content modal-content_clearance">
+                <div class="modal-header modal-header_clearance">
+                    <h5 class="modal-title text-24px-regular"
+                        style="cursor: context-menu">Уверены?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <form id="form_cancel_print_file" method="POST" action="" data-ajax-url="{% url 'cancel-task-print' %}">
+                    {% csrf_token %}
+                    <div class="modal-body modal-body_clearance">
+                        <div class="d-flex row flex-row w-100">
+                            <div class="d-flex text-18px-light">Отменить заявку на печать?</div>
+                            <input id="number_task" name="number_task">
+                        </div>
+                    </div>
+                    <div class="modal-footer modal-footer_clearance justify-content-between">
+                        <button type="button" class="button_grey_clearance"
+                                data-bs-dismiss="modal"
+                                onclick="$('#MyCancelTaskModalWindow').modal('hide');">Отмена
+                        </button>
+                        <button class="button_blue_clearance button_blue_clearance_cancel_file" type="submit">
+                            Отменить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        $('#form_cancel_print_file').submit(function (e) {
+                e.preventDefault()
+                var url = $('#MyCancelTaskModalWindow').attr('data-ajax-url')
+                var data = new FormData($('#form_cancel_print_file').get(0))
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: data,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        console.log('done')
+                        $('#MyCancelTaskModalWindow').modal('hide');
+                        {#$('#good_send_modal').modal('show');#}
+                    },
+                    error: function () {
+                        {#$('#sendFileModal').modal('hide');#}
+                        {#$('#bad_send_modal').modal('show');#}
+                    }
+                })
+            }
+        )
+
+
+        function openMyModalWindow(val) {
+            var url = $("#MyModalWindow").attr("data-ajax-url")
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    'object': val
+                },
+                success: function (data) {
+                    $("#MyModalWindow").html(data)
+                    console.log(val)
+                    $('#MyModalWindow').modal('show');
+                }
+            })
+        }
+    </script>
+
+
+{% endblock %}
+
+
+/*href_site = window.location.href
+href_ws = href_site + 'ws/some_url/'
+console.log(href_ws)
+var socket = new WebSocket('ws://localhost:8003/ws/some_url/')
+socket.onmessage = function (event){
+var data = JSON.parse(event.data)
+console.log(data)
+document.getElementById('display_div').innerText = data.message
+document.getElementById('display_div2').innerText = data.orm_result.data
+}
+*/
+

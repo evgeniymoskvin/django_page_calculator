@@ -413,6 +413,17 @@ html {
     transition-duration: .15s;
 }
 
+.button_blue_clearance:disabled {
+    border: rgb(212, 213, 217);
+    border-radius: 8px;
+    background: rgb(212, 213, 217);;
+}
+
+.button_blue_clearance:disabled:hover {
+    box-shadow: 2px 4px 11px -3px rgba(155, 168, 176, 0.45);
+}
+
+
 .button_blue_clearance_send_file {
     padding: 0;
     margin: 0;
@@ -422,6 +433,18 @@ html {
     justify-content: center;
 }
 
+.button_blue_clearance_cancel_file {
+    width: auto;
+    padding-left: 18px;
+    padding-right: 18px;
+    margin: 0;
+    cursor: pointer;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+
 .button_blue_clearance:hover {
     box-shadow: 2px 4px 11px -3px rgba(2, 94, 161, 0.45);
 }
@@ -429,7 +452,7 @@ html {
 .button_grey_clearance {
     width: 123px;
     height: 40px;
-    border: rgb(212, 213, 217);;
+    border: rgb(212, 213, 217);
     border-radius: 8px;
     background: rgb(212, 213, 217);;
     font-size: 20px;
@@ -579,7 +602,7 @@ html {
     border-right: 1px solid rgb(212, 213, 217);
 }
 
-.padding-left-30{
+.padding-left-30 {
     padding-left: 30px;
 }
 
@@ -786,3 +809,55 @@ row__color {
 /*    font-size: 20px;*/
 /*    font-family: "Rosatom_regular", serif;*/
 /*}*/
+
+
+.pdf_button_icon {
+    box-sizing: content-box;
+    /*padding: .25em .25em;*/
+    margin-top: 3px;
+    mask-image: url('../icons/filetype-pdf.svg');
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    background: #000;
+    background-position: center center;
+    background-repeat: no-repeat;
+    border: 0px;
+    height: 40px;
+    /*width: 10px;*/
+    padding-left: 16px; /* Or size of icon + spacing */
+    opacity: .5;
+    transition: all .1s ease-in-out;
+}
+
+.pdf_button_icon:hover {
+    background: #E35454;
+    text-decoration: none;
+    opacity: 1
+}
+
+
+.exel_button_icon {
+    box-sizing: content-box;
+    /*padding: .25em .25em;*/
+    margin-top: 3px;
+    mask-image: url('../icons/filetype-xls.svg');
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    background: #000;
+    background-position: center center;
+    background-repeat: no-repeat;
+    border: 0px;
+    height: 40px;
+    /*width: 10px;*/
+    padding-left: 16px; /* Or size of icon + spacing */
+    opacity: .5;
+    transition: all .1s ease-in-out;
+}
+
+.exel_button_icon:hover {
+    background: #5FAD05;
+    text-decoration: none;
+    opacity: 1
+}

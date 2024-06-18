@@ -254,7 +254,7 @@ class PrintFilesModel(models.Model):
         verbose_name_plural = _("файлы на печать")
 
     def __str__(self):
-        return f'{self.filename} | {self.status} | {self.add_file_date} ({self.date_change_status})'
+        return f'{self.inventory_number_request}: {self.filename} | {self.status} | {self.add_file_date} ({self.date_change_status})'
 
 
 class ListsFileModel(models.Model):
@@ -321,3 +321,4 @@ class CountTasksModel(models.Model):
 
     def __str__(self):
         return f'{self.date_of_print} - {self.count}'
+

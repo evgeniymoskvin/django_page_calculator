@@ -1,5 +1,8 @@
+import datetime
+
 from django.shortcuts import render, redirect
 from django.views import View
+from django.conf import settings
 from .forms import UploadFileForm
 from .models import PrintFilesModel, EmployeeModel, OrdersModel, ObjectModel, ContractModel, CountTasksModel, \
     ListsFileModel, PrintPagePermissionModel
@@ -344,6 +347,15 @@ class PrintView(View):
         return HttpResponse(status=200)
 
 
+class MyPrintTaskView(View):
+    def get(self, request):
+        emp = EmployeeModel.objects.get(user=request.user)
+        emp_tasks = PrintFilesModel.objects.get_queryset().filter(emp_upload_file=emp).order_by('-id')
+        content = {'emp': emp,
+                   'emp_tasks': emp_tasks}
+        return render(request, 'page_calculator_app/my-print-task.html', content)
+
+
 def get_contracts(request):
     print(request.GET)
     object_id = int(request.GET.get('object'))
@@ -351,3 +363,42 @@ def get_contracts(request):
         'contract_name')
     content = {'contracts': contracts}
     return render(request, 'page_calculator_app/ajax/load_contracts.html', content)
+
+
+class GetInfoMyTaskView(View):
+    def get(self, request):
+        obj_id = int(request.GET.get('object'))
+        obj = PrintFilesModel.objects.get(id=obj_id)
+        try:
+            obj_info = ListsFileModel.objects.get(print_file_id=obj.id)
+            bad_lists = obj_info.other_pages
+            dict_temp_file_json = ast.literal_eval(bad_lists)
+        except:
+            obj_info = None
+            dict_temp_file_json = {}
+
+        content = {'obj': obj,
+                   'obj_info': obj_info,
+                   'bad_lists': dict_temp_file_json}
+        return render(request, 'page_calculator_app/ajax/my_modal_details_task.html', content)
+
+class CancelMyTaskView(View):
+    def post(self, request):
+        print(request.POST)
+        cancel_print_task_id = request.POST['number_task']
+        cancel_print_task_obj = PrintFilesModel.objects.get(id=cancel_print_task_id)
+        cancel_print_task_obj.status = 0
+        cancel_print_task_obj.save()
+        return HttpResponse(status=200)
+
+
+class DeleteFileView(View):
+    def get(self, request, pk):
+        print(pk)
+        file_path_in_db = PrintFilesModel.objects.get(id=pk)
+        file_path = os.path.join(settings.MEDIA_ROOT, str(file_path_in_db.file_to_print))
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        file_path_in_db.file_to_print = None
+        file_path_in_db.save()
+        return HttpResponse(status=200)
