@@ -260,15 +260,13 @@
             </div>
         {% endif %}
         </div>
-        <div class="modal-footer modal-footer_clearance justify-content-center">
+        <div class="{% if obj.status != 1 %} d-none {% endif %}modal-footer modal-footer_clearance justify-content-center">
             {#                    <button type="button" class="button_grey_clearance"#}
             {#                            data-bs-dismiss="modal"#}
             {#                            onclick="$('#sendFileModal').modal('hide');">Отмена#}
             {#                    </button>#}
             <button class="button_blue_clearance button_blue_clearance_cancel_file" data-bs-dismiss="modal"
-                    onclick="ClickCancelTask()" type="submit"
-                    {% if obj.status != 1 %}disabled
-                    {% endif %}>
+                    onclick="ClickCancelTask()" type="submit">
                 Отменить печать
             </button>
         </div>

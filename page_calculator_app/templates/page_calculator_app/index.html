@@ -68,8 +68,8 @@
                                        data-ajax-url="{% url 'print-send' %}"
                                        hidden>
                                 <div class="d-flex text-18px-bold" id="temp_file_name"></div>
-                                <input class="d-none" name='temp_file_json' id="temp_file_json" >
-                                <input class="d-none" name="temp_file_bad_json" id="temp_file_bad_json" >
+                                <input class="d-none" name='temp_file_json' id="temp_file_json">
+                                <input class="d-none" name="temp_file_bad_json" id="temp_file_bad_json">
                                 <input class="d-none" name="temp_file_count_pages" id="temp_file_count_pages">
                                 <input class="d-none" name="temp_file_a4_formats" id="temp_file_a4_formats">
                             </div>
@@ -89,8 +89,9 @@
                                 <div class="d-flex">
                                     <select class="form-select" style="min-width: 300px"
                                             name="order_id"
-                                            id="order_id">
-                                        <option selected>№ заказа</option>
+                                            id="order_id"
+                                            required>
+                                        <option value="" selected>№ заказа</option>
                                         {% for obj in orders %}
                                             <option value="{{ obj.id }}">{{ obj }}</option>
                                         {% endfor %}
@@ -103,7 +104,7 @@
                                     <select class="form-select" style="min-width: 300px"
                                             name="object_id"
                                             id="object_id" data-contracts-url="{% url 'get-contracts' %}">
-                                        <option selected>Объект</option>
+                                        <option selected value="">Объект</option>
                                         {% for obj in objects %}
                                             <option value="{{ obj.id }}">{{ obj }}</option>
                                         {% endfor %}
@@ -121,7 +122,7 @@
                                 </div>
                             </div>
                             <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
-                                <div class="d-flex text-20px-light">Тираж</div>
+                                <div class="d-flex text-20px-light">Кол-во экземпляров</div>
                                 <div class="d-flex">
                                     <input class="input_text_clearance" type="text"
                                            id="copy_count_value"
@@ -141,6 +142,19 @@
                                         <option value="2">Проектная документация</option>
                                         <option value="3">ОБИН</option>
                                         <option value="4">НИОКР</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                <div class="d-flex text-20px-light">Фальцовка</div>
+                                <div class="d-flex">
+                                    <select class="form-select" style="min-width: 300px"
+                                            name="folding_id"
+                                            id="folding_id"
+                                            required>
+                                        <option value="" selected>Выберите</option>
+                                        <option value="0">Не требуется</option>
+                                        <option value="1">Требуется</option>
                                     </select>
                                 </div>
                             </div>
@@ -464,24 +478,23 @@
         })
 
 
-
         $("#object_id").change(function () {
-        var url = $("#object_id").attr("data-contracts-url");
-        var objectId = $(this).val();  // получаем object ID из HTML input
+            var url = $("#object_id").attr("data-contracts-url");
+            var objectId = $(this).val();  // получаем object ID из HTML input
 
-        $.ajax({                       // формируем AJAX запрос
-            url: url,                    // подгружаем URL адрес для запроса
-            data: {
-                'object': objectId       // добавляем objectID в query параметры GET запроса
-            },
-            success: function (data) {   // `data` результат выполнения  функции `load_contract`
-                console.log(data)
-                $("#contract_id").prop('disabled', false);
-                $("#contract_id").html(data);  // помещаем результат в выпадающее меню
-            }
+            $.ajax({                       // формируем AJAX запрос
+                url: url,                    // подгружаем URL адрес для запроса
+                data: {
+                    'object': objectId       // добавляем objectID в query параметры GET запроса
+                },
+                success: function (data) {   // `data` результат выполнения  функции `load_contract`
+                    console.log(data)
+                    $("#contract_id").prop('disabled', false);
+                    $("#contract_id").html(data);  // помещаем результат в выпадающее меню
+                }
+            });
+
         });
-
-    });
 
     </script>
 {% endblock %}

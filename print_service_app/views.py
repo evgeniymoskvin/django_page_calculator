@@ -8,12 +8,15 @@ from django.views import View
 from django.conf import settings
 from django.http import HttpResponse, Http404
 from django.utils.encoding import escape_uri_path
-
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
 import mimetypes
 import os.path
+
+from .tasks import celery_email_print_done
+
+from docxtpl import DocxTemplate
 
 from random import randint
 from page_calculator_app.models import PrintFilesModel, ListsFileModel, EmployeeModel, PrintPagePermissionModel
@@ -77,6 +80,9 @@ class GetInfoPrintTaskView(View):
         print_task_obj.status = int(request.POST['TypeWorkTask_id'])
         print_task_obj.date_change_status = datetime.datetime.now()
         print_task_obj.save()
+        # Отправка письма через Celery
+        # if int(request.POST['TypeWorkTask_id']) == 3:
+        #     celery_email_print_done(int(print_task_id))
         return HttpResponse(status=200)
 
 

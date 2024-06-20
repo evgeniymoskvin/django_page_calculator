@@ -18,6 +18,7 @@ import ast
 import math
 import PyPDF2
 
+# Словарь с размерами листов по ГОСТ
 PAGE_SIZE_STANDARD = {
     'A0': (841, 1189, 16),
     'A0x2': (1189, 1682, 32),
@@ -47,12 +48,17 @@ PAGE_SIZE_STANDARD = {
 
 
 def handle_uploaded_file(f):
+    """
+    Функция для загрузки файлов
+    """
     with open(f"{f.name}", "wb+") as destination:
         for chunk in f.chunks():
             destination.write(chunk)
 
 
 class StartPageView(View):
+    """Стартовая страница для редиректа на страницу авторизации"""
+
     def get(self, request):
         if request.user.is_authenticated:
             print(request.user)
@@ -62,19 +68,24 @@ class StartPageView(View):
 
 
 class IndexView(View):
+    """Главная страница"""
+
     def get(self, request):
+        # В случае если не установлен допуск размера, установить +-15мм
         try:
             clearance = int(request.COOKIES['clearance'])
         except:
             clearance = 15
+        # Проверка, есть ли у сотрудника права доступа к
         try:
             user = EmployeeModel.objects.get(user=request.user)
             user_permission = PrintPagePermissionModel.objects.get(emp=user)
         except:
             user_permission = False
-        form = UploadFileForm()
+        form = UploadFileForm()  # Форма выгрузки файла
+        # Данные для модального окна отправки файла на печать
         orders = OrdersModel.objects.get_queryset().order_by('order')
-        objects = ObjectModel.objects.get_queryset().order_by('object_name')
+        objects = ObjectModel.objects.get_queryset().filter(show=True).order_by('object_name')
         content = {'form': form,
                    "orders": orders,
                    'clearance': clearance,
@@ -85,7 +96,7 @@ class IndexView(View):
 
 class GetAnswerView(View):
     def post(self, request):
-        # time.sleep(1)
+        # В случае если не установлен допуск размера, установить +-15мм
         try:
             clearance = int(request.COOKIES['clearance'])
         except:
@@ -102,6 +113,7 @@ class GetAnswerView(View):
         print('-----------------------')
         print(f'Подсчет с допуском {clearance}мм')
         print('-----------------------')
+
         # Итоговый словарь с перечнем файлов
         exit_dict = {}
 
@@ -145,7 +157,7 @@ class GetAnswerView(View):
                 num_pages = len(pdf_reader.pages)
                 all_lists_count += num_pages
                 for i in range(num_pages):
-                    checker = 0
+                    checker = 0  # В случае если размер по ГОСТ устанавливаем 1
                     box = pdf_reader.pages[i]
                     # Переводим значения в миллиметры
                     width = math.ceil(float(box.mediabox.width) * 0.35273159)
@@ -158,7 +170,7 @@ class GetAnswerView(View):
                     else:
                         small = height
                         long = width
-                    # Проверяем вхождение данных размеров в стандартные, с допуском 15мм
+                    # Проверяем вхождение данных размеров в стандартные, с допуском clearance
                     for key, value in PAGE_SIZE_STANDARD.items():
                         if (value[0] >= small - clearance) and (value[0] <= small + clearance) and (
                                 value[1] <= long + clearance) and (
@@ -185,7 +197,7 @@ class GetAnswerView(View):
                 # Удаляем из словаря все пустые значения
                 for i in temp_list:
                     del pdf_size_file[i]
-                final_list = []
+                final_list = []  # итоговый список по файлу
                 for key, value in pdf_size_file.items():
                     if value > 0:
                         final_list.append([key, value])
@@ -194,17 +206,18 @@ class GetAnswerView(View):
 
                 num_pages = len(pdf_reader.pages)
                 exit_dict[file.name] = pdf_size_file
-                exit_dict[file.name]['good_lists'] = good_lists
-                exit_dict[file.name]['count_pages'] = num_pages
-                exit_dict[file.name]['pdf_unknown_size_file'] = pdf_unknown_size_file
-                exit_dict[file.name]['len_pdf_unknown_size_file'] = len(pdf_unknown_size_file)
-                exit_dict[file.name]['list_pages'] = list_pages
-                exit_dict[file.name]['normal_pages'] = normal_pages
-                exit_dict[file.name]['a4_count'] = a4_count
-                all_lists_approve += normal_pages
-                all_files_format += a4_count
+                exit_dict[file.name]['good_lists'] = good_lists  # распознанные листы
+                exit_dict[file.name]['count_pages'] = num_pages  # количество листов
+                exit_dict[file.name]['pdf_unknown_size_file'] = pdf_unknown_size_file  # список нераспознанных листов
+                exit_dict[file.name]['len_pdf_unknown_size_file'] = len(
+                    pdf_unknown_size_file)  # количество нераспознанных листов
+                exit_dict[file.name]['list_pages'] = list_pages  # список листов по файлу
+                exit_dict[file.name]['normal_pages'] = normal_pages  # количество распознанных листов
+                exit_dict[file.name]['a4_count'] = a4_count  # количество форматов А4
+                all_lists_approve += normal_pages  # общее количество распознанных листов
+                all_files_format += a4_count  # обшее количество форматов А4
             except:
-                exit_dict[file.name] = {}
+                exit_dict[file.name] = {}  # Информация о файле, в случае если он не PDF
                 exit_dict[file.name]['error'] = 1
                 errors += 1
             print('-----------------------')
@@ -221,12 +234,15 @@ class GetAnswerView(View):
         # content = {
         #            'pdf_size_file': pdf_size_file}
         resp = render(request, 'page_calculator_app/answer.html', content)
-        resp.set_cookie(key='clearance', value=clearance)
+        resp.set_cookie(key='clearance', value=clearance)  # Установка допуска clearance в cookie
         return resp
 
 
 class ChangeClearanceView(View):
     def post(self, request):
+        """
+        Для ajax запроса на редактирование допуска clearance
+        """
         clearance = int(request.POST.get('input_clearance_value'))
         print(clearance)
         print(f'request.POST: {request.POST}')
@@ -253,6 +269,7 @@ class GetBlancView(View):
 
 
 class PrintView(View):
+    """Отправка файлов на печать"""
     def post(self, request):
         print(f'request.POST: {request.POST}')
         print(f'request.FILES: {request.FILES}')
@@ -279,6 +296,7 @@ class PrintView(View):
             type_task=2,
             count_pages=request.POST.get('temp_file_count_pages'),
             a4_count_formats=int(request.POST.get('temp_file_a4_formats')),
+            print_folding=int(request.POST.get('folding_id')),
             user_clearance=user_clearance,
         )
         new_task_to_print.save()
@@ -382,6 +400,7 @@ class GetInfoMyTaskView(View):
                    'bad_lists': dict_temp_file_json}
         return render(request, 'page_calculator_app/ajax/my_modal_details_task.html', content)
 
+
 class CancelMyTaskView(View):
     def post(self, request):
         print(request.POST)
@@ -394,11 +413,18 @@ class CancelMyTaskView(View):
 
 class DeleteFileView(View):
     def get(self, request, pk):
-        print(pk)
-        file_path_in_db = PrintFilesModel.objects.get(id=pk)
-        file_path = os.path.join(settings.MEDIA_ROOT, str(file_path_in_db.file_to_print))
-        if os.path.exists(file_path):
-            os.remove(file_path)
-        file_path_in_db.file_to_print = None
-        file_path_in_db.save()
+        today = datetime.datetime.today()
+        count_tasks = 0
+        count_delete_tasks_files = 0
+        all_print_tasks = PrintFilesModel.objects.get_queryset().filter(status=3)
+        for task in all_print_tasks:
+            task_date = task.date_change_status.date()
+            task_date_delta = (today-task_date).days
+            count_tasks += 1
+            if task_date_delta > 7:
+                file_path = os.path.join(settings.MEDIA_ROOT, str(task.file_to_print))
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                task.file_to_print = None
+                task.save()
         return HttpResponse(status=200)

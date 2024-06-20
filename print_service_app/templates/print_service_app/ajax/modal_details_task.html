@@ -31,24 +31,31 @@
                             <div class="d-flex text-20px-light">Заказ</div>
                             <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.order }}</div>
                         </div>
-
+                        {% if obj.object %}
+                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                <div class="d-flex text-20px-light">Объект</div>
+                                <div class="d-flex text-20px-light padding-left-30 text-align-end"
+                                     data-toggle="tooltip" data-bs-placement="bottom"
+                                     rel="txtTooltip" data-bs-html="true"
+                                     title="{{ obj.object }}">
+                                    {{ obj.object|slice:':50' }}</div>
+                            </div>
+                        {% endif %}
+                        {% if obj.contract %}
+                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                <div class="d-flex text-20px-light">Договор</div>
+                                <div class="d-flex text-20px-light padding-left-30 text-align-end"
+                                     data-toggle="tooltip" data-bs-placement="bottom"
+                                     rel="txtTooltip" data-bs-html="true"
+                                     title="{{ obj.contract.contract_name }}">{{ obj.contract.contract_name|slice:':50' }}</div>
+                            </div>
+                        {% endif %}
+                        {% if obj.task_type_work != 0 %}
                         <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
-                            <div class="d-flex text-20px-light">Объект</div>
-                            <div class="d-flex text-20px-light padding-left-30 text-align-end"
-                                 data-toggle="tooltip" data-bs-placement="bottom"
-                                 rel="txtTooltip" data-bs-html="true"
-                                 title="{{ obj.object }}">
-                                {{ obj.object|slice:':50' }}</div>
+                            <div class="d-flex text-20px-light">Вид документации</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.get_task_type_work_display }}</div>
                         </div>
-
-                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
-                            <div class="d-flex text-20px-light">Договор</div>
-                            <div class="d-flex text-20px-light padding-left-30 text-align-end"
-                                 data-toggle="tooltip" data-bs-placement="bottom"
-                                 rel="txtTooltip" data-bs-html="true"
-                                 title="{{ obj.contract.contract_name }}">{{ obj.contract.contract_name|slice:':50' }}</div>
-                        </div>
-
+                        {% endif %}
                         <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
                             <div class="d-flex text-20px-light">Допуск подсчета</div>
                             <div class="d-flex text-20px-light padding-left-30 text-align-end">±{{ obj.user_clearance }}мм.</div>
@@ -63,6 +70,18 @@
                             <div class="d-flex text-20px-light">Количество форматов А4</div>
                             <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.a4_count_formats }}</div>
                         </div>
+                        {% if obj.print_folding is not None %}
+                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                <div class="d-flex text-20px-light">Фальцовка</div>
+                                <div class="d-flex text-20px-light padding-left-30 text-align-end">
+                                    {% if obj.print_folding %}
+                                        Требуется
+                                    {% else %}
+                                        Не требуется
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
 
                     </div>
                     <!-- Правая часть-->
@@ -252,7 +271,7 @@
                 </div>
 
                 <!-- Нижняя чатсь окна -->
-                    <div class="d-flex w-100 justify-content-center align-items-center flex-column mt-3">
+                <div class="d-flex w-100 justify-content-center align-items-center flex-column mt-3">
                     {% if obj.file_to_print %}
                         <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
                             <div class="d-flex text-20px-light">Файл</div>
@@ -260,57 +279,62 @@
                                                                    download>Скачать</a></div>
                         </div>
                     {% endif %}
+                    <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex text-20px-light">Бланк</div>
+                        <div class="d-flex text-20px-light">Ссылка</div>
+                    </div>
+                    {% if obj.date_change_status %}
                         <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
-                            <div class="d-flex text-20px-light">Бланк</div>
-                            <div class="d-flex text-20px-light">Ссылка</div>
+                            <div class="d-flex text-20px-light">Статус изменен:</div>
+                            <div class="d-flex text-20px-light">{{ obj.date_change_status }}</div>
                         </div>
-
-                        <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
-                            <div class="d-flex text-20px-light">Статус</div>
-                            <div class="d-none" id="hidden-div-obj-info" data-ajax-change="{{ obj.id }}"></div>
-                            <input class="d-none" name='obj_id_for_change_status' id="obj_id_for_change_status">
-                            <div class="d-flex">
-                                <select class="form-select" style="min-width: 300px"
-                                        name="TypeWorkTask_id"
-                                        id="TypeWorkTask_id">
-                                    {% if obj.status == 0 %}
-                                        <option value="0" selected>Аннулирован</option>
-                                    {% else %}
-                                        <option value="0">Аннулирован</option>
-                                    {% endif %}
-                                    {% if obj.status == 1 %}
-                                        <option value="1" selected>Актуален</option>
-                                    {% else %}
-                                        <option value="1">Актуален</option>
-                                    {% endif %}
-                                    {% if obj.status == 2 %}
-                                        <option value="2" selected>В работе</option>
-                                    {% else %}
-                                        <option value="2">В работе</option>
-                                    {% endif %}
-                                    {% if obj.status == 3 %}
-                                        <option value="3" selected>Готов</option>
-                                    {% else %}
-                                        <option value="3">Готов</option>
-                                    {% endif %}
-                                </select>
-                            </div>
+                    {% endif %}
+                    <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex text-20px-light">Статус</div>
+                        <div class="d-none" id="hidden-div-obj-info" data-ajax-change="{{ obj.id }}"></div>
+                        <input class="d-none" name='obj_id_for_change_status' id="obj_id_for_change_status">
+                        <div class="d-flex">
+                            <select class="form-select" style="min-width: 300px"
+                                    name="TypeWorkTask_id"
+                                    id="TypeWorkTask_id">
+                                {% if obj.status == 0 %}
+                                    <option value="0" selected>Аннулирован</option>
+                                {% else %}
+                                    <option value="0">Аннулирован</option>
+                                {% endif %}
+                                {% if obj.status == 1 %}
+                                    <option value="1" selected>Актуален</option>
+                                {% else %}
+                                    <option value="1">Актуален</option>
+                                {% endif %}
+                                {% if obj.status == 2 %}
+                                    <option value="2" selected>В работе</option>
+                                {% else %}
+                                    <option value="2">В работе</option>
+                                {% endif %}
+                                {% if obj.status == 3 %}
+                                    <option value="3" selected>Готов</option>
+                                {% else %}
+                                    <option value="3">Готов</option>
+                                {% endif %}
+                            </select>
                         </div>
                     </div>
+                </div>
 
             </div>
 
-                <div class="modal-footer modal-footer_clearance justify-content-between">
+            <div class="modal-footer modal-footer_clearance justify-content-between">
 
-                    <button type="button" class="button_grey_clearance"
-                            data-bs-dismiss="modal"
-                            onclick="$('#sendFileModal').modal('hide');">Отмена
-                    </button>
-                    <button class="button_blue_clearance button_blue_clearance_send_file" type="submit">
-                        Отправить
-                    </button>
+                <button type="button" class="button_grey_clearance"
+                        data-bs-dismiss="modal"
+                        onclick="$('#sendFileModal').modal('hide');">Отмена
+                </button>
+                <button class="button_blue_clearance button_blue_clearance_send_file" type="submit">
+                    Отправить
+                </button>
 
-                </div>
+            </div>
 
         </form>
     </div>

@@ -195,7 +195,6 @@ class CpeModel(models.Model):
 
 
 def upload_print_file(instance, filename):
-
     # name_to_path = str(instance.emp.id)
     new_path = path.join('files', 'print_files', f'{datetime.now().year}{datetime.now().month}{datetime.now().day}',
                          # "media", filename)
@@ -206,7 +205,6 @@ def upload_print_file(instance, filename):
 
 
 class PrintFilesModel(models.Model):
-
     class TypeTask(models.IntegerChoices):
         """        Выбор вида документации        """
         NONETASK = 0, _('Не указан')
@@ -239,15 +237,19 @@ class PrintFilesModel(models.Model):
     add_file_date = models.DateTimeField('Дата создания', auto_now_add=True, null=True)
     date_change_status = models.DateTimeField('Дата распечатки', null=True, blank=True)
     task_type_work = models.IntegerField("Вид документации:", choices=TypeWorkTask.choices, default=0)
-    order = models.ForeignKey(OrdersModel, verbose_name='Номер заказа', null=True, blank=True, on_delete=models.SET_NULL)
+    order = models.ForeignKey(OrdersModel, verbose_name='Номер заказа', null=True, blank=True,
+                              on_delete=models.SET_NULL)
     object = models.ForeignKey(ObjectModel, verbose_name='Объект', null=True, blank=True, on_delete=models.SET_NULL)
-    contract = models.ForeignKey(ContractModel, verbose_name='Договор', null=True, blank=True, on_delete=models.SET_NULL)
+    contract = models.ForeignKey(ContractModel, verbose_name='Договор', null=True, blank=True,
+                                 on_delete=models.SET_NULL)
     copy_count = models.IntegerField(verbose_name='Количество копий', default=1, blank=True)
     inventory_number_request = models.CharField(verbose_name="Номер заявки", max_length=100, blank=True, null=True)
     type_task = models.IntegerField(verbose_name="Тип задачи", choices=TypeTask.choices, default=0)
     count_pages = models.IntegerField(verbose_name="Количество листов", null=True, blank=True, default=0)
     a4_count_formats = models.IntegerField(verbose_name="Количество форматов а4", null=True, blank=True, default=0)
-    user_clearance = models.IntegerField(verbose_name='Допуск подсчета у пользователя', null=True, blank=True, default=0)
+    user_clearance = models.IntegerField(verbose_name='Допуск подсчета у пользователя', null=True, blank=True,
+                                         default=0)
+    print_folding = models.BooleanField(verbose_name='Фальцовка', null=True, blank=True, default=False)
 
     class Meta:
         verbose_name = _('файл на печать')
@@ -288,13 +290,13 @@ class ListsFileModel(models.Model):
     a4x9 = models.IntegerField(verbose_name="A4x9", default=0, blank=True)
     other_pages = models.CharField(verbose_name="Другое", max_length=1000, blank=True, null=True)
 
-
     class Meta:
         verbose_name = _('лист файла')
         verbose_name_plural = _("листы файлов")
 
     def __str__(self):
         return f'{self.print_file.inventory_number_request} | {self.print_file.inventory_number_file}'
+
 
 class PrintPagePermissionModel(models.Model):
     """
@@ -309,6 +311,7 @@ class PrintPagePermissionModel(models.Model):
     def __str__(self):
         return f'{self.emp.last_name} {self.emp.first_name} {self.emp.middle_name}'
 
+
 class CountTasksModel(models.Model):
     """Счетчик задач за каждый день"""
     count = models.IntegerField(verbose_name='Количество заявок', default=0)
@@ -321,4 +324,3 @@ class CountTasksModel(models.Model):
 
     def __str__(self):
         return f'{self.date_of_print} - {self.count}'
-
