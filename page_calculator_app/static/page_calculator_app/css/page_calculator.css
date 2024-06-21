@@ -478,13 +478,13 @@ html {
 }
 
 .modal-dialog_change-status {
-    width: 850px;
+    width: 1100px;
     height: 225px;
 
 }
 
 .modal-dialog_details {
-    width: 850px;
+    width: 1100px;
     height: 225px;
 }
 
@@ -717,7 +717,7 @@ row__color {
 @media (min-width: 992px) {
 
     .modal-lg, .modal-xl {
-        max-width: 850px;
+        max-width: 1250px;
     }
 
     .vertical {

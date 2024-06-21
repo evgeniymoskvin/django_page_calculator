@@ -1,6 +1,6 @@
 <div style="width: 100%">
     <div class="text-36px-bold mt-5">
-        Задачи на печать
+        Текущие задачи
     </div>
     <div class="mt-3">
         <table id="now-print-tasks" class="table table-hover">
@@ -49,19 +49,9 @@
                             {% endif %}>
                         {{ obj.get_status_display }}
                     </td>
-
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
-
-<script>
-
-
-
-
-</script>
-
-{#{{ tasks_to_print }}#}

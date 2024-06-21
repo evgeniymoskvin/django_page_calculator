@@ -10,6 +10,7 @@
             {% csrf_token %}
             <div class="modal-body modal-body_clearance">
                 <div class="d-flex row flex-row w-100">
+
                     <!-- Левая часть-->
                     <div class="d-flex col-7 justify-content-between align-items-center flex-column border_right">
                         <div class="d-flex w-100 flex-row justify-content-between align-items-center">
@@ -38,7 +39,7 @@
                                      data-toggle="tooltip" data-bs-placement="bottom"
                                      rel="txtTooltip" data-bs-html="true"
                                      title="{{ obj.object }}">
-                                    {{ obj.object|truncatechars:50 }}</div>
+                                    {{ obj.object|truncatechars:75 }}</div>
                             </div>
                         {% endif %}
                         {% if obj.contract %}
@@ -61,15 +62,7 @@
                             <div class="d-flex text-20px-light padding-left-30 text-align-end">±{{ obj.user_clearance }}мм.</div>
                         </div>
 
-                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
-                            <div class="d-flex text-20px-light">Количество листов</div>
-                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.count_pages }}</div>
-                        </div>
 
-                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
-                            <div class="d-flex text-20px-light">Количество форматов А4</div>
-                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.a4_count_formats }}</div>
-                        </div>
                         {% if obj.print_folding is not None %}
                             <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
                                 <div class="d-flex text-20px-light">Фальцовка</div>
@@ -93,12 +86,19 @@
                                 {% endif %}
                             </div>
                         </div>
-
-
                     </div>
+
                     <!-- Правая часть-->
                     <div class="d-flex col-5 flex-column">
-                        <div class="d-flex text-20px-light">Распознанные форматы:</div>
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center">
+                            <div class="d-flex text-20px-light">Количество листов</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.count_pages }}</div>
+                        </div>
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex text-20px-light">Количество форматов А4</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.a4_count_formats }}</div>
+                        </div>
+                        <div class="d-flex text-20px-light mt-2">Распознанные форматы:</div>
                         <div class="d-flex w-100 flex-row flex-wrap justify-content-between">
                             {% if obj_info.a0 > 0 %}
                                 <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
@@ -282,7 +282,7 @@
                     </div>
                 </div>
 
-                <!-- Нижняя чатсь окна -->
+                <!-- Нижняя часть окна -->
                 <div class="d-flex w-100 justify-content-center align-items-center flex-column mt-3">
                     {% if obj.file_to_print %}
                         <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
@@ -294,7 +294,7 @@
                     <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
                         <div class="d-flex text-20px-light">Бланк</div>
                         <div class="d-flex text-20px-light"><a href="{% url 'download_blank' obj.id %}"
-                                                                   download>Скачать</a></div>
+                                                               download>Скачать</a></div>
                     </div>
                     {% if obj.date_change_status %}
                         <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
@@ -334,11 +334,9 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
             <div class="modal-footer modal-footer_clearance justify-content-between">
-
                 <button type="button" class="button_grey_clearance"
                         data-bs-dismiss="modal"
                         onclick="$('#sendFileModal').modal('hide');">Отмена
@@ -346,9 +344,7 @@
                 <button class="button_blue_clearance button_blue_clearance_send_file" type="submit">
                     Отправить
                 </button>
-
             </div>
-
         </form>
     </div>
 </div>

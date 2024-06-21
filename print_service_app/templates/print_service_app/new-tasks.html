@@ -1,24 +1,18 @@
 {% extends "print_service_app/base.html" %}
 {% load static %}
 {% block title %}
-    Сервис печати
+    Текущие задачи
 {% endblock %}
 
 {% block content %}
     <div class="d-flex w-100" id="display_div" data-ajax-url="{% url 'get-tasks-print' %}">
     </div>
 
-
-
     <!-- Модальное окно информации о заявка-->
     <div class="modal fade" id="detailModalWindow" data-ajax-url="{% url 'get-info-task-print' %}" tabindex="-1">
-
     </div>
 
-
     <script>
-
-
         function openModalWindow(val) {
             var url = $("#detailModalWindow").attr("data-ajax-url")
             $.ajax({
@@ -36,23 +30,10 @@
         }
     </script>
 
-
     <script>
         $(document).ready(function () {
             load()
         })
-
-        /*$(document).ready(function(){
-            setInterval(function (){
-                $.ajax({
-                    type:'GET',
-
-                    success: function (data){
-                           $("#display_div").html(data)
-                    },
-                })
-            }, 20000)
-        })*/
 
         function load() {
             var url = $("#display_div").attr("data-ajax-url");
@@ -67,10 +48,8 @@
                 error: function (r) {
                     setTimeout(load, 5000);
                 }
-            })
-            ;
+            });
         }
-
     </script>
 
 {% endblock %}
