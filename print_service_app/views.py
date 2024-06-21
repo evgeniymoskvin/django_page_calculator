@@ -151,10 +151,12 @@ class DownloadBlankView(View):
             doc.render(content)
             new_full_path = os.path.join(settings.BASE_DIR, 'print_service_app', 'docx', 'zaiavka_done.docx')
             doc.save(new_full_path)
+            file_name = f'{str(print_task.inventory_number_file)}.docx'
+            print(file_name)
             with open(new_full_path, 'rb') as fh:
                 mime_type, _ = mimetypes.guess_type(new_full_path)
                 response = HttpResponse(fh.read(), content_type=mime_type)
-                response['Content-Disposition'] = 'inline; filename=' + escape_uri_path(os.path.basename(new_full_path))
+                response['Content-Disposition'] = 'inline; filename=' + escape_uri_path(file_name)
                 return response
         raise Http404
 
