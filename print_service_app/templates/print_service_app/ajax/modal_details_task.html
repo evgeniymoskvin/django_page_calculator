@@ -38,7 +38,7 @@
                                      data-toggle="tooltip" data-bs-placement="bottom"
                                      rel="txtTooltip" data-bs-html="true"
                                      title="{{ obj.object }}">
-                                    {{ obj.object|slice:':50' }}</div>
+                                    {{ obj.object|truncatechars:50 }}</div>
                             </div>
                         {% endif %}
                         {% if obj.contract %}
@@ -47,14 +47,14 @@
                                 <div class="d-flex text-20px-light padding-left-30 text-align-end"
                                      data-toggle="tooltip" data-bs-placement="bottom"
                                      rel="txtTooltip" data-bs-html="true"
-                                     title="{{ obj.contract.contract_name }}">{{ obj.contract.contract_name|slice:':50' }}</div>
+                                     title="{{ obj.contract.contract_name }}">{{ obj.contract.contract_name|truncatechars:50 }}</div>
                             </div>
                         {% endif %}
                         {% if obj.task_type_work != 0 %}
-                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
-                            <div class="d-flex text-20px-light">Вид документации</div>
-                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.get_task_type_work_display }}</div>
-                        </div>
+                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                <div class="d-flex text-20px-light">Вид документации</div>
+                                <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.get_task_type_work_display }}</div>
+                            </div>
                         {% endif %}
                         <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
                             <div class="d-flex text-20px-light">Допуск подсчета</div>
@@ -82,6 +82,18 @@
                                 </div>
                             </div>
                         {% endif %}
+
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex text-20px-light">Цветной</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">
+                                {% if obj.color %}
+                                    Да
+                                {% else %}
+                                    Нет
+                                {% endif %}
+                            </div>
+                        </div>
+
 
                     </div>
                     <!-- Правая часть-->
@@ -281,7 +293,8 @@
                     {% endif %}
                     <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
                         <div class="d-flex text-20px-light">Бланк</div>
-                        <div class="d-flex text-20px-light">Ссылка</div>
+                        <div class="d-flex text-20px-light"><a href="{% url 'download_blank' obj.id %}"
+                                                                   download>Скачать</a></div>
                     </div>
                     {% if obj.date_change_status %}
                         <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">

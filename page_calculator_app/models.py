@@ -250,6 +250,7 @@ class PrintFilesModel(models.Model):
     user_clearance = models.IntegerField(verbose_name='Допуск подсчета у пользователя', null=True, blank=True,
                                          default=0)
     print_folding = models.BooleanField(verbose_name='Фальцовка', null=True, blank=True, default=False)
+    color = models.BooleanField(verbose_name='Цветное', null=True, blank=True, default=False)
 
     class Meta:
         verbose_name = _('файл на печать')

@@ -270,6 +270,7 @@ class GetBlancView(View):
 
 class PrintView(View):
     """Отправка файлов на печать"""
+
     def post(self, request):
         print(f'request.POST: {request.POST}')
         print(f'request.FILES: {request.FILES}')
@@ -298,6 +299,7 @@ class PrintView(View):
             a4_count_formats=int(request.POST.get('temp_file_a4_formats')),
             print_folding=int(request.POST.get('folding_id')),
             user_clearance=user_clearance,
+            color=int(request.POST.get('color_id')),
         )
         new_task_to_print.save()
 
@@ -419,7 +421,7 @@ class DeleteFileView(View):
         all_print_tasks = PrintFilesModel.objects.get_queryset().filter(status=3)
         for task in all_print_tasks:
             task_date = task.date_change_status.date()
-            task_date_delta = (today-task_date).days
+            task_date_delta = (today - task_date).days
             count_tasks += 1
             if task_date_delta > 7:
                 file_path = os.path.join(settings.MEDIA_ROOT, str(task.file_to_print))

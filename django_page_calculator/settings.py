@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'page_calculator_app',
     'print_service_app',
     'login',
-    # 'cachalot',
+    'cachalot',
 ]
 
 CHANNEL_LAYERS = {
@@ -146,17 +146,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 CACHALOT_UNCACHABLE_TABLES = frozenset(('django_migrations', 'auth_user', 'django_session'))
-# CELERY_BROKER_URL = 'redis://161.11.20.121:6379//10'
-# CELERY_RESULT_BACKEND = 'redis://161.11.20.121:6379/10'
-# FORKED_BY_MULTIPROCESSING = 1
+CELERY_BROKER_URL = 'redis://192.168.20.50:6379//10'
+CELERY_RESULT_BACKEND = 'redis://192.168.20.50:6379/10'
+FORKED_BY_MULTIPROCESSING = 1
 # CELERY_BROKER_URL = 'redis://redis:6379//0'
 # CELERY_RESULT_BACKEND = 'redis://0.0.0.0:6379/0'
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": "redis://161.11.20.121:6379/1",
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#         }
-#     }
-# }
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://192.168.20.50:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}

@@ -38,3 +38,5 @@ def delete_files():
 def celery_email_print_done(task_done_id):
     task_print_done(task_done_id)
     return f'Печать id={task_done_id} выполнена. Письмо отправлено.'
+
+

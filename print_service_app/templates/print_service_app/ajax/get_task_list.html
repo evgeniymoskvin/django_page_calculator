@@ -33,7 +33,7 @@
                         data-toggle="tooltip" data-bs-placement="bottom"
                         rel="txtTooltip" data-bs-html="true"
                         title="{{ obj.object }}">
-                        {{ obj.object|slice:':50' }}
+                        {{ obj.object|truncatechars:50 }}
                     </td>
                     <td class="td_tables" style="width: 150px; text-align: center">
                         {{ obj.count_pages }}

@@ -81,8 +81,8 @@ class GetInfoPrintTaskView(View):
         print_task_obj.date_change_status = datetime.datetime.now()
         print_task_obj.save()
         # Отправка письма через Celery
-        # if int(request.POST['TypeWorkTask_id']) == 3:
-        #     celery_email_print_done(int(print_task_id))
+        if int(request.POST['TypeWorkTask_id']) == 3:
+            celery_email_print_done(int(print_task_id))
         return HttpResponse(status=200)
 
 
@@ -98,6 +98,63 @@ class DownloadFileView(View):
                 mime_type, _ = mimetypes.guess_type(file_path)
                 response = HttpResponse(fh.read(), content_type=mime_type)
                 response['Content-Disposition'] = 'inline; filename=' + escape_uri_path(os.path.basename(file_path))
+                return response
+        raise Http404
+
+
+class DownloadBlankView(View):
+    def get(self, request, pk):
+        file_docx_path = os.path.join(settings.BASE_DIR, 'print_service_app', 'docx', 'zaiavka.docx')
+        print(file_docx_path)
+        if os.path.exists(file_docx_path):
+            doc = DocxTemplate(file_docx_path)
+            print_task = PrintFilesModel.objects.get(id=pk)
+            pages_info = ListsFileModel.objects.get(print_file=print_task)
+            try:
+                contract = str(print_task.contract.contract_name)[:20]
+            except Exception as e:
+                print(e)
+                contract = ''
+            if print_task.color:
+                color_info = f'Цветной'
+            else:
+                color_info = f''
+
+            other_info = f'{pages_info.other_pages}'
+            content = {"request_number": print_task.inventory_number_request,
+                       "day": datetime.datetime.now().day,
+                       "month": datetime.datetime.now().strftime('%b'),
+                       "year": datetime.datetime.now().year,
+                       "order": print_task.order.order,
+                       "contract": contract,
+                       "emp_group": print_task.emp_upload_file.department.command_number,
+                       "tel": print_task.emp_upload_file.user_phone,
+                       "emp": f'{print_task.emp_upload_file.last_name} {str(print_task.emp_upload_file.first_name)[:1]}. {str(print_task.emp_upload_file.middle_name)[:1]}.',
+                       "all": print_task.count_pages,
+                       "cop": print_task.copy_count,
+                       "inventory_number": print_task.inventory_number_file,
+                       "a4": pages_info.a4,
+                       "a3": pages_info.a3,
+                       "a2": pages_info.a2,
+                       "a1": pages_info.a1,
+                       "a0": pages_info.a0,
+                       "a4x": int(pages_info.a4x3) * 3 + int(pages_info.a4x4) * 4 + int(pages_info.a4x5) * 5 + int(
+                           pages_info.a4x6) * 6 + int(pages_info.a4x7) * 7 + int(pages_info.a4x8) * 8 + int(
+                           pages_info.a4x9) * 9,
+                       "a3x": int(pages_info.a3x3) * 3 + int(pages_info.a3x4) * 4 + int(pages_info.a3x5) * 5 + int(
+                           pages_info.a3x6) * 6 + int(pages_info.a3x7) * 7,
+                       "a2x": int(pages_info.a2x3) * 3 + int(pages_info.a2x4) * 4 + int(pages_info.a2x5) * 5,
+                       "a1x": int(pages_info.a1x3) * 3 + int(pages_info.a1x4) * 4,
+                       "a0x": int(pages_info.a0x2) * 2 + int(pages_info.a0x3) * 3,
+                       "info": f'{pages_info.other_pages}. {color_info}',
+                       "a4f": print_task.a4_count_formats}
+            doc.render(content)
+            new_full_path = os.path.join(settings.BASE_DIR, 'print_service_app', 'docx', 'zaiavka_done.docx')
+            doc.save(new_full_path)
+            with open(new_full_path, 'rb') as fh:
+                mime_type, _ = mimetypes.guess_type(new_full_path)
+                response = HttpResponse(fh.read(), content_type=mime_type)
+                response['Content-Disposition'] = 'inline; filename=' + escape_uri_path(os.path.basename(new_full_path))
                 return response
         raise Http404
 

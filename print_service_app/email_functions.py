@@ -13,5 +13,7 @@ def task_print_done(print_task_id):
                                 to=[print_task.emp_upload_file.user.email])
     try:
         email_author.send()
+        print(f'Письмо по заданию {print_task_name} отправлено {print_task.emp_upload_file}: {print_task.emp_upload_file.user.email}')
+        # print(email_author)
     except Exception as e:
         print(f'Error send email: {e}')

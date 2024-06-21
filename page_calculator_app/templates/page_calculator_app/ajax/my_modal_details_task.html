@@ -26,7 +26,7 @@
                              data-toggle="tooltip" data-bs-placement="bottom"
                              rel="txtTooltip" data-bs-html="true"
                              title="{{ obj.object }}">
-                            {{ obj.object|slice:':50' }}</div>
+                            {{ obj.object|truncatechars:50 }}</div>
                     </div>
 
                     <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
@@ -34,7 +34,7 @@
                         <div class="d-flex text-20px-light padding-left-30 text-align-end"
                              data-toggle="tooltip" data-bs-placement="bottom"
                              rel="txtTooltip" data-bs-html="true"
-                             title="{{ obj.contract.contract_name }}">{{ obj.contract.contract_name|slice:':50' }}</div>
+                             title="{{ obj.contract.contract_name }}">{{ obj.contract.contract_name|truncatechars:50 }}</div>
                     </div>
 
                     <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">

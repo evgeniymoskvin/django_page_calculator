@@ -100,7 +100,7 @@
                             </div>
                             <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
                                 <div class="d-flex text-20px-light">Объект</div>
-                                <div class="d-flex">
+                                <div class="d-flex" style="max-width: 300px">
                                     <select class="form-select" style="min-width: 300px"
                                             name="object_id"
                                             id="object_id" data-contracts-url="{% url 'get-contracts' %}">
@@ -155,6 +155,18 @@
                                         <option value="" selected>Выберите</option>
                                         <option value="0">Не требуется</option>
                                         <option value="1">Требуется</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                <div class="d-flex text-20px-light">Цветной</div>
+                                <div class="d-flex">
+                                    <select class="form-select" style="min-width: 300px"
+                                            name="color_id"
+                                            id="color_id"
+                                            required>
+                                        <option value="0" selected>Нет</option>
+                                        <option value="1">Да</option>
                                     </select>
                                 </div>
                             </div>

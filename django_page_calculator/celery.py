@@ -14,5 +14,9 @@ app.conf.beat_schedule = {
     'check-files-in-db-and-in-storage': {
         'task': 'print_service_app.tasks.delete_files',
         'schedule': crontab(day_of_week='sunday', minute=0, hour=2)
+    },
+    'every_30_sec': {
+        'task': 'print_service_app.tasks.celery_30_sec',
+        'schedule': 30.0
     }
 }
