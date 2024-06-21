@@ -1,12 +1,15 @@
 {% extends  "login/base.html" %}
 
+        {% block title %}
+            Выполните вход
+        {% endblock %}
+
 {% block content %}
     <div class="d-flex w-100 justify-content-center">
         <div class="d-flex flex-column justify-content-center">
             <form method="post" class="d-flex flex-column justify-content-center" style="max-width: 500px">
                 {% csrf_token %}
                 <div class="d-flex text-48px-bold">Авторизуйтесь</div>
-
                 <div class="form-floating d-flex mt-2">
                     {{ form.username }}
                     <label for="floatingInput">Имя пользователя</label>
@@ -16,7 +19,6 @@
                     <label for="floatingPassword">Пароль</label>
                 </div>
                 <button class="button_blue mt-2" style="padding: 13px;" type="submit">Войти</button>
-
             </form>
         </div>
     </div>
