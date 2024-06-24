@@ -18,6 +18,8 @@ class MoreDetailsEmployeeAdmin(admin.ModelAdmin):
 class PrintFilesAdmin(admin.ModelAdmin):
     ordering = ['id']
 
+
 admin.site.register(PrintFilesModel, PrintFilesAdmin)
+admin.site.register(EmployeeModel, EmployeeAdmin)
 admin.site.register(ListsFileModel)
 admin.site.register(PrintPagePermissionModel)
