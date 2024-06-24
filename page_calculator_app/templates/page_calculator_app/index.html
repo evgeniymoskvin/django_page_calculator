@@ -50,146 +50,146 @@
     </div>
 
     <!-- Модальное окно отправки файла-->
+    {% if user.is_authenticated %}
+        <div class="modal fade" id="sendFileModal" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog_send-file">
+                <div class="modal-content modal-content_clearance">
+                    <div class="modal-header modal-header_clearance">
+                        <h5 class="modal-title text-24px-regular" style="cursor: context-menu">Отправка на печать</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <form id="form_send_one_file" method="POST" data-ajax-url="{% url 'print-send' %}">
+                        {% csrf_token %}
+                        <div class="modal-body modal-body_clearance">
+                            <div class="d-flex w-100 justify-content-between align-items-center flex-column">
+                                <div class="d-flex flex-row">
+                                    <input type="file" id="send_file" name="file"
+                                           data-ajax-url="{% url 'print-send' %}"
+                                           hidden>
+                                    <div class="d-flex text-18px-bold" id="temp_file_name"></div>
+                                    <input class="d-none" name='temp_file_json' id="temp_file_json">
+                                    <input class="d-none" name="temp_file_bad_json" id="temp_file_bad_json">
+                                    <input class="d-none" name="temp_file_count_pages" id="temp_file_count_pages">
+                                    <input class="d-none" name="temp_file_a4_formats" id="temp_file_a4_formats">
+                                </div>
 
-    <div class="modal fade" id="sendFileModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog_send-file">
-            <div class="modal-content modal-content_clearance">
-                <div class="modal-header modal-header_clearance">
-                    <h5 class="modal-title text-24px-regular" style="cursor: context-menu">Отправка на печать</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                </div>
-                <form id="form_send_one_file" method="POST" data-ajax-url="{% url 'print-send' %}">
-                    {% csrf_token %}
-                    <div class="modal-body modal-body_clearance">
-                        <div class="d-flex w-100 justify-content-between align-items-center flex-column">
-                            <div class="d-flex flex-row">
-                                <input type="file" id="send_file" name="file"
-                                       data-ajax-url="{% url 'print-send' %}"
-                                       hidden>
-                                <div class="d-flex text-18px-bold" id="temp_file_name"></div>
-                                <input class="d-none" name='temp_file_json' id="temp_file_json">
-                                <input class="d-none" name="temp_file_bad_json" id="temp_file_bad_json">
-                                <input class="d-none" name="temp_file_count_pages" id="temp_file_count_pages">
-                                <input class="d-none" name="temp_file_a4_formats" id="temp_file_a4_formats">
-                            </div>
-
-                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
-                                <div class="d-flex text-20px-light">Инв. №</div>
-                                <div class="d-flex">
-                                    <input class="input_text_clearance" type="text"
-                                           id="input_inventory_number_file_value"
-                                           name="input_inventory_number_file_value"
-                                           required
-                                           style="text-align: center; width: 300px">
+                                <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                    <div class="d-flex text-20px-light">Инв. №</div>
+                                    <div class="d-flex">
+                                        <input class="input_text_clearance" type="text"
+                                               id="input_inventory_number_file_value"
+                                               name="input_inventory_number_file_value"
+                                               required
+                                               style="text-align: center; width: 300px">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
-                                <div class="d-flex text-20px-light">Заказ</div>
-                                <div class="d-flex">
-                                    <select class="form-select" style="min-width: 300px"
-                                            name="order_id"
-                                            id="order_id"
-                                            required>
-                                        <option value="" selected>№ заказа</option>
-                                        {% for obj in orders %}
-                                            <option value="{{ obj.id }}">{{ obj }}</option>
-                                        {% endfor %}
-                                    </select>
+                                <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                    <div class="d-flex text-20px-light">Заказ</div>
+                                    <div class="d-flex">
+                                        <select class="form-select" style="min-width: 300px"
+                                                name="order_id"
+                                                id="order_id"
+                                                required>
+                                            <option value="" selected>№ заказа</option>
+                                            {% for obj in orders %}
+                                                <option value="{{ obj.id }}">{{ obj }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
-                                <div class="d-flex text-20px-light">Объект</div>
-                                <div class="d-flex" style="max-width: 300px">
-                                    <select class="form-select" style="min-width: 300px"
-                                            name="object_id"
-                                            id="object_id" data-contracts-url="{% url 'get-contracts' %}">
-                                        <option selected value="">Объект</option>
-                                        {% for obj in objects %}
-                                            <option value="{{ obj.id }}">{{ obj }}</option>
-                                        {% endfor %}
-                                    </select>
+                                <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                    <div class="d-flex text-20px-light">Объект</div>
+                                    <div class="d-flex" style="max-width: 300px">
+                                        <select class="form-select" style="min-width: 300px"
+                                                name="object_id"
+                                                id="object_id" data-contracts-url="{% url 'get-contracts' %}">
+                                            <option selected value="">Объект</option>
+                                            {% for obj in objects %}
+                                                <option value="{{ obj.id }}">{{ obj }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
-                                <div class="d-flex text-20px-light">Договор</div>
-                                <div class="d-flex">
-                                    <select class="form-select" style="width: 300px"
-                                            name="contract_id"
-                                            id="contract_id" disabled>
-                                        <option selected>Договор</option>
-                                    </select>
+                                <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                    <div class="d-flex text-20px-light">Договор</div>
+                                    <div class="d-flex">
+                                        <select class="form-select" style="width: 300px"
+                                                name="contract_id"
+                                                id="contract_id" disabled>
+                                            <option selected>Договор</option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
-                                <div class="d-flex text-20px-light">Кол-во экземпляров</div>
-                                <div class="d-flex">
-                                    <input class="input_text_clearance" type="text"
-                                           id="copy_count_value"
-                                           name="copy_count_value"
-                                           required
-                                           style="text-align: center; width: 300px">
+                                <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                    <div class="d-flex text-20px-light">Кол-во экземпляров</div>
+                                    <div class="d-flex">
+                                        <input class="input_text_clearance" type="text"
+                                               id="copy_count_value"
+                                               name="copy_count_value"
+                                               required
+                                               style="text-align: center; width: 300px">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
-                                <div class="d-flex text-20px-light">Вид документации</div>
-                                <div class="d-flex">
-                                    <select class="form-select" style="min-width: 300px"
-                                            name="TypeWorkTask_id"
-                                            id="TypeWorkTask_id">
-                                        <option value="0" selected>Не указан</option>
-                                        <option value="1">Рабочая документация</option>
-                                        <option value="2">Проектная документация</option>
-                                        <option value="3">ОБИН</option>
-                                        <option value="4">НИОКР</option>
-                                    </select>
+                                <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                    <div class="d-flex text-20px-light">Вид документации</div>
+                                    <div class="d-flex">
+                                        <select class="form-select" style="min-width: 300px"
+                                                name="TypeWorkTask_id"
+                                                id="TypeWorkTask_id">
+                                            <option value="0" selected>Не указан</option>
+                                            <option value="1">Рабочая документация</option>
+                                            <option value="2">Проектная документация</option>
+                                            <option value="3">ОБИН</option>
+                                            <option value="4">НИОКР</option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
-                                <div class="d-flex text-20px-light">Фальцовка</div>
-                                <div class="d-flex">
-                                    <select class="form-select" style="min-width: 300px"
-                                            name="folding_id"
-                                            id="folding_id"
-                                            required>
-                                        <option value="" selected>Выберите</option>
-                                        <option value="0">Не требуется</option>
-                                        <option value="1">Требуется</option>
-                                    </select>
+                                <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                    <div class="d-flex text-20px-light">Фальцовка</div>
+                                    <div class="d-flex">
+                                        <select class="form-select" style="min-width: 300px"
+                                                name="folding_id"
+                                                id="folding_id"
+                                                required>
+                                            <option value="" selected>Выберите</option>
+                                            <option value="0">Не требуется</option>
+                                            <option value="1">Требуется</option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
-                                <div class="d-flex text-20px-light">Цветной</div>
-                                <div class="d-flex">
-                                    <select class="form-select" style="min-width: 300px"
-                                            name="color_id"
-                                            id="color_id"
-                                            required>
-                                        <option value="0" selected>Нет</option>
-                                        <option value="1">Да</option>
-                                    </select>
+                                <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                                    <div class="d-flex text-20px-light">Цветной</div>
+                                    <div class="d-flex">
+                                        <select class="form-select" style="min-width: 300px"
+                                                name="color_id"
+                                                id="color_id"
+                                                required>
+                                            <option value="0" selected>Нет</option>
+                                            <option value="1">Да</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer modal-footer_clearance justify-content-between">
+                        <div class="modal-footer modal-footer_clearance justify-content-between">
 
-                        <button type="button" class="button_grey_clearance"
-                                data-bs-dismiss="modal"
-                                onclick="$('#sendFileModal').modal('hide');">Отмена
-                        </button>
-                        <button class="button_blue_clearance button_blue_clearance_send_file" type="submit">
-                            Отправить
-                        </button>
+                            <button type="button" class="button_grey_clearance"
+                                    data-bs-dismiss="modal"
+                                    onclick="$('#sendFileModal').modal('hide');">Отмена
+                            </button>
+                            <button class="button_blue_clearance button_blue_clearance_send_file" type="submit">
+                                Отправить
+                            </button>
 
-                    </div>
-                </form>
+                        </div>
+                    </form>
+                </div>
             </div>
+
+
         </div>
-
-
-    </div>
-
+    {% endif %}
 
     <!-- Модальное окно настройки допуска-->
     <div class="modal fade" id="clearanceModal" tabindex="-1">
