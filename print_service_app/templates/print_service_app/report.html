@@ -1,0 +1,47 @@
+{% extends "print_service_app/base.html" %}
+{% load static %}
+{% block title %}
+    Сформировать отчет
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex w-100 flex-column">
+        <div class="d-flex text-36px-bold mt-5">
+            Сформировать отчет
+        </div>
+        <div class="d-flex text-16px-light mt-3">
+            Выберите даты для формирования отчета
+        </div>
+        <div class="d-flex flex-column w-100">
+            <div class="d-flex mt-3 w-25 flex-column">
+                <div class="d-flex text-16px-light"><span>Дата начала</span></div>
+                <input type="date" class="form-control">
+            </div>
+            <div class="d-flex mt-3 w-25 flex-column">
+                <div class="d-flex text-16px-light"><span>Дата окончания</span></div>
+                <input type="date" class="form-control">
+            </div>
+        </div>
+    <button class="button_blue mt-3" style="width: 200px; height: 40px">Сформировать</button>
+    </div>
+
+    <!-- Модальное окно информации о заявка-->
+    <div class="modal fade" id="detailModalWindow" data-ajax-url="{% url 'get-info-task-print' %}" tabindex="-1">
+    </div>
+
+
+{% endblock %}
+
+
+/*href_site = window.location.href
+href_ws = href_site + 'ws/some_url/'
+console.log(href_ws)
+var socket = new WebSocket('ws://localhost:8003/ws/some_url/')
+socket.onmessage = function (event){
+var data = JSON.parse(event.data)
+console.log(data)
+document.getElementById('display_div').innerText = data.message
+document.getElementById('display_div2').innerText = data.orm_result.data
+}
+*/
+

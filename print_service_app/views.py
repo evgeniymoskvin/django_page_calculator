@@ -1,5 +1,6 @@
 import ast
 import datetime
+import json
 
 from django.http import HttpResponse
 from django.db.models import Q
@@ -97,7 +98,7 @@ class DownloadFileView(View):
             with open(file_path, 'rb') as fh:
                 mime_type, _ = mimetypes.guess_type(file_path)
                 response = HttpResponse(fh.read(), content_type=mime_type)
-                response['Content-Disposition'] = 'inline; filename=' + escape_uri_path(os.path.basename(file_path))
+                response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(os.path.basename(file_path))
                 return response
         raise Http404
 
@@ -119,8 +120,58 @@ class DownloadBlankView(View):
                 color_info = f'Цветной'
             else:
                 color_info = f''
-
-            other_info = f'{pages_info.other_pages}'
+            lists_info = ''
+            if pages_info.a4 > 0:
+                lists_info += f'A4 - {pages_info.a4}\n'
+            if pages_info.a3 > 0:
+                lists_info += f'A3 - {pages_info.a3}\n'
+            if pages_info.a2 > 0:
+                lists_info += f'A2 - {pages_info.a2}\n'
+            if pages_info.a1 > 0:
+                lists_info += f'A1 - {pages_info.a1}\n'
+            if pages_info.a0 > 0:
+                lists_info += f'A1 - {pages_info.a0}\n'
+            if pages_info.a4x3 > 0:
+                lists_info += f'A4x3 - {pages_info.a4x3}\n'
+            if pages_info.a4x4 > 0:
+                lists_info += f'A4x4 - {pages_info.a4x4}\n'
+            if pages_info.a4x5 > 0:
+                lists_info += f'A4x5 - {pages_info.a4x5}\n'
+            if pages_info.a4x6 > 0:
+                lists_info += f'A4x8 - {pages_info.a4x6}\n'
+            if pages_info.a4x7 > 0:
+                lists_info += f'A4x7 - {pages_info.a4x7}\n'
+            if pages_info.a4x8 > 0:
+                lists_info += f'A4x8 - {pages_info.a4x8}\n'
+            if pages_info.a4x9 > 0:
+                lists_info += f'A4x9 - {pages_info.a4x9}\n'
+            if pages_info.a3x3 > 0:
+                lists_info += f'A3x3 - {pages_info.a3x3}\n'
+            if pages_info.a3x4 > 0:
+                lists_info += f'A3x4 - {pages_info.a3x4}\n'
+            if pages_info.a3x5 > 0:
+                lists_info += f'A3x5 - {pages_info.a3x5}\n'
+            if pages_info.a3x6 > 0:
+                lists_info += f'A3x6 - {pages_info.a3x6}\n'
+            if pages_info.a3x7 > 0:
+                lists_info += f'A3x7 - {pages_info.a3x7}\n'
+            if pages_info.a2x3 > 0:
+                lists_info += f'A2x3 - {pages_info.a2x3}\n'
+            if pages_info.a2x4 > 0:
+                lists_info += f'A2x4 - {pages_info.a2x4}\n'
+            if pages_info.a2x5 > 0:
+                lists_info += f'A2x5 - {pages_info.a2x5}\n'
+            if pages_info.a1x3 > 0:
+                lists_info += f'A1x3 - {pages_info.a1x3}\n'
+            if pages_info.a1x4 > 0:
+                lists_info += f'A1x4 - {pages_info.a1x4}\n'
+            if pages_info.a0x2 > 0:
+                lists_info += f'A0x2 - {pages_info.a0x2}\n'
+            if pages_info.a0x3 > 0:
+                lists_info += f'A0x3 - {pages_info.a0x3}\n'
+            dict_temp_file_json = eval(pages_info.other_pages)
+            for key, value in dict_temp_file_json.items():
+                lists_info += f'{key} - {value}\n'
             content = {"request_number": print_task.inventory_number_request,
                        "day": datetime.datetime.now().day,
                        "month": datetime.datetime.now().strftime('%b'),
@@ -133,20 +184,8 @@ class DownloadBlankView(View):
                        "all": print_task.count_pages,
                        "cop": print_task.copy_count,
                        "inventory_number": print_task.inventory_number_file,
-                       "a4": pages_info.a4,
-                       "a3": pages_info.a3,
-                       "a2": pages_info.a2,
-                       "a1": pages_info.a1,
-                       "a0": pages_info.a0,
-                       "a4x": int(pages_info.a4x3) * 3 + int(pages_info.a4x4) * 4 + int(pages_info.a4x5) * 5 + int(
-                           pages_info.a4x6) * 6 + int(pages_info.a4x7) * 7 + int(pages_info.a4x8) * 8 + int(
-                           pages_info.a4x9) * 9,
-                       "a3x": int(pages_info.a3x3) * 3 + int(pages_info.a3x4) * 4 + int(pages_info.a3x5) * 5 + int(
-                           pages_info.a3x6) * 6 + int(pages_info.a3x7) * 7,
-                       "a2x": int(pages_info.a2x3) * 3 + int(pages_info.a2x4) * 4 + int(pages_info.a2x5) * 5,
-                       "a1x": int(pages_info.a1x3) * 3 + int(pages_info.a1x4) * 4,
-                       "a0x": int(pages_info.a0x2) * 2 + int(pages_info.a0x3) * 3,
-                       "info": f'{pages_info.other_pages}. {color_info}',
+                       "info": f'{color_info}',
+                       'lists_info': lists_info,
                        "a4f": print_task.a4_count_formats}
             doc.render(content)
             new_full_path = os.path.join(settings.BASE_DIR, 'print_service_app', 'docx', 'zaiavka_done.docx')
@@ -156,7 +195,7 @@ class DownloadBlankView(View):
             with open(new_full_path, 'rb') as fh:
                 mime_type, _ = mimetypes.guess_type(new_full_path)
                 response = HttpResponse(fh.read(), content_type=mime_type)
-                response['Content-Disposition'] = 'inline; filename=' + escape_uri_path(file_name)
+                response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(file_name)
                 return response
         raise Http404
 
@@ -170,6 +209,17 @@ class AllTaskView(View):
             content = {"all_tasks": all_tasks,
                        "user_permission": user_permission}
             return render(request, 'print_service_app/all-print-task.html', content)
+        else:
+            content = {}
+            return render(request, 'print_service_app/permission-error.html', content)
+
+
+class ReportView(View):
+    def get(self, request):
+        user_permission = check_permission_user(request.user)
+        if user_permission:
+            content = {"user_permission": user_permission}
+            return render(request, 'print_service_app/report.html', content)
         else:
             content = {}
             return render(request, 'print_service_app/permission-error.html', content)

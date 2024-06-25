@@ -266,30 +266,55 @@ class ListsFileModel(models.Model):
     """
     print_file = models.OneToOneField(PrintFilesModel, on_delete=models.CASCADE, null=False, blank=False)
     a0 = models.IntegerField(verbose_name="A0", default=0, blank=True)
+    a0_color = models.IntegerField(verbose_name="A0", default=0, blank=True)
     a0x2 = models.IntegerField(verbose_name="A0x2", default=0, blank=True)
+    a0x2_color = models.IntegerField(verbose_name="A0x2", default=0, blank=True)
     a0x3 = models.IntegerField(verbose_name="A0x3", default=0, blank=True)
+    a0x3_color = models.IntegerField(verbose_name="A0x3", default=0, blank=True)
     a1 = models.IntegerField(verbose_name="A1", default=0, blank=True)
+    a1_color = models.IntegerField(verbose_name="A1", default=0, blank=True)
     a1x3 = models.IntegerField(verbose_name="A1x3", default=0, blank=True)
+    a1x3_color = models.IntegerField(verbose_name="A1x3", default=0, blank=True)
     a1x4 = models.IntegerField(verbose_name="A1x4", default=0, blank=True)
+    a1x4_color = models.IntegerField(verbose_name="A1x4", default=0, blank=True)
     a2 = models.IntegerField(verbose_name="A2", default=0, blank=True)
+    a2_color = models.IntegerField(verbose_name="A2", default=0, blank=True)
     a2x3 = models.IntegerField(verbose_name="A2x3", default=0, blank=True)
+    a2x3_color = models.IntegerField(verbose_name="A2x3", default=0, blank=True)
     a2x4 = models.IntegerField(verbose_name="A2x4", default=0, blank=True)
+    a2x4_color = models.IntegerField(verbose_name="A2x4", default=0, blank=True)
     a2x5 = models.IntegerField(verbose_name="A2x5", default=0, blank=True)
+    a2x5_color = models.IntegerField(verbose_name="A2x5", default=0, blank=True)
     a3 = models.IntegerField(verbose_name="A3", default=0, blank=True)
+    a3_color = models.IntegerField(verbose_name="A3", default=0, blank=True)
     a3x3 = models.IntegerField(verbose_name="A3x3", default=0, blank=True)
+    a3x3_color = models.IntegerField(verbose_name="A3x3", default=0, blank=True)
     a3x4 = models.IntegerField(verbose_name="A3x4", default=0, blank=True)
+    a3x4_color = models.IntegerField(verbose_name="A3x4", default=0, blank=True)
     a3x5 = models.IntegerField(verbose_name="A3x5", default=0, blank=True)
+    a3x5_color = models.IntegerField(verbose_name="A3x5", default=0, blank=True)
     a3x6 = models.IntegerField(verbose_name="A3x6", default=0, blank=True)
+    a3x6_color = models.IntegerField(verbose_name="A3x6", default=0, blank=True)
     a3x7 = models.IntegerField(verbose_name="A3x7", default=0, blank=True)
+    a3x7_color = models.IntegerField(verbose_name="A3x7", default=0, blank=True)
     a4 = models.IntegerField(verbose_name="A4", default=0, blank=True)
+    a4_color = models.IntegerField(verbose_name="A4", default=0, blank=True)
     a4x3 = models.IntegerField(verbose_name="A4x3", default=0, blank=True)
+    a4x3_color = models.IntegerField(verbose_name="A4x3", default=0, blank=True)
     a4x4 = models.IntegerField(verbose_name="A4x4", default=0, blank=True)
+    a4x4_color = models.IntegerField(verbose_name="A4x4", default=0, blank=True)
     a4x5 = models.IntegerField(verbose_name="A4x5", default=0, blank=True)
+    a4x5_color = models.IntegerField(verbose_name="A4x5", default=0, blank=True)
     a4x6 = models.IntegerField(verbose_name="A4x6", default=0, blank=True)
+    a4x6_color = models.IntegerField(verbose_name="A4x6", default=0, blank=True)
     a4x7 = models.IntegerField(verbose_name="A4x7", default=0, blank=True)
+    a4x7_color = models.IntegerField(verbose_name="A4x7", default=0, blank=True)
     a4x8 = models.IntegerField(verbose_name="A4x8", default=0, blank=True)
+    a4x8_color = models.IntegerField(verbose_name="A4x8", default=0, blank=True)
     a4x9 = models.IntegerField(verbose_name="A4x9", default=0, blank=True)
+    a4x9_color = models.IntegerField(verbose_name="A4x9", default=0, blank=True)
     other_pages = models.CharField(verbose_name="Другое", max_length=1000, blank=True, null=True)
+    other_pages_color = models.CharField(verbose_name="Другое", max_length=1000, blank=True, null=True)
 
     class Meta:
         verbose_name = _('лист файла')
@@ -325,3 +350,25 @@ class CountTasksModel(models.Model):
 
     def __str__(self):
         return f'{self.date_of_print} - {self.count}'
+
+class ChangeStatusHistoryModel(models.Model):
+
+    class PrintFileStatusChoice(models.IntegerChoices):
+        """Статус кода Kks"""
+        CANCELED = 0, _('Аннулирован')
+        ACTUAL = 1, _('Актуален')
+        WORK = 2, _('В работе')
+        DONE = 3, _('Готов')
+
+    """История изменения статусов"""
+    print_task = models.ForeignKey(PrintFilesModel, verbose_name='Задание на печать', on_delete=models.CASCADE, default=None, null=True, blank=True)
+    status = models.IntegerField(verbose_name="Статус номера", choices=PrintFileStatusChoice.choices, default=1)
+    emp = models.ForeignKey(EmployeeModel, verbose_name='Сотрудник', on_delete=models.CASCADE, default=None, null=True, blank=True)
+    date_change_status = models.DateTimeField('Дата изменения', auto_now_add=True, null=True)
+
+    class Meta:
+        verbose_name = _('история изменения')
+        verbose_name_plural = _('история изменений')
+
+    def __str__(self):
+        return f'{self.print_task.inventory_number_request} - {self.status} - {self.emp}'
