@@ -138,6 +138,7 @@
                                                         data-ajax-count-pages = "{{ value.count_pages }}"
                                                         data-ajax-json='{{ value.good_lists }}'
                                                         data-ajax-a4formats='{{ value.a4_count }}'
+                                                        data-ajax-all-file-lists = '{{ value.list_pages }}'
                                                         data-ajax-bad-json='{{ value.pdf_unknown_size_file }}'
                                                         onclick="sendFile(this)">
                                                     Отправить на печать
@@ -276,6 +277,7 @@
         console.log(name_file)
         console.log(url_blanc)
         console.log(data_ajax_json)
+        console.log(data_ajax_all_file_lists)
 
         $.ajax({
             type: "GET",// формируем AJAX запрос
@@ -297,6 +299,7 @@
         document.getElementById('temp_file_bad_json').value = $(el).attr("data-ajax-bad-json")
         document.getElementById('temp_file_count_pages').value = $(el).attr("data-ajax-count-pages")
         document.getElementById('temp_file_a4_formats').value = $(el).attr("data-ajax-a4formats")
+        document.getElementById('temp_all_lists_file').value = $(el).attr("data-ajax-all-file-lists")
         {#$('#temp_file_name').innerText()#}
         $('#sendFileModal').modal('show');
 

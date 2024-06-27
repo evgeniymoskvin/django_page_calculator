@@ -11,7 +11,7 @@
                 Заявки на печать - {{ emp }}
             </div>
             <div class="mt-3">
-                <table id="all-kks-codes" class="table table-hover">
+                <table id="my-print-tasks" class="table table-hover">
                     <thead>
                     <tr>
                         <th class="th_tables" scope="col">#</th>
@@ -51,6 +51,7 @@
                                 rel="txtTooltip" data-bs-html="true"
                                 title="{{ obj.date_change_status }}"
                                     {% endif %}
+                                id="status_{{ obj.id }}"
                             >
                                 {{ obj.get_status_display }}
                             </td>
@@ -85,7 +86,7 @@
                     <div class="modal-body modal-body_clearance">
                         <div class="d-flex row flex-row w-100">
                             <div class="d-flex text-18px-light">Отменить заявку на печать?</div>
-                            <input id="number_task" name="number_task">
+                            <input id="number_task" name="number_task" hidden>
                         </div>
                     </div>
                     <div class="modal-footer modal-footer_clearance justify-content-between">
@@ -105,6 +106,66 @@
 
     <script>
 
+        $(document).ready(function () {
+            var table = $('#my-print-tasks').DataTable({
+                    {#order: [[1, 'asc']],#}
+                    dom:
+                    //"<'row'<'col-sm-12'tr>>",
+                    //"<'row'<'col-sm-12 col-md-2'l><'col-sm-2 col-md-2 col-xxl-4'B><'col-sm-12 col-md-6'f>>" +
+                        "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                        "<'row'<'col-sm-12'tr>>" +
+                        //"<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+                        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>" +
+                        "<'col-sm-2 col-md-2 col-xxl-2'B>",
+                    "language":
+                        {
+                            "lengthMenu": "_MENU_",
+                            "zeroRecords": "Записи не найдены",
+                            "info": "Показано с _START_ по _END_ из _TOTAL_ записей",
+                            "search": "Поиск",
+                            "paginate": {
+                                "next": "Следующая",
+                                "previous": "Предыдущая"
+                            }
+                        },
+                    "aLengthMenu": [[1, 5, 10, 15, 20, 25, -1], [1, 5, 10, 15, 20, 25, "Все"]],
+                    "iDisplayLength": 15,
+                    buttons: ['pdf', 'excel']
+                }
+            );
+            table.buttons().container().appendTo($('.col-sm-6:eq(0)', table.table().container()));
+            newStyleButton()
+            {#newStyleButton()#}
+            var all_forms = document.querySelectorAll(".form-select")
+            for (var i = 0; i < all_forms.length; i++) {
+                all_forms[i].style.minHeight = '0px';
+            }
+
+
+        });
+
+
+        function newStyleButton() {
+            const pdf_button = document.getElementsByClassName("btn btn-secondary buttons-pdf buttons-html5")[0]
+            console.log(pdf_button);
+            pdf_button.classList.remove("btn")
+            pdf_button.classList.remove("btn-secondary")
+            pdf_button.classList.remove("buttons-pdf")
+            pdf_button.classList.remove("buttons-html5")
+            pdf_button.textContent = ''
+            pdf_button.classList.add("pdf_button_icon")
+
+            const exel_button = document.getElementsByClassName("btn btn-secondary buttons-excel buttons-html5")[0]
+            console.log(exel_button);
+            exel_button.classList.remove("btn")
+            exel_button.classList.remove("btn-secondary")
+            exel_button.classList.remove("buttons-excel")
+            exel_button.classList.remove("buttons-html5")
+            exel_button.textContent = ''
+            exel_button.classList.add("exel_button_icon")
+        }
+
+
         $('#form_cancel_print_file').submit(function (e) {
                 e.preventDefault()
                 var url = $('#MyCancelTaskModalWindow').attr('data-ajax-url')
@@ -120,11 +181,15 @@
                     success: function (data) {
                         console.log('done')
                         $('#MyCancelTaskModalWindow').modal('hide');
+                        var id_obj = document.getElementById('number_task').value
+                        var status_id = 'status_' + id_obj
+                        console.log('Change status id: ', status_id)
+                        document.getElementById(status_id).innerText = 'Аннулирован'
                         {#$('#good_send_modal').modal('show');#}
                     },
                     error: function () {
-                        {#$('#sendFileModal').modal('hide');#}
-                        {#$('#bad_send_modal').modal('show');#}
+                        $('#MyCancelTaskModalWindow').modal('hide');
+                        $('#error_modal').modal('show');
                     }
                 })
             }

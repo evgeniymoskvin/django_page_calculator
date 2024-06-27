@@ -145,9 +145,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-CACHALOT_UNCACHABLE_TABLES = frozenset(('django_migrations', 'auth_user', 'django_session'))
-CELERY_BROKER_URL = 'redis://192.168.20.50:6379//10'
-CELERY_RESULT_BACKEND = 'redis://192.168.20.50:6379/10'
+# CACHALOT_UNCACHABLE_TABLES = frozenset(('django_migrations', 'auth_user', 'django_session'))
+CELERY_BROKER_URL = 'redis://192.168.20.50:6379//0'
+CELERY_RESULT_BACKEND = 'redis://192.168.20.50:6379/0'
 FORKED_BY_MULTIPROCESSING = 1
 # CELERY_BROKER_URL = 'redis://redis:6379//0'
 # CELERY_RESULT_BACKEND = 'redis://0.0.0.0:6379/0'

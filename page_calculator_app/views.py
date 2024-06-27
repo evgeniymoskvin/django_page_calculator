@@ -1,4 +1,6 @@
 import datetime
+import time
+from functools import reduce
 
 from django.shortcuts import render, redirect
 from django.views import View
@@ -6,7 +8,10 @@ from django.conf import settings
 from .forms import UploadFileForm
 from .models import PrintFilesModel, EmployeeModel, OrdersModel, ObjectModel, ContractModel, CountTasksModel, \
     ListsFileModel, PrintPagePermissionModel
-from .functions import check_date_in_db
+from .functions import check_date_in_db, check_color_pages
+from print_service_app.tasks import celery_check_color_pages
+from print_service_app.views import check_permission_user
+from PIL import Image, ImageStat
 from django.http import HttpResponse
 import mimetypes
 from django.http import HttpResponse
@@ -17,6 +22,7 @@ import ast
 
 import math
 import PyPDF2
+from pdf2image import convert_from_path
 
 # Словарь с размерами листов по ГОСТ
 PAGE_SIZE_STANDARD = {
@@ -71,12 +77,12 @@ class IndexView(View):
     """Главная страница"""
 
     def get(self, request):
-        # В случае если не установлен допуск размера, установить +-15мм
+        # В случае если в cookies не установлен допуск размера, установить +-15мм
         try:
             clearance = int(request.COOKIES['clearance'])
         except:
             clearance = 15
-        # Проверка, есть ли у сотрудника права доступа к
+        # Проверка, есть ли у сотрудника права доступа к типографии
         try:
             user = EmployeeModel.objects.get(user=request.user)
             user_permission = PrintPagePermissionModel.objects.get(emp=user)
@@ -148,7 +154,7 @@ class GetAnswerView(View):
                     'A4x8': 0,
                     'A4x9': 0,
                 }
-                pdf_unknown_size_file = {}
+                pdf_unknown_size_file = {}  # Нераспознанные листы файла
                 a4_count = 0  # Счетчик форматов А4
                 normal_pages = 0  # Счетчик распознанных листов
                 list_pages = []  # Список листов
@@ -225,14 +231,11 @@ class GetAnswerView(View):
                    'files_count': files_count,
                    'all_lists_approve': all_lists_approve,
                    'all_files_format': all_files_format,
-                   # 'pdf_size_file': pdf_size_file,
                    'exit_dict': exit_dict,
                    'clearance': clearance,
                    'errors': errors,
                    'good_files': files_count - errors,
                    }
-        # content = {
-        #            'pdf_size_file': pdf_size_file}
         resp = render(request, 'page_calculator_app/answer.html', content)
         resp.set_cookie(key='clearance', value=clearance)  # Установка допуска clearance в cookie
         return resp
@@ -253,30 +256,30 @@ class ChangeClearanceView(View):
         return resp
 
 
-class GetBlancView(View):
-    def get(self, request):
-        print(f'request.GET: {request.GET}')
-        print(f'request.FILES: {request.FILES}')
-        print(f'request.COOKIES: {request.COOKIES}')
-        json_result = request.GET['json']
-        print(json_result)
-        print(type(json_result))
-        dict_result = ast.literal_eval(json_result)
-        print(dict_result)
-        print(type(dict_result))
-
-        return HttpResponse(status=200)
+# class GetBlancView(View):
+#     def get(self, request):
+#         print(f'request.GET: {request.GET}')
+#         print(f'request.FILES: {request.FILES}')
+#         print(f'request.COOKIES: {request.COOKIES}')
+#         json_result = request.GET['json']
+#         print(json_result)
+#         print(type(json_result))
+#         dict_result = ast.literal_eval(json_result)
+#         print(dict_result)
+#         print(type(dict_result))
+#
+#         return HttpResponse(status=200)
 
 
 class PrintView(View):
     """Отправка файлов на печать"""
-
     def post(self, request):
+        print(f'request.user: {request.user}')
         print(f'request.POST: {request.POST}')
         print(f'request.FILES: {request.FILES}')
         print(f'request.FILES: {request.FILES["file"]}')
         print(f'request.COOKIES: {request.COOKIES}')
-
+        start_time = time.time()
         # Формируем запись со счетчиком заявок в день
         check_date_in_db()
         last_task_in_db = CountTasksModel.objects.latest('id')
@@ -302,16 +305,19 @@ class PrintView(View):
             color=int(request.POST.get('color_id')),
         )
         new_task_to_print.save()
+        print(f"Сохранили задачу в базу за {time.time() - start_time} секунд от момента старта")
+        json_all_lists_file = request.POST.get('temp_all_lists_file')
+        all_lists_file = ast.literal_eval(json_all_lists_file)
 
         # Создаем записи о листах
         temp_file_json = request.POST['temp_file_json']
         dict_temp_file_json = ast.literal_eval(temp_file_json)
         temp_file_bad_json = request.POST['temp_file_bad_json']
 
-        print(dict_temp_file_json)
-
         print_files_info = ListsFileModel()
         print_files_info.print_file_id = new_task_to_print.id
+
+        # Вносим все листы в базу данных
 
         if 'A0' in dict_temp_file_json:
             print_files_info.a0 = dict_temp_file_json['A0']
@@ -361,22 +367,32 @@ class PrintView(View):
             print_files_info.a4x8 = dict_temp_file_json['A4x8']
         if 'A4x9' in dict_temp_file_json:
             print_files_info.a4x9 = dict_temp_file_json['A4x9']
+        # Нераспознанные листы
         print_files_info.other_pages = temp_file_bad_json
         print_files_info.save()
-
+        print(f"Сохранили все листы в базу за {time.time() - start_time} секунд от момента старта")
+        file_path = new_task_to_print.file_to_print.path
+        # Если пользователь выбрал цветную печать, отправляем в Celery разбирать цветные и чб листы
+        if int(request.POST.get('color_id')) == 1:
+            celery_check_color_pages.delay(file_path=file_path, all_lists_file=all_lists_file,
+                                           lists_file_id=print_files_info.id)
         return HttpResponse(status=200)
 
 
 class MyPrintTaskView(View):
+    """Список заданий на печать сотрудника"""
     def get(self, request):
+        user_permission = check_permission_user(request.user)
         emp = EmployeeModel.objects.get(user=request.user)
         emp_tasks = PrintFilesModel.objects.get_queryset().filter(emp_upload_file=emp).order_by('-id')
         content = {'emp': emp,
-                   'emp_tasks': emp_tasks}
+                   'emp_tasks': emp_tasks,
+                   "user_permission": user_permission}
         return render(request, 'page_calculator_app/my-print-task.html', content)
 
 
 def get_contracts(request):
+    """ajax для получения договоров по заказу"""
     print(request.GET)
     object_id = int(request.GET.get('object'))
     contracts = ContractModel.objects.get_queryset().filter(contract_object_id=object_id).filter(show=True).order_by(
@@ -404,6 +420,7 @@ class GetInfoMyTaskView(View):
 
 
 class CancelMyTaskView(View):
+    """Отмена задания на печать"""
     def post(self, request):
         print(request.POST)
         cancel_print_task_id = request.POST['number_task']
