@@ -256,19 +256,19 @@ class ChangeClearanceView(View):
         return resp
 
 
-# class GetBlancView(View):
-#     def get(self, request):
-#         print(f'request.GET: {request.GET}')
-#         print(f'request.FILES: {request.FILES}')
-#         print(f'request.COOKIES: {request.COOKIES}')
-#         json_result = request.GET['json']
-#         print(json_result)
-#         print(type(json_result))
-#         dict_result = ast.literal_eval(json_result)
-#         print(dict_result)
-#         print(type(dict_result))
-#
-#         return HttpResponse(status=200)
+class GetBlancView(View):
+    def get(self, request):
+        print(f'request.GET: {request.GET}')
+        print(f'request.FILES: {request.FILES}')
+        print(f'request.COOKIES: {request.COOKIES}')
+        json_result = request.GET['json']
+        print(json_result)
+        print(type(json_result))
+        dict_result = ast.literal_eval(json_result)
+        print(dict_result)
+        print(type(dict_result))
+
+        return HttpResponse(status=200)
 
 
 class PrintView(View):

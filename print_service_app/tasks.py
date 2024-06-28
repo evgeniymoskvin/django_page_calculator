@@ -141,7 +141,7 @@ def celery_check_color_pages(file_path, all_lists_file, lists_file_id):
                 lists_file.a4x9_color += 1
 
     lists_file.save()
-    return f"Разобрали на цветные и чб за {time.time()-start_time} секунд"
+    return f"Разобрали на цветные выполнена"
 
 
 def detect_color_image(file, thumb_size=40, MSE_cutoff=1, adjust_color_bias=True):

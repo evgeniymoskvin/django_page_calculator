@@ -25,6 +25,7 @@ urlpatterns = [
     path('all-tasks', views.AllTaskView.as_view(), name='all-tasks'),
     path('ajax/get-list', views.get_tasks, name='get-tasks-print'),
     path('ajax/get-info', views.GetInfoPrintTaskView.as_view(), name='get-info-task-print'),
+    path('ajax/get-report-info', views.GetInfoReportPrintTaskView.as_view(), name='get-info-report-task-print'),
     path('download_file/<int:pk>', views.DownloadFileView.as_view(), name='download_file'),
     path('download_blank/<int:pk>', views.DownloadBlankView.as_view(), name='download_blank'),
     path('report/', views.ReportView.as_view(), name='report'),

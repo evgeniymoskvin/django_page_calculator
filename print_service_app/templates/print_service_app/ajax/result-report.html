@@ -1,0 +1,57 @@
+<div style="width: 100%">
+    <div class="d-flex text-18px-bold mt-5">
+        Задачи с {{ start_date }} по {{ end_date }}
+    </div>
+    <div class="mt-1">
+        <table id="report-tasks" class="table table-hover">
+            <thead>
+            <tr>
+                <th class="th_tables" scope="col">#</th>
+                <th class="th_tables" scope="col" style="text-align: center">№ заявки</th>
+                <th class="th_tables" scope="col" style="text-align: center">Автор</th>
+                <th class="th_tables" scope="col" style="text-align: center">Заказ</th>
+                <th class="th_tables" scope="col" style="text-align: center">Объект</th>
+                <th class="th_tables" scope="col" style="text-align: center">Кол-во<br>листов</th>
+                <th class="th_tables" scope="col" style="text-align: center">Дата</th>
+                <th class="th_tables" scope="col" style="text-align: center">Статус</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for obj in search_result %}
+                <tr class="tr-tables" style="cursor: context-menu" onclick="openReportModalWindow({{ obj.id }})">
+                    <th class="th_tables" scope="row" style="width: 30px">{{ forloop.counter }}</th>
+                    <td class="td_tables" style="width: 100px; text-align: center">
+                        {{ obj.inventory_number_request }}</td>
+                    <td class="td_tables" style="width: 150px; text-align: center">
+                        {{ obj.emp_upload_file.last_name }} {{ obj.emp_upload_file.first_name|slice:':1' }}.{{ obj.emp_upload_file.middle_name|slice:':1' }}.
+                    </td>
+                    <td class="td_tables" style="width: 75px; text-align: center">
+                        {{ obj.order }}
+                    </td>
+                    <td class="td_tables" style="width: 250px; text-align: center"
+                        data-toggle="tooltip" data-bs-placement="bottom"
+                        rel="txtTooltip" data-bs-html="true"
+                        title="{{ obj.object }}">
+                        {{ obj.object|truncatechars:50 }}
+                    </td>
+                    <td class="td_tables" style="width: 150px; text-align: center">
+                        {{ obj.count_pages }}
+                    </td>
+                    <td class="td_tables" style="width: 150px; text-align: center">
+                        {{ obj.add_file_date }}
+                    </td>
+                    <td class="td_tables" style="width: 150px; text-align: center"
+                            {% if obj.status == 2 or obj.status == 3 %}
+                        data-toggle="tooltip" data-bs-placement="bottom"
+                        rel="txtTooltip" data-bs-html="true"
+                        title="{{ obj.date_change_status }}"
+                            {% endif %}>
+                        {{ obj.get_status_display }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

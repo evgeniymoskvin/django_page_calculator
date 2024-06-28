@@ -61,7 +61,6 @@ def get_tasks(request):
     content = {"tasks_to_print": tasks_to_print}
     return render(request, 'print_service_app/ajax/get_task_list.html', content)
 
-
 class GetInfoPrintTaskView(View):
     """
     Информация по конкретному заданию
@@ -103,6 +102,25 @@ class GetInfoPrintTaskView(View):
             celery_email_print_done.delay(int(print_task_id))
         return HttpResponse(status=200)
 
+
+class GetInfoReportPrintTaskView(View):
+    def get(self, request):
+        obj_id = int(request.GET.get('object'))
+        obj = PrintFilesModel.objects.get(id=obj_id)
+        # Проверка на случай, если в базе отсутствует информация о листах
+        try:
+            obj_info = ListsFileModel.objects.get(print_file_id=obj.id)
+            bad_lists = obj_info.other_pages
+            dict_temp_file_json = ast.literal_eval(bad_lists)
+        except Exception as e:
+            print(e)
+            obj_info = None
+            dict_temp_file_json = {}
+
+        content = {'obj': obj,
+                   'obj_info': obj_info,
+                   'bad_lists': dict_temp_file_json}
+        return render(request, 'print_service_app/ajax/modal_report_details_task.html', content)
 
 class DownloadFileView(View):
     """Скачивание файла"""
@@ -338,6 +356,10 @@ class ReportView(View):
             search_result = search_result.filter(add_file_date__gte=start_date)
         if end_date:
             search_result = search_result.filter(add_file_date__lte=end_date)
+        search_result = search_result.filter(status=3).order_by('-id')
         print(search_result)
-
-        return HttpResponse(status=200)
+        content = {'search_result': search_result,
+                   'start_date': request.POST.get('date_start'),
+                   'end_date': request.POST.get('date_end')}
+        # return HttpResponse(status=200)
+        return render(request, 'print_service_app/ajax/result-report.html', content)
