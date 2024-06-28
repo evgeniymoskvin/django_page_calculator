@@ -350,14 +350,14 @@ class ReportView(View):
         print(f'request.POST: {request.POST}')
         start_date = datetime.datetime.strptime(request.POST.get('date_start'), "%Y-%m-%d").date()
         end_date = datetime.datetime.strptime(request.POST.get('date_end'), "%Y-%m-%d").date()
-        print(start_date, end_date)
+        end_date += datetime.timedelta(days=1)
+        print(f'Запрошен отчет на даты: {start_date} - {end_date}')
         search_result = PrintFilesModel.objects.get_queryset()
         if start_date:
             search_result = search_result.filter(add_file_date__gte=start_date)
         if end_date:
             search_result = search_result.filter(add_file_date__lte=end_date)
         search_result = search_result.filter(status=3).order_by('-id')
-        print(search_result)
         content = {'search_result': search_result,
                    'start_date': request.POST.get('date_start'),
                    'end_date': request.POST.get('date_end')}

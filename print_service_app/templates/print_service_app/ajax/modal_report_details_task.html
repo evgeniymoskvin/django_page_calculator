@@ -1,3 +1,4 @@
+{% load print_tags %}
 <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog_change-status">
     <div class="modal-content modal-content_clearance">
         <div class="modal-header modal-header_clearance">
@@ -14,6 +15,10 @@
                     <div class="d-flex w-100 flex-row justify-content-between align-items-center">
                         <div class="d-flex text-20px-light ">Инв. №</div>
                         <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.inventory_number_file }}</div>
+                    </div>
+                    <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex text-20px-light ">Поступило в работу</div>
+                        <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.add_file_date }}</div>
                     </div>
 
                     <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
@@ -457,21 +462,36 @@
             <div class="d-flex w-100 justify-content-center align-items-center flex-column mt-3">
                 {% if obj.file_to_print %}
                     <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
-                        <div class="d-flex text-20px-light">Сохранить отчет</div>
-                        <div class="d-flex text-20px-light"><a href="{% url 'download_file' obj.id %}"
-                                                               download>Скачать</a></div>
+                        <div class="d-flex text-20px-regular">Взял в работу:</div>
                     </div>
+                    <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex text-20px-light">{% get_who_change_status_in_work obj.id %}</div>
+                        <div class="d-flex text-20px-light">{% get_when_change_status_in_work obj.id %}</div>
+                    </div>
+                    <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex text-20px-regular">Выполнил:</div>
+                    </div>
+                    <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex text-20px-light">{% get_who_change_status_done obj.id %}</div>
+                        <div class="d-flex text-20px-light">{% get_when_change_status_done obj.id %}</div>
+                    </div>
+{#                    <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">#}
+{#                        <div class="d-flex text-20px-light">Сохранить отчет</div>#}
+{#                        <div class="d-flex text-20px-light"><a href="{% url 'download_file' obj.id %}"#}
+{#                                                               download>Скачать</a></div>#}
+{#                    </div>#}
                 {% endif %}
             </div>
         </div>
 
-        <div class="modal-footer modal-footer_clearance justify-content-between">
-            <button type="button" class="button_grey_clearance"
-                    data-bs-dismiss="modal"
-                    onclick="$('#sendFileModal').modal('hide');">Отмена
-            </button>
-            <button class="button_blue_clearance button_blue_clearance_send_file" type="submit">
-                Отправить
+        <div class="modal-footer modal-footer_clearance justify-content-center">
+{#            <button type="button" class="button_grey_clearance"#}
+{#                    data-bs-dismiss="modal"#}
+{#                    onclick="$('#sendFileModal').modal('hide');">Отмена#}
+{#            </button>#}
+            <button class="button_blue_clearance button_blue_clearance_send_file" type="submit" style="width: 200px"
+            onclick="location.href='{% url 'download_file' obj.id %}'">
+                Скачать отчет
             </button>
         </div>
     </div>
