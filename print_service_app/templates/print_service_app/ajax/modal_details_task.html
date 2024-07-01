@@ -98,7 +98,11 @@
                             <div class="d-flex text-20px-light">Количество форматов А4</div>
                             <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.a4_count_formats }}</div>
                         </div>
-                        <div class="d-flex text-20px-light mt-2">Распознанные ч/б форматы:</div>
+                        <div class="d-flex text-20px-light mt-2">Распознанные
+                            {% if color_pages > 0 %}
+                            ч/б
+                            {% endif %}
+                            форматы:</div>
                         <div class="d-flex w-100 flex-row flex-wrap justify-content-between">
                             {% if obj_info.a0 > 0 %}
                                 <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
@@ -269,6 +273,9 @@
                                 </div>
                             {% endif %}
                         </div>
+
+
+                    {% if color_pages > 0 %}
                         <div class="d-flex text-20px-light mt-2">Распознанные цветные форматы:</div>
                         <div class="d-flex w-100 flex-row flex-wrap justify-content-between">
                             {% if obj_info.a0_color > 0 %}
@@ -440,6 +447,9 @@
                                 </div>
                             {% endif %}
                         </div>
+                    {% endif %}
+
+                    {% if len_bad_dict_temp > 0 %}
                         <div class="d-flex text-20px-light mt-2">Нераспознанные форматы:</div>
                         <div class="d-flex w-100 flex-row flex-wrap justify-content-between">
 
@@ -450,6 +460,7 @@
                                 </div>
                             {% endfor %}
                         </div>
+                    {% endif %}
                     </div>
                 </div>
 
@@ -458,7 +469,7 @@
                     {% if obj.file_to_print %}
                         <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
                             <div class="d-flex text-20px-light">Файл</div>
-                            <div class="d-flex text-20px-light"><a href="{% url 'download_file' obj.id %}"
+                            <div class="d-flex text-20px-light"><a id="download_file" href="{% url 'download_file' obj.id %}"
                                                                    download>Скачать</a></div>
                         </div>
                     {% endif %}
