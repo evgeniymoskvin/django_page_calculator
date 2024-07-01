@@ -420,12 +420,13 @@ class GetInfoMyTaskView(View):
 
 
 class CancelMyTaskView(View):
-    """Отмена задания на печать"""
+    """Отмена задания на печать сотрудником"""
     def post(self, request):
         print(request.POST)
         cancel_print_task_id = request.POST['number_task']
         cancel_print_task_obj = PrintFilesModel.objects.get(id=cancel_print_task_id)
         cancel_print_task_obj.status = 0
+        cancel_print_task_obj.date_change_status = datetime.datetime.now()
         cancel_print_task_obj.save()
         return HttpResponse(status=200)
 

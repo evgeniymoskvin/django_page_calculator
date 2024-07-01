@@ -1,0 +1,373 @@
+{% load print_tags %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>
+        Бланк задания
+    </title>
+    <link rel="icon" type="image/x-icon" href="{% static 'page_calculator_app/favicon/Calculator_30001.png' %}"
+          sizes="any">
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'page_calculator_app/DataTables/datatables.css' %}"/>
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'page_calculator_app/Bootstrap-5-5.1.3/css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'page_calculator_app/css/page_calculator.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'page_calculator_app/css/scroll-panel.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'page_calculator_app/css/style_sidebar.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'page_calculator_app/css/loader-big.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'page_calculator_app/jQuery-ui/jquery-ui.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'page_calculator_app/select2/select2.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'page_calculator_app/css/print.css' %}"/>
+
+    <script type="text/javascript" src="{% static 'page_calculator_app/jQuery-3.6.0/jquery-3.6.0.min.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'page_calculator_app/Bootstrap-5-5.1.3/js/bootstrap.bundle.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'page_calculator_app/DataTables/datatables.js' %}"></script>
+    <script type="text/javascript"
+            src="{% static 'page_calculator_app/jQuery-ui/jquery-ui.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'page_calculator_app/select2/select2.min.js' %}"></script>
+</head>
+<body class="content-fade">
+
+<div class="d-flex container flex-column mt-3">
+    <div class="d-flex text-18px-bold ">
+        Заявка в ОУВиХПМ на выполнение работ
+    </div>
+    <div class="d-flex text-18px-bold">
+        № {{ print_task.inventory_number_request }}
+    </div>
+    <div class="d-flex text-16px-light mt-3">
+        <span class="text-16px-bold">Дата поступления:&nbsp</span> {{ print_task.add_file_date }}
+    </div>
+    <div class="d-flex text-16px-light ">
+        <span class="text-16px-bold">Инв. №:&nbsp</span> {{ print_task.inventory_number_file }}
+    </div>
+    <div class="d-flex text-16px-light ">
+        <span class="text-16px-bold">Заказ:&nbsp</span> {{ print_task.order }}
+    </div>
+    <div class="d-flex text-16px-light ">
+        <span class="text-16px-bold">Объект:&nbsp</span> {{ print_task.object|truncatechars:75 }}
+    </div>
+    <div class="d-flex text-16px-light ">
+        <span class="text-16px-bold">Договор:&nbsp</span> {{ print_task.contract.contract_name|truncatechars:50 }}
+    </div>
+    <div class="d-flex text-16px-light ">
+        <span class="text-16px-bold">Исполнитель:&nbsp</span> {{ print_task.emp_upload_file }}
+    </div>
+    <div class="d-flex text-16px-light ">
+        <span class="text-16px-bold">Отдел:&nbsp</span>{{ print_task.emp_upload_file.department.command_number }}, {{ print_task.emp_upload_file.department_group.group_dep_name }}
+    </div>
+    <div class="d-flex text-16px-light ">
+        <span class="text-16px-bold">Вид документации:&nbsp</span>{{ print_task.get_task_type_work_display }}
+    </div>
+    <div class="d-flex text-16px-light ">
+        <span class="text-16px-bold">Допуск подсчета:&nbsp</span>±{{ print_task.user_clearance }}мм.
+    </div>
+    <div class="d-flex text-16px-light ">
+        <span class="text-16px-bold">Количество экземпляров:&nbsp</span>{{ print_task.copy_count }}
+    </div>
+
+    {% if print_task.print_folding is not None %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">Фальцовка:&nbsp</span>
+            {% if print_task.print_folding %}
+                Требуется
+            {% else %}
+                Не требуется
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <div class="d-flex text-16px-light ">
+        <span class="text-16px-bold">Цветной:&nbsp</span>
+        {% if print_task.color %}
+            Да
+        {% else %}
+            Нет
+        {% endif %}
+    </div>
+
+    <div class="d-flex text-16px-light ">
+        <span class="text-16px-bold">Количество листов:&nbsp</span>{{ print_task.count_pages }}
+    </div>
+
+    <div class="d-flex text-16px-light ">
+        <span class="text-16px-bold">Количество цветных:&nbsp</span>{{ color_pages }}
+    </div>
+
+    <div class="d-flex text-16px-light ">
+        <span class="text-16px-bold">Количество форматов А4:&nbsp</span>{{ print_task.a4_count_formats }}
+    </div>
+    <div class="d-flex text-16px-light mt-3">
+        <span class="text-16px-bold">Распознанные форматы:&nbsp</span>
+    </div>
+    {% if pages_info.a0 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А0:&nbsp</span>{{ pages_info.a0 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a0_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А0 цветной:&nbsp</span>{{ pages_info.a0_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a0x2 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А0x2:&nbsp</span>{{ pages_info.a0x2 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a0x2_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А0x2 цветной:&nbsp</span>{{ pages_info.a0x2_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a0x3 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А0x3:&nbsp</span>{{ pages_info.a0x3 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a0x3_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А0x3 цветной:&nbsp</span>{{ pages_info.a0x3_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a1 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А1:&nbsp</span>{{ pages_info.a1 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a1_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А1 цветной:&nbsp</span>{{ pages_info.a1_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a1x3 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А1x3:&nbsp</span>{{ pages_info.a1x3 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a1x3_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А1x3 цветной:&nbsp</span>{{ pages_info.a1x3_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a1x4 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А1x4:&nbsp</span>{{ pages_info.a1x4 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a1x4_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А1x4 цветной:&nbsp</span>{{ pages_info.a1x4_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a2 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А2:&nbsp</span>{{ pages_info.a2 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a2_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А2 цветной:&nbsp</span>{{ pages_info.a2_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a2x3 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А2x3:&nbsp</span>{{ pages_info.a2x3 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a2x3_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А2x3 цветной:&nbsp</span>{{ pages_info.a2x3_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a2x4 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А2x4:&nbsp</span>{{ pages_info.a2x4 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a2x4_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А2x4 цветной:&nbsp</span>{{ pages_info.a2x4_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a2x5 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А2x5:&nbsp</span>{{ pages_info.a2x5 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a2x5_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А2x5 цветной:&nbsp</span>{{ pages_info.a2x5_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a3 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А3:&nbsp</span>{{ pages_info.a3 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a3_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А3 цветной:&nbsp</span>{{ pages_info.a3_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a3x3 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А3x3:&nbsp</span>{{ pages_info.a3x3 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a3x3_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А3x3 цветной:&nbsp</span>{{ pages_info.a3x3_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a3x4 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А3x4:&nbsp</span>{{ pages_info.a3x4 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a3x4_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А3x4 цветной:&nbsp</span>{{ pages_info.a3x4_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a3x5 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А3x5:&nbsp</span>{{ pages_info.a3x5 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a3x5_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А3x5 цветной:&nbsp</span>{{ pages_info.a3x5_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a3x6 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А3x6:&nbsp</span>{{ pages_info.a3x6 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a3x6_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А3x6 цветной:&nbsp</span>{{ pages_info.a3x6_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a3x7 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А3x7:&nbsp</span>{{ pages_info.a3x7 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a3x7_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А3x7 цветной:&nbsp</span>{{ pages_info.a3x7_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a4 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А4:&nbsp</span>{{ pages_info.a4 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a4_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А4 цветной:&nbsp</span>{{ pages_info.a4_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a4x3 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А4x3:&nbsp</span>{{ pages_info.a4x3 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a4x3_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А4x3 цветной:&nbsp</span>{{ pages_info.a4x3_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a4x4 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А4x4:&nbsp</span>{{ pages_info.a4x4 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a4x4_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А4x4 цветной:&nbsp</span>{{ pages_info.a4x4_color }}
+        </div>
+    {% endif %}
+
+    {% if pages_info.a4x5 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А4x5:&nbsp</span>{{ pages_info.a4x5 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a4x5_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А4x5 цветной:&nbsp</span>{{ pages_info.a4x5_color }}
+        </div>
+    {% endif %}
+
+    {% if pages_info.a4x6 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А4x6:&nbsp</span>{{ pages_info.a4x6 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a4x6_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А4x6 цветной:&nbsp</span>{{ pages_info.a4x6_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a4x7 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А4x7:&nbsp</span>{{ pages_info.a4x7 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a4x7_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А4x7 цветной:&nbsp</span>{{ pages_info.a4x7_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a4x8 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А4x8:&nbsp</span>{{ pages_info.a4x8 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a4x8_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А4x8 цветной:&nbsp</span>{{ pages_info.a4x8_color }}
+        </div>
+    {% endif %}
+    {% if pages_info.a4x9 > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А4x9:&nbsp</span>{{ pages_info.a4x9 }}
+        </div>
+    {% endif %}
+    {% if pages_info.a4x9_color > 0 %}
+        <div class="d-flex text-16px-light ">
+            <span class="text-16px-bold">А4x9 цветной:&nbsp</span>{{ pages_info.a4x9_color }}
+        </div>
+    {% endif %}
+
+    {% if len_bad_pages > 0 %}
+        <div class="d-flex text-16px-light mt-3">
+            <span class="text-16px-bold">Нераспознанные форматы:</span>
+        </div>
+        {% for key, value in bad_pages.items %}
+            <div class="d-flex text-16px-light ">
+                <span class="text-16px-bold">{{ key }}:&nbsp</span>{{ value }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="d-flex">
+        <button onclick="window.print()" class="button_blue mt-3" style="width: 200px; height: 40px">Распечатать
+        </button>
+    </div>
+</div>
+</body>
+
+<script>
+</script>
+
+</html>

@@ -61,6 +61,7 @@ def get_tasks(request):
     content = {"tasks_to_print": tasks_to_print}
     return render(request, 'print_service_app/ajax/get_task_list.html', content)
 
+
 class GetInfoPrintTaskView(View):
     """
     Информация по конкретному заданию
@@ -122,15 +123,19 @@ class GetInfoReportPrintTaskView(View):
                    'bad_lists': dict_temp_file_json}
         return render(request, 'print_service_app/ajax/modal_report_details_task.html', content)
 
+
 class DownloadFileView(View):
     """Скачивание файла"""
 
     def get(self, request, pk):
         file_path_in_db = PrintFilesModel.objects.get(id=pk)
-        file_path_in_db.status = 2
-        file_path_in_db.save()
-        emp = EmployeeModel.objects.get(user=request.user)
-        save_status_log(print_task_id=pk, print_task_status=file_path_in_db.status, emp_id=emp.id)
+        # Если статус задания менялся, то при скачивании бланка ничего не менять,
+        # в другом случае установить статус в работе
+        if file_path_in_db.date_change_status is None:
+            file_path_in_db.status = 2
+            file_path_in_db.save()
+            emp = EmployeeModel.objects.get(user=request.user)
+            save_status_log(print_task_id=pk, print_task_status=file_path_in_db.status, emp_id=emp.id)
         # print(file_path_in_db.file)
         file_path = os.path.join(settings.MEDIA_ROOT, str(file_path_in_db.file_to_print))
         if os.path.exists(file_path):
@@ -140,6 +145,21 @@ class DownloadFileView(View):
                 response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(os.path.basename(file_path))
                 return response
         raise Http404
+
+
+class BlankPageView(View):
+    def get(self, request, pk):
+        print_task = PrintFilesModel.objects.get(id=pk)
+        pages_info = ListsFileModel.objects.get(print_file=print_task)
+        color_pages = pages_info.a0_color + pages_info.a0x2_color + pages_info.a0x3_color + pages_info.a1_color + pages_info.a1x3_color + pages_info.a1x4_color + pages_info.a2_color + pages_info.a2x3_color + pages_info.a2x4_color + pages_info.a2x5_color + pages_info.a3_color + pages_info.a3x3_color + pages_info.a3x4_color + pages_info.a3x5_color + pages_info.a3x6_color + pages_info.a3x7_color + pages_info.a4_color + pages_info.a4x3_color + pages_info.a4x4_color + pages_info.a4x5_color + pages_info.a4x6_color + pages_info.a4x7_color + pages_info.a4x8_color + pages_info.a4x9_color
+        bad_pages = ast.literal_eval(pages_info.other_pages)
+        len_bad_pages = len(bad_pages)
+        content = {'print_task': print_task,
+                   'pages_info': pages_info,
+                   'color_pages': color_pages,
+                   'bad_pages': bad_pages,
+                   'len_bad_pages': len_bad_pages}
+        return render(request, 'print_service_app/blank_page.html', content)
 
 
 class DownloadBlankView(View):
@@ -348,8 +368,16 @@ class ReportView(View):
 
     def post(self, request):
         print(f'request.POST: {request.POST}')
-        start_date = datetime.datetime.strptime(request.POST.get('date_start'), "%Y-%m-%d").date()
-        end_date = datetime.datetime.strptime(request.POST.get('date_end'), "%Y-%m-%d").date()
+        try:
+            start_date = datetime.datetime.strptime(request.POST.get('date_start'), "%Y-%m-%d").date()
+        except Exception as e:
+            print(f'{e}. Начальная дата для отчета не задана. Автоматически установлена 01.01.1990')
+            start_date = datetime.date(1990, 1, 1)
+        try:
+            end_date = datetime.datetime.strptime(request.POST.get('date_end'), "%Y-%m-%d").date()
+        except Exception as e:
+            end_date = datetime.datetime.now().date()
+            print(f'{e}. Конечная дата для отчета не задана. Автоматически установлена {end_date}')
         end_date += datetime.timedelta(days=1)
         print(f'Запрошен отчет на даты: {start_date} - {end_date}')
         search_result = PrintFilesModel.objects.get_queryset()
