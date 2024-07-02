@@ -204,6 +204,21 @@ def upload_print_file(instance, filename):
     return new_path
 
 
+class MarkDocModel(models.Model):
+    """Таблица марок документации"""
+    mark_doc = models.CharField("Краткое название марки", max_length=5)
+    mark_doc_full_name = models.CharField("Полное название", max_length=150)
+
+    class Meta:
+        verbose_name = _("марка документации")
+        verbose_name_plural = _("марки документации")
+        managed = False
+        db_table = 'ToDo_tasks_markdocmodel'
+
+    def __str__(self):
+        return f'{self.mark_doc} - {self.mark_doc_full_name}'
+
+
 class PrintFilesModel(models.Model):
     class TypeTask(models.IntegerChoices):
         """        Выбор вида документации        """

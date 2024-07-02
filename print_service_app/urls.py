@@ -29,6 +29,7 @@ urlpatterns = [
     path('download_file/<int:pk>', views.DownloadFileView.as_view(), name='download_file'),
     path('download_blank/<int:pk>', views.DownloadBlankView.as_view(), name='download_blank'),
     path('blank/<int:pk>', views.BlankPageView.as_view(), name='blank'),
+    path('report_xls/<int:pk>', views.GeneratePrintReportTableView.as_view(), name='generate_report_table'),
     path('report/', views.ReportView.as_view(), name='report'),
 
 ]
