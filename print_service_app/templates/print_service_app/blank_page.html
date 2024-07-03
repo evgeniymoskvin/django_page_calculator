@@ -57,7 +57,7 @@
         <span class="text-16px-bold">Договор:&nbsp</span> {{ print_task.contract.contract_name|truncatechars:50 }}
     </div>
     <div class="d-flex text-16px-light ">
-        <span class="text-16px-bold">Исполнитель:&nbsp</span> {{ print_task.emp_upload_file }}
+        <span class="text-16px-bold">Исполнитель:&nbsp</span> {{ print_task.emp_upload_file }} ({{ print_task.emp_upload_file.user_phone }})
     </div>
     <div class="d-flex text-16px-light ">
         <span class="text-16px-bold">Отдел:&nbsp</span>{{ print_task.emp_upload_file.department.command_number }}, {{ print_task.emp_upload_file.department_group.group_dep_name }}

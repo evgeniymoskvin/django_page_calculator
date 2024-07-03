@@ -183,6 +183,7 @@ class CpeModel(models.Model):
     """Таблица ГИП-ов"""
     cpe_user = models.ForeignKey(EmployeeModel, on_delete=models.SET_NULL, verbose_name="Сотрудник", null=True)
     cpe_object = models.ForeignKey(ObjectModel, on_delete=models.PROTECT, verbose_name="Объект", null=True)
+    cpe_important = models.BooleanField(verbose_name='Главный за объект', default=False)
 
     class Meta:
         verbose_name = _("ГИП")
@@ -366,8 +367,8 @@ class CountTasksModel(models.Model):
     def __str__(self):
         return f'{self.date_of_print} - {self.count}'
 
-class ChangeStatusHistoryModel(models.Model):
 
+class ChangeStatusHistoryModel(models.Model):
     class PrintFileStatusChoice(models.IntegerChoices):
         """Статус кода Kks"""
         CANCELED = 0, _('Аннулирован')
@@ -376,9 +377,11 @@ class ChangeStatusHistoryModel(models.Model):
         DONE = 3, _('Готов')
 
     """История изменения статусов"""
-    print_task = models.ForeignKey(PrintFilesModel, verbose_name='Задание на печать', on_delete=models.CASCADE, default=None, null=True, blank=True)
+    print_task = models.ForeignKey(PrintFilesModel, verbose_name='Задание на печать', on_delete=models.CASCADE,
+                                   default=None, null=True, blank=True)
     status = models.IntegerField(verbose_name="Статус номера", choices=PrintFileStatusChoice.choices, default=1)
-    emp = models.ForeignKey(EmployeeModel, verbose_name='Сотрудник', on_delete=models.CASCADE, default=None, null=True, blank=True)
+    emp = models.ForeignKey(EmployeeModel, verbose_name='Сотрудник', on_delete=models.CASCADE, default=None, null=True,
+                            blank=True)
     date_change_status = models.DateTimeField('Дата изменения', auto_now_add=True, null=True)
 
     class Meta:

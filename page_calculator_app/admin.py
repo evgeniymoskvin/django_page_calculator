@@ -1,5 +1,5 @@
 from django.contrib import admin
-from page_calculator_app.models import EmployeeModel, MoreDetailsEmployeeModel, PrintFilesModel, ListsFileModel, PrintPagePermissionModel, ChangeStatusHistoryModel
+from page_calculator_app.models import EmployeeModel, MoreDetailsEmployeeModel, PrintFilesModel, ListsFileModel, PrintPagePermissionModel, ChangeStatusHistoryModel, CpeModel
 
 class EmployeeAdmin(admin.ModelAdmin):
     # list_display = ("author", "text_task")
@@ -26,4 +26,5 @@ admin.site.register(PrintFilesModel, PrintFilesAdmin)
 admin.site.register(EmployeeModel, EmployeeAdmin)
 admin.site.register(ChangeStatusHistoryModel, ChangeStatusHistoryAdmin)
 admin.site.register(ListsFileModel)
+admin.site.register(CpeModel)
 admin.site.register(PrintPagePermissionModel)

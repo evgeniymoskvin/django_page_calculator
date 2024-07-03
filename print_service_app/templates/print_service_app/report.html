@@ -135,8 +135,39 @@
         });
 
         $('#create_dispatcher_report').click(function (e) {
+             console.log('generate_dispatchet_report_table_list')
+            var dateStart = new Date($('#date_start').val())
+            var dayStart = dateStart.getDate()
+            var monthStart = dateStart.getMonth() + 1
+            var yearStart = dateStart.getFullYear()
+            var dateStartString = ([yearStart, monthStart, dayStart].join('-'))
+
+            var dateEnd = new Date($('#date_end').val())
+            console.log(dateEnd)
+            var dayEnd = dateEnd.getDate()
+            var monthEnd = dateEnd.getMonth() + 1
+            var yearEnd = dateEnd.getFullYear()
+            var dateEndString = ([yearEnd, monthEnd, dayEnd].join('-'))
+
             e.preventDefault();
-            console.log('create_dispatcher_report')
+            var url_make_report = {% url 'generate_dispatchet_report_table_list' %}
+                $.ajax({
+                    type: "GET",
+                    url: url_make_report,
+                    data: {
+                        'date-start': dateStartString,
+                        'date-end': dateEndString
+                    },
+                    success: function (data) {
+                        $('#download_report_modal').modal('hide');
+                        window.location = '{% url 'download-dispatcher-report' %}'
+                        console.log('успешно')
+                    },
+                    error: function () {
+                        $('#download_report_modal').modal('hide');
+                        $('#error_modal').modal('show');
+                    }
+                })
         })
 
         $('#make_report_form').submit(function (e) {

@@ -1,6 +1,7 @@
 import ast
 import datetime
 import json
+from copy import copy
 
 from django.http import HttpResponse
 from django.db.models import Q
@@ -18,7 +19,7 @@ import os.path
 
 from .tasks import celery_email_print_done
 from page_calculator_app.functions import save_status_log
-from .functions import get_print_report_xls
+from .functions import get_print_report_xls, get_dispatcher_report_xls
 
 from docxtpl import DocxTemplate
 import openpyxl
@@ -387,6 +388,7 @@ class ReportView(View):
         except Exception as e:
             end_date = datetime.datetime.now().date()
             print(f'{e}. Конечная дата для отчета не задана. Автоматически установлена {end_date}')
+        print_end_date = copy(end_date)
         end_date += datetime.timedelta(days=1)
         print(f'Запрошен отчет на даты: {start_date} - {end_date}')
         search_result = PrintFilesModel.objects.get_queryset()
@@ -398,8 +400,8 @@ class ReportView(View):
             print(search_result)
         search_result = search_result.filter(status=3).order_by('-id')
         content = {'search_result': search_result,
-                   'start_date': request.POST.get('date_start'),
-                   'end_date': request.POST.get('date_end')}
+                   'start_date': f'{start_date.strftime("%d.%m.%Y")}',
+                   'end_date': f'{print_end_date.strftime("%d.%m.%Y")}'}
         # return HttpResponse(status=200)
         return render(request, 'print_service_app/ajax/result-report.html', content)
 
@@ -416,7 +418,7 @@ class GeneratePrintReportTableView(View):
                     mime_type, _ = mimetypes.guess_type(file_path_to_export)
                     response = HttpResponse(fh.read(), content_type=mime_type)
                     response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(
-                        PrintFilesModel.objects.get(id=pk).inventory_number_request)
+                        f'{PrintFilesModel.objects.get(id=pk).inventory_number_request}-print')
                     return response
             raise Http404
         else:
@@ -451,11 +453,49 @@ class GeneratePrintReportListTableView(View):
 
 
 class GenerateDispatcherReportTableView(View):
+    """Диспетчерский файл по одной задаче"""
     def get(self, request, pk):
         print(request.GET)
         tasks = PrintFilesModel.objects.get_queryset().filter(id=pk)
+        if get_dispatcher_report_xls(tasks):
+            file_path_to_export = os.path.join(settings.BASE_DIR, 'print_service_app', 'xlsx',
+                                               'export_dispatcher.xlsx')
+            if os.path.exists(file_path_to_export):
+                with open(file_path_to_export, 'rb') as fh:
+                    mime_type, _ = mimetypes.guess_type(file_path_to_export)
+                    response = HttpResponse(fh.read(), content_type=mime_type)
+                    response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(
+                        f'{PrintFilesModel.objects.get(id=pk).inventory_number_request}-dispatcher')
+                    return response
+            raise Http404
+        else:
+            return Http404
 
-        return HttpResponse(status=200)
+class GenerateDispatcherReportListTableView(View):
+    """Диспетчерский файл по нескольким задачам"""
+    def get(self, request):
+        try:
+            start_date = datetime.datetime.strptime(request.GET['date-start'], "%Y-%m-%d").date()
+        except Exception as e:
+            print(f'{e}. Начальная дата для отчета не задана. Автоматически установлена 01.01.1990')
+            start_date = datetime.date(1990, 1, 1)
+        try:
+            end_date = datetime.datetime.strptime(request.GET['date-end'], "%Y-%m-%d").date()
+        except Exception as e:
+            end_date = datetime.datetime.now().date()
+            print(f'{e}. Конечная дата для отчета не задана. Автоматически установлена {end_date}')
+        end_date += datetime.timedelta(days=1)
+        print(f'Запрошен xls отчет на даты: {start_date} - {end_date}')
+        search_result = PrintFilesModel.objects.get_queryset().filter(status=3)
+        if start_date:
+            search_result = search_result.filter(add_file_date__gte=start_date)
+        if end_date:
+            search_result = search_result.filter(add_file_date__lte=end_date)
+        if get_dispatcher_report_xls(search_result):
+            return HttpResponse(status=200)
+        else:
+            return Http404
+
 
 class DownloadExportReportView(View):
     """Скачивание экспорта итогового файла Print"""
@@ -466,7 +506,21 @@ class DownloadExportReportView(View):
             with open(file_path_to_export, 'rb') as fh:
                 mime_type, _ = mimetypes.guess_type(file_path_to_export)
                 response = HttpResponse(fh.read(), content_type=mime_type)
-                response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(f'export')
+                response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(f'export_print')
+                return response
+        raise Http404
+
+
+class DownloadDispatcherExportReportView(View):
+    """Скачивание экспорта итогового файла Print"""
+    def get(self, request):
+        file_path_to_export = os.path.join(settings.BASE_DIR, 'print_service_app', 'xlsx',
+                                           'export_dispatcher.xlsx')
+        if os.path.exists(file_path_to_export):
+            with open(file_path_to_export, 'rb') as fh:
+                mime_type, _ = mimetypes.guess_type(file_path_to_export)
+                response = HttpResponse(fh.read(), content_type=mime_type)
+                response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(f'export_dispatcher')
                 return response
         raise Http404
 

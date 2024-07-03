@@ -4,7 +4,8 @@ import openpyxl
 
 from django.conf import settings
 
-from page_calculator_app.models import PrintFilesModel, EmployeeModel, ListsFileModel, ChangeStatusHistoryModel
+from page_calculator_app.models import PrintFilesModel, EmployeeModel, ListsFileModel, ChangeStatusHistoryModel, \
+    CpeModel
 
 
 def get_print_report_xls(objects_tasks: list):
@@ -223,6 +224,88 @@ def get_dispatcher_report_xls(objects_tasks: list):
     """
     Формирование диспетчерского отчета
     """
-    file_xlsx_path = os.path.join(settings.BASE_DIR, 'print_service_app', 'xlsx', 'GurnRas_Print&Scan.xlsx')
-    file_path_to_export = os.path.join(settings.BASE_DIR, 'print_service_app', 'xlsx', 'export_print.xlsx')
-    pass
+    file_xlsx_path = os.path.join(settings.BASE_DIR, 'print_service_app', 'xlsx', 'dispatcher_blank.xlsx')
+    file_path_to_export = os.path.join(settings.BASE_DIR, 'print_service_app', 'xlsx', 'export_dispatcher.xlsx')
+    wb = openpyxl.load_workbook(filename=file_xlsx_path, data_only=True)
+    page = wb.active
+    for task in objects_tasks:
+        try:
+            # task= PrintFilesModel()
+            task_history = ChangeStatusHistoryModel.objects.all().filter(print_task=task)
+            last_recording_done = task_history.filter(status=3).last()
+            date_last = last_recording_done.date_change_status
+            date_change_status_to_done = date_last.strftime('%d.%m.%Y')
+            who_change_status_to_done = f'{last_recording_done.emp.last_name} {last_recording_done.emp.first_name[:1]}. {last_recording_done.emp.middle_name[:1]}.'
+        except Exception as e:
+            print(f'Get last history error: {e}')
+            date_change_status_to_done = ''
+            who_change_status_to_done = ''
+        inventory_name = task.inventory_number_file.split('И')[0]
+        try:
+            correction_number = f'И{task.inventory_number_file.split("И")[1]}'
+        except Exception as e:
+            print(f'Номер изменения в названии альбома не найден: {e}')
+            correction_number = ''
+        try:
+            cpe_task = CpeModel.objects.get_queryset().filter(cpe_object=task.object).filter(cpe_important=True)[
+                0].cpe_user.last_name
+        except Exception as e:
+            print(f'Не удалось определить ГИП-а: {e}')
+            cpe_task = ''
+        try:
+            contract_name = task.contract.contract_name
+        except:
+            contract_name = ''
+        try:
+            task_order = task.order.order
+        except:
+            task_order = ''
+
+        if task.task_type_work == 0:
+            task_type_work = '-'
+        elif task.task_type_work == 1:
+            task_type_work = 'РД'
+        elif task.task_type_work == 2:
+            task_type_work = 'ПД'
+        elif task.task_type_work == 3:
+            task_type_work = 'ОБИН'
+        elif task.task_type_work == 4:
+            task_type_work = 'НИОКР'
+        else:
+            task_type_work = ''
+
+        row = [
+            task.inventory_number_request,  # Номер заявки
+            task.add_file_date.strftime('%d.%m.%Y'),  # Дата приема
+            inventory_name,  # Инв номер альбома ...
+            correction_number,  # Номер корректировки
+            '',  # Инв. № альбома ...
+            task_type_work,  # Марка документации
+            '',  # Раздел проекта
+            task.emp_upload_file.department_group.group_dep_abr,  # Управление
+            contract_name,  # Договор
+            task_order,  # код заказчика
+            '-',  # од объекта
+            '-',  # заказчик
+            cpe_task,  # ГИП
+            task.emp_upload_file.last_name,  # Исполнитель
+            task.emp_upload_file.user_phone,  # Телефон
+            task.count_pages,  # Объем работы, лист
+            '',  # Тираж, шт.
+            '',  # Скан
+            task.copy_count,  # Печать шт.
+            '',  # Диск
+            '',  # Заказчик, шт
+            '',  # Архив, шт
+            '',  # Отдел, шт.
+            date_change_status_to_done,  # Дата готовности
+            '',  # Дата выдачи
+            '',  # Примечание
+        ]
+        page.append(row)
+    try:
+        wb.save(filename=file_path_to_export)
+        return True
+    except Exception as e:
+        print(f'Файл не сохранен: {e}')
+        return False
