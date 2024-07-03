@@ -1,5 +1,8 @@
 import datetime
 import time
+
+from PIL import ImageStat
+
 from .models import PrintFilesModel, EmployeeModel, ListsFileModel, OrdersModel, ObjectModel, ContractModel, \
     CountTasksModel, ChangeStatusHistoryModel
 from pdf2image import convert_from_path
@@ -152,3 +155,7 @@ def detect_color_image(file, thumb_size=40, MSE_cutoff=1, adjust_color_bias=True
     else:
         print("Don't know...", bands)
         return 'dontknow'
+
+
+
+

@@ -43,7 +43,7 @@
 <body class="content-fade">
 
 {% if user.is_authenticated %}
-{% include "page_calculator_app/sidebar.html" %}
+    {% include "page_calculator_app/sidebar.html" %}
 {% endif %}
 
 <a href="#" id="scroll_top">
@@ -57,6 +57,7 @@
     {% block content %}
     {% endblock %}
 </div>
+
 </body>
 
 

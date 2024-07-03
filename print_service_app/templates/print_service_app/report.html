@@ -17,14 +17,21 @@
             <div class="d-flex flex-column w-100">
                 <div class="d-flex mt-3 w-25 flex-column">
                     <div class="d-flex text-16px-light"><span>Дата начала</span></div>
-                    <input type="date" name="date_start" class="form-control">
+                    <input type="date" name="date_start" id="date_start" class="form-control">
                 </div>
                 <div class="d-flex mt-3 w-25 flex-column">
                     <div class="d-flex text-16px-light"><span>Дата окончания</span></div>
-                    <input type="date" name="date_end" class="form-control">
+                    <input type="date" name="date_end" id="date_end" class="form-control">
                 </div>
             </div>
-            <button type="submit" class="button_blue mt-3" style="width: 200px; height: 40px">Сформировать</button>
+            <div class="d-flex">
+                <button type="submit" class="button_blue mt-3" style="width: 200px; height: 40px">
+                    Сформировать
+                </button>
+                <button id='show_modal_report' class="button_blue mt-3" style="margin-left: 20px">
+                    Загрузить отчет
+                </button>
+            </div>
         </form>
 
         <div class="d-flex" id="report_result">
@@ -33,10 +40,42 @@
     </div>
 
     <!-- Модальное окно информации о заявка-->
-    <div class="modal fade" id="detailReportModalWindow" data-ajax-url="{% url 'get-info-report-task-print' %}" tabindex="-1">
+    <div class="modal fade" id="detailReportModalWindow" data-ajax-url="{% url 'get-info-report-task-print' %}"
+         tabindex="-1">
     </div>
 
+    <!--Модальное окно скачивания файла -->
+    <div class="modal fade" id="download_report_modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog_clearance">
+            <div class="modal-content modal-content_clearance">
+                <div class="modal-header modal-header_clearance">
+                    <h5 class="modal-title text-24px-regular" style="cursor: context-menu">Загрузить отчет</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body modal-body_clearance">
+                    <div class="d-flex w-100 justify-content-between align-items-center">
+                        <div class="d-flex text-20px-light">Выберете тип отчета</div>
+                    </div>
+                </div>
+                <div class="modal-footer modal-footer_clearance justify-content-between">
+
+                    <button id="create_print_report" class="button_blue_clearance">
+                        Листы
+                    </button>
+                    <button id="create_dispatcher_report" class="button_blue_clearance" style="width: 190px">
+                        Диспетчерский
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
+
+
         function openReportModalWindow(val) {
             var url = $("#detailReportModalWindow").attr("data-ajax-url")
             $.ajax({
@@ -53,6 +92,52 @@
             })
         }
 
+        $('#show_modal_report').click(function (e) {
+            e.preventDefault();
+            $('#download_report_modal').modal('show');
+        })
+
+
+        $('#create_print_report').click(function (e) {
+            console.log('create_print_report')
+            var dateStart = new Date($('#date_start').val())
+            var dayStart = dateStart.getDate()
+            var monthStart = dateStart.getMonth() + 1
+            var yearStart = dateStart.getFullYear()
+            var dateStartString = ([yearStart, monthStart, dayStart].join('-'))
+
+            var dateEnd = new Date($('#date_end').val())
+            console.log(dateEnd)
+            var dayEnd = dateEnd.getDate()
+            var monthEnd = dateEnd.getMonth() + 1
+            var yearEnd = dateEnd.getFullYear()
+            var dateEndString = ([yearEnd, monthEnd, dayEnd].join('-'))
+
+            e.preventDefault();
+            var url_make_report = {% url 'generate_report_table_list' %}
+                $.ajax({
+                    type: "GET",
+                    url: url_make_report,
+                    data: {
+                        'date-start': dateStartString,
+                        'date-end': dateEndString
+                    },
+                    success: function (data) {
+                        $('#download_report_modal').modal('hide');
+                        window.location = '{% url 'download-report' %}'
+                        console.log('успешно')
+                    },
+                    error: function () {
+                        $('#download_report_modal').modal('hide');
+                        $('#error_modal').modal('show');
+                    }
+                })
+        });
+
+        $('#create_dispatcher_report').click(function (e) {
+            e.preventDefault();
+            console.log('create_dispatcher_report')
+        })
 
         $('#make_report_form').submit(function (e) {
             e.preventDefault()
@@ -73,11 +158,10 @@
                         $("#report_result").html(data)
                         {#$('#sendFileModal').modal('hide');#}
                         {#$('#good_send_modal').modal('show');#}
-                        console.log('done')
+                        console.log('report done')
                     },
                     error: function () {
-                        $('#sendFileModal').modal('hide');
-                        $('#bad_send_modal').modal('show');
+                        $('#error_modal').modal('show');
                     }
                 })
             }

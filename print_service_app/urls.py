@@ -30,6 +30,10 @@ urlpatterns = [
     path('download_blank/<int:pk>', views.DownloadBlankView.as_view(), name='download_blank'),
     path('blank/<int:pk>', views.BlankPageView.as_view(), name='blank'),
     path('report_xls/<int:pk>', views.GeneratePrintReportTableView.as_view(), name='generate_report_table'),
+    path('report_dispatcher_xls/<int:pk>', views.GenerateDispatcherReportTableView.as_view(),
+         name='generate_dispatcher_report'),
     path('report/', views.ReportView.as_view(), name='report'),
+    path('download_report/', views.DownloadExportReportView.as_view(), name='download-report'),
+    path('report-list/', views.GeneratePrintReportListTableView.as_view(), name='generate_report_table_list'),
 
 ]
