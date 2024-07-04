@@ -65,6 +65,31 @@ def get_tasks(request):
     return render(request, 'print_service_app/ajax/get_task_list.html', content)
 
 
+def get_task_info(obj_id):
+    obj = PrintFilesModel.objects.get(id=obj_id)
+
+    # Проверка на случай, если в базе отсутствует информация о листах
+    try:
+        obj_info = ListsFileModel.objects.get(print_file_id=obj.id)
+        color_pages = obj_info.a0_color + obj_info.a0x2_color + obj_info.a0x3_color + obj_info.a1_color + obj_info.a1x3_color + obj_info.a1x4_color + obj_info.a2_color + obj_info.a2x3_color + obj_info.a2x4_color + obj_info.a2x5_color + obj_info.a3_color + obj_info.a3x3_color + obj_info.a3x4_color + obj_info.a3x5_color + obj_info.a3x6_color + obj_info.a3x7_color + obj_info.a4_color + obj_info.a4x3_color + obj_info.a4x4_color + obj_info.a4x5_color + obj_info.a4x6_color + obj_info.a4x7_color + obj_info.a4x8_color + obj_info.a4x9_color
+        bad_lists = obj_info.other_pages
+        dict_temp_file_json = ast.literal_eval(bad_lists)
+        len_bad_dict_temp = len(dict_temp_file_json)
+    except Exception as e:
+        print(e)
+        color_pages = 0
+        obj_info = None
+        dict_temp_file_json = {}
+        len_bad_dict_temp = 0
+
+    content = {'obj': obj,
+               'obj_info': obj_info,
+               'bad_lists': dict_temp_file_json,
+               'len_bad_dict_temp': len_bad_dict_temp,
+               'color_pages': color_pages}
+
+    return content
+
 class GetInfoPrintTaskView(View):
     """
     Информация по конкретному заданию
@@ -72,27 +97,8 @@ class GetInfoPrintTaskView(View):
 
     def get(self, request):
         obj_id = int(request.GET.get('object'))
-        obj = PrintFilesModel.objects.get(id=obj_id)
+        content = get_task_info(obj_id)
 
-        # Проверка на случай, если в базе отсутствует информация о листах
-        try:
-            obj_info = ListsFileModel.objects.get(print_file_id=obj.id)
-            color_pages = obj_info.a0_color + obj_info.a0x2_color + obj_info.a0x3_color + obj_info.a1_color + obj_info.a1x3_color + obj_info.a1x4_color + obj_info.a2_color + obj_info.a2x3_color + obj_info.a2x4_color + obj_info.a2x5_color + obj_info.a3_color + obj_info.a3x3_color + obj_info.a3x4_color + obj_info.a3x5_color + obj_info.a3x6_color + obj_info.a3x7_color + obj_info.a4_color + obj_info.a4x3_color + obj_info.a4x4_color + obj_info.a4x5_color + obj_info.a4x6_color + obj_info.a4x7_color + obj_info.a4x8_color + obj_info.a4x9_color
-            bad_lists = obj_info.other_pages
-            dict_temp_file_json = ast.literal_eval(bad_lists)
-            len_bad_dict_temp = len(dict_temp_file_json)
-        except Exception as e:
-            print(e)
-            color_pages = 0
-            obj_info = None
-            dict_temp_file_json = {}
-            len_bad_dict_temp = 0
-
-        content = {'obj': obj,
-                   'obj_info': obj_info,
-                   'bad_lists': dict_temp_file_json,
-                   'len_bad_dict_temp': len_bad_dict_temp,
-                   'color_pages': color_pages}
         return render(request, 'print_service_app/ajax/modal_details_task.html', content)
 
     def post(self, request):

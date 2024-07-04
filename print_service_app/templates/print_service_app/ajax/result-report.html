@@ -9,7 +9,7 @@
                 <th class="th_tables" scope="col">#</th>
                 <th class="th_tables" scope="col" style="text-align: center">№ заявки</th>
                 <th class="th_tables" scope="col" style="text-align: center">Автор</th>
-                <th class="th_tables" scope="col" style="text-align: center">Заказ</th>
+                <th class="th_tables" scope="col" style="text-align: center">Заказчик</th>
                 <th class="th_tables" scope="col" style="text-align: center">Объект</th>
                 <th class="th_tables" scope="col" style="text-align: center">Кол-во<br>листов</th>
                 <th class="th_tables" scope="col" style="text-align: center">Дата</th>
@@ -27,7 +27,7 @@
                         {{ obj.emp_upload_file.last_name }} {{ obj.emp_upload_file.first_name|slice:':1' }}.{{ obj.emp_upload_file.middle_name|slice:':1' }}.
                     </td>
                     <td class="td_tables" style="width: 75px; text-align: center">
-                        {{ obj.order }}
+                        {{ obj.order.order }}
                     </td>
                     <td class="td_tables" style="width: 250px; text-align: center"
                         data-toggle="tooltip" data-bs-placement="bottom"
@@ -35,7 +35,7 @@
                         title="{{ obj.object }}">
                         {{ obj.object|truncatechars:50 }}
                     </td>
-                    <td class="td_tables" style="width: 150px; text-align: center">
+                    <td class="td_tables" style="width: 50px; text-align: center">
                         {{ obj.count_pages }}
                     </td>
                     <td class="td_tables" style="width: 150px; text-align: center">

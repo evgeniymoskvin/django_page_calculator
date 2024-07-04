@@ -1,5 +1,7 @@
 from django.contrib import admin
-from page_calculator_app.models import EmployeeModel, MoreDetailsEmployeeModel, PrintFilesModel, ListsFileModel, PrintPagePermissionModel, ChangeStatusHistoryModel, CpeModel
+from page_calculator_app.models import EmployeeModel, MoreDetailsEmployeeModel, PrintFilesModel, ListsFileModel, \
+    PrintPagePermissionModel, ChangeStatusHistoryModel, CpeModel, OrdersModel, ObjectModel
+
 
 class EmployeeAdmin(admin.ModelAdmin):
     # list_display = ("author", "text_task")
@@ -15,8 +17,18 @@ class MoreDetailsEmployeeAdmin(admin.ModelAdmin):
         "emp__department_group__city_dep__city", "emp__department_group__group_dep_abr",
         "emp__department__command_number")
 
+class OrdersAdmin(admin.ModelAdmin):
+    ordering = ["order"]
+    search_fields = ["order", "order_name"]
+
+class ObjectsAdmin(admin.ModelAdmin):
+    ordering = ["object_code", "object_name"]
+    search_fields = ["object_code", "object_name"]
+
+
 class PrintFilesAdmin(admin.ModelAdmin):
     ordering = ['id']
+
 
 class ChangeStatusHistoryAdmin(admin.ModelAdmin):
     ordering = ['-id']
@@ -27,4 +39,6 @@ admin.site.register(EmployeeModel, EmployeeAdmin)
 admin.site.register(ChangeStatusHistoryModel, ChangeStatusHistoryAdmin)
 admin.site.register(ListsFileModel)
 admin.site.register(CpeModel)
+admin.site.register(ObjectModel, ObjectsAdmin)
+admin.site.register(OrdersModel, OrdersAdmin)
 admin.site.register(PrintPagePermissionModel)

@@ -20,7 +20,7 @@
 
                         <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
                             <div class="d-flex text-20px-light">Автор</div>
-                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.emp_upload_file.last_name }} {{ obj.emp_upload_file.first_name|slice:':1' }}.{{ obj.emp_upload_file.middle_name|slice:':1' }}.</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.emp_upload_file.last_name }} {{ obj.emp_upload_file.first_name|slice:':1' }}.{{ obj.emp_upload_file.middle_name|slice:':1' }}. (тел. {{obj.emp_upload_file.user_phone }})</div>
                         </div>
 
                         <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
@@ -29,7 +29,7 @@
                         </div>
 
                         <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
-                            <div class="d-flex text-20px-light">Заказ</div>
+                            <div class="d-flex text-20px-light">Заказчик</div>
                             <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.order }}</div>
                         </div>
                         {% if obj.object %}

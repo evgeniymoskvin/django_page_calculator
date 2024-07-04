@@ -10,21 +10,23 @@ from os import path
 
 class OrdersModel(models.Model):
     """    Таблица номеров заказов    """
-    order = models.IntegerField("Номер заказа")
+    order = models.CharField("Номер заказчика", null=True, max_length=10, blank=True)
+    order_name = models.CharField(verbose_name="Наименование заказчика", null=True, blank=True, max_length=250)
 
     class Meta:
-        verbose_name = _("номер заказа")
-        verbose_name_plural = _("номера заказов")
+        verbose_name = _("номер заказчика")
+        verbose_name_plural = _("номера заказчиков")
         managed = False
         db_table = 'ToDo_tasks_ordersmodel'
 
     def __str__(self):
-        return f'{self.order}'
+        return f'{self.order} - { self.order_name}'
 
 
 class ObjectModel(models.Model):
     """Таблица с наименованиями объектов"""
     object_name = models.CharField("Наименование объекта", max_length=250, default=None)
+    object_code = models.CharField(verbose_name="Код объекта", max_length=10, null=True, blank=True)
     show = models.BooleanField("Отображать объект", default=True)
 
     class Meta:
@@ -34,7 +36,7 @@ class ObjectModel(models.Model):
         db_table = 'ToDo_tasks_objectmodel'
 
     def __str__(self):
-        return f'{self.object_name}'
+        return f'{self.object_code} - {self.object_name}'
 
 
 class ContractModel(models.Model):

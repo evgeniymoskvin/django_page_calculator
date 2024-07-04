@@ -3,7 +3,7 @@
     <div class="modal-content modal-content_clearance">
         <div class="modal-header modal-header_clearance">
             <h5 class="modal-title text-24px-regular"
-                style="cursor: context-menu">Отчет к {{ obj.inventory_number_request }}</h5>
+                style="cursor: context-menu">{{ obj.inventory_number_request }}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal"
                     aria-label="Close"></button>
         </div>
@@ -32,7 +32,7 @@
                     </div>
 
                     <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
-                        <div class="d-flex text-20px-light">Заказ</div>
+                        <div class="d-flex text-20px-light">Заказчик</div>
                         <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.order }}</div>
                     </div>
                     {% if obj.object %}
@@ -457,47 +457,53 @@
                     </div>
                 </div>
             </div>
+            {% if obj.status != 0 and obj.status != 1 %}
+                <!-- Нижняя часть окна -->
+                <div class="d-flex w-100 justify-content-center align-items-center flex-column mt-3">
+                    {% if obj.file_to_print %}
+                        <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex text-20px-regular">Взял в работу:</div>
+                        </div>
+                        <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex text-20px-light">{% get_who_change_status_in_work obj.id %}</div>
+                            <div class="d-flex text-20px-light">{% get_when_change_status_in_work obj.id %}</div>
+                        </div>
+                        {% if obj.status == 3 %}
+                            <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
+                                <div class="d-flex text-20px-regular">Выполнил:</div>
+                            </div>
+                            <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
+                                <div class="d-flex text-20px-light">{% get_who_change_status_done obj.id %}</div>
+                                <div class="d-flex text-20px-light">{% get_when_change_status_done obj.id %}</div>
+                            </div>
+                        {% endif %}
+                        {#                    <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">#}
+                        {#                        <div class="d-flex text-20px-light">Скачать отчет</div>#}
+                        {#                        <div class="d-flex text-20px-light"><a href="{% url 'generate_report_table' obj.id %}"#}
+                        {#                                                               download>Скачать</a></div>#}
+                        {#                    </div>#}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
 
-            <!-- Нижняя часть окна -->
-            <div class="d-flex w-100 justify-content-center align-items-center flex-column mt-3">
-                {% if obj.file_to_print %}
-                    <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
-                        <div class="d-flex text-20px-regular">Взял в работу:</div>
-                    </div>
-                    <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
-                        <div class="d-flex text-20px-light">{% get_who_change_status_in_work obj.id %}</div>
-                        <div class="d-flex text-20px-light">{% get_when_change_status_in_work obj.id %}</div>
-                    </div>
-                    <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
-                        <div class="d-flex text-20px-regular">Выполнил:</div>
-                    </div>
-                    <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
-                        <div class="d-flex text-20px-light">{% get_who_change_status_done obj.id %}</div>
-                        <div class="d-flex text-20px-light">{% get_when_change_status_done obj.id %}</div>
-                    </div>
-{#                    <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">#}
-{#                        <div class="d-flex text-20px-light">Скачать отчет</div>#}
-{#                        <div class="d-flex text-20px-light"><a href="{% url 'generate_report_table' obj.id %}"#}
-{#                                                               download>Скачать</a></div>#}
-{#                    </div>#}
-                {% endif %}
+        {% if obj.status != 0 %}
+            <div class="modal-footer modal-footer_clearance justify-content-center">
+                {#            <button type="button" class="button_grey_clearance"#}
+                {#                    data-bs-dismiss="modal"#}
+                {#                    onclick="$('#sendFileModal').modal('hide');">Отмена#}
+                {#            </button>#}
+                <button class="button_blue_clearance button_blue_clearance_send_file" type="submit" style="width: 200px"
+                        onclick="location.href='{% url 'generate_report_table' obj.id %}'">
+                    Скачать отчет
+                </button>
+                <button class="button_blue_clearance button_blue_clearance_send_file ms-2" type="submit"
+                        style="width: 200px"
+                        onclick="location.href='{% url 'generate_dispatcher_report' obj.id %}'">
+                    Диспетчерский
+                </button>
             </div>
-        </div>
-
-        <div class="modal-footer modal-footer_clearance justify-content-center">
-{#            <button type="button" class="button_grey_clearance"#}
-{#                    data-bs-dismiss="modal"#}
-{#                    onclick="$('#sendFileModal').modal('hide');">Отмена#}
-{#            </button>#}
-            <button class="button_blue_clearance button_blue_clearance_send_file" type="submit" style="width: 200px"
-            onclick="location.href='{% url 'generate_report_table' obj.id %}'">
-                Скачать отчет
-            </button>
-            <button class="button_blue_clearance button_blue_clearance_send_file ms-2" type="submit" style="width: 200px"
-            onclick="location.href='{% url 'generate_dispatcher_report' obj.id %}'">
-                Диспетчерский
-            </button>
-        </div>
+        {% endif %}
     </div>
 </div>
 

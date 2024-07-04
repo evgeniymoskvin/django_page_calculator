@@ -241,25 +241,39 @@ def get_dispatcher_report_xls(objects_tasks: list):
             date_change_status_to_done = ''
             who_change_status_to_done = ''
         inventory_name = task.inventory_number_file.split('И')[0]
+
         try:
             correction_number = f'И{task.inventory_number_file.split("И")[1]}'
         except Exception as e:
             print(f'Номер изменения в названии альбома не найден: {e}')
             correction_number = ''
+
         try:
             cpe_task = CpeModel.objects.get_queryset().filter(cpe_object=task.object).filter(cpe_important=True)[
                 0].cpe_user.last_name
         except Exception as e:
             print(f'Не удалось определить ГИП-а: {e}')
             cpe_task = ''
+
         try:
             contract_name = task.contract.contract_name
-        except:
+        except Exception as e:
+            print(f'Не удалось определить договор: {e}')
             contract_name = ''
+
         try:
             task_order = task.order.order
-        except:
+            task_order_name = task.order.order_name
+        except Exception as e:
+            print(f'Не удалось определить заказчика: {e}')
             task_order = ''
+            task_order_name = ''
+
+        try:
+            object_code = task.object.object_code
+        except Exception as e:
+            print(f'Не удалось определить код объекта: {e}')
+            object_code = ''
 
         if task.task_type_work == 0:
             task_type_work = '-'
@@ -285,8 +299,8 @@ def get_dispatcher_report_xls(objects_tasks: list):
             task.emp_upload_file.department_group.group_dep_abr,  # Управление
             contract_name,  # Договор
             task_order,  # код заказчика
-            '-',  # од объекта
-            '-',  # заказчик
+            object_code,  # Код объекта
+            task_order_name,  # заказчик
             cpe_task,  # ГИП
             task.emp_upload_file.last_name,  # Исполнитель
             task.emp_upload_file.user_phone,  # Телефон
