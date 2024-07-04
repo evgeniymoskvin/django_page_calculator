@@ -1,6 +1,7 @@
 import ast
 import datetime
 import json
+import time
 from copy import copy
 
 from django.http import HttpResponse
@@ -89,6 +90,7 @@ def get_task_info(obj_id):
                'color_pages': color_pages}
 
     return content
+
 
 class GetInfoPrintTaskView(View):
     """
@@ -358,13 +360,26 @@ class AllTaskView(View):
     def get(self, request):
         user_permission = check_permission_user(request.user)
         if user_permission:
-            all_tasks = PrintFilesModel.objects.get_queryset().order_by('-id')
-            content = {"all_tasks": all_tasks,
+            all_tasks_in_project = PrintFilesModel.objects.get_queryset().order_by('-id')
+            len_all_tasks = len(all_tasks_in_project)
+            content = {'len_all_tasks': len_all_tasks,
                        "user_permission": user_permission}
             return render(request, 'print_service_app/all-print-task.html', content)
         else:
             content = {}
             return render(request, 'print_service_app/permission-error.html', content)
+
+
+def get_all_task(request):
+    "Подгрузка списка всех задач"
+    time.sleep(1)
+    print(request.GET)
+    now_value = int(request.GET.get('now_value'))
+    all_tasks_in_project = PrintFilesModel.objects.order_by('-id')
+    all_tasks = all_tasks_in_project[:now_value]
+    content = {"all_tasks": all_tasks
+               }
+    return render(request, 'print_service_app/ajax/all-tasks-table.html', content)
 
 
 class ReportView(View):
@@ -414,6 +429,7 @@ class ReportView(View):
 
 class GeneratePrintReportTableView(View):
     """Отчет Print для одной задачи"""
+
     def get(self, request, pk):
         tasks = PrintFilesModel.objects.get_queryset().filter(id=pk)
         if get_print_report_xls(tasks):
@@ -433,6 +449,7 @@ class GeneratePrintReportTableView(View):
 
 class GeneratePrintReportListTableView(View):
     """Формирования отчета по промежутку дат"""
+
     def get(self, request):
         try:
             start_date = datetime.datetime.strptime(request.GET['date-start'], "%Y-%m-%d").date()
@@ -460,6 +477,7 @@ class GeneratePrintReportListTableView(View):
 
 class GenerateDispatcherReportTableView(View):
     """Диспетчерский файл по одной задаче"""
+
     def get(self, request, pk):
         print(request.GET)
         tasks = PrintFilesModel.objects.get_queryset().filter(id=pk)
@@ -477,8 +495,10 @@ class GenerateDispatcherReportTableView(View):
         else:
             return Http404
 
+
 class GenerateDispatcherReportListTableView(View):
     """Диспетчерский файл по нескольким задачам"""
+
     def get(self, request):
         try:
             start_date = datetime.datetime.strptime(request.GET['date-start'], "%Y-%m-%d").date()
@@ -505,6 +525,7 @@ class GenerateDispatcherReportListTableView(View):
 
 class DownloadExportReportView(View):
     """Скачивание экспорта итогового файла Print"""
+
     def get(self, request):
         file_path_to_export = os.path.join(settings.BASE_DIR, 'print_service_app', 'xlsx',
                                            'export_print.xlsx')
@@ -519,6 +540,7 @@ class DownloadExportReportView(View):
 
 class DownloadDispatcherExportReportView(View):
     """Скачивание экспорта итогового файла Print"""
+
     def get(self, request):
         file_path_to_export = os.path.join(settings.BASE_DIR, 'print_service_app', 'xlsx',
                                            'export_dispatcher.xlsx')
@@ -529,5 +551,3 @@ class DownloadDispatcherExportReportView(View):
                 response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(f'export_dispatcher')
                 return response
         raise Http404
-
-

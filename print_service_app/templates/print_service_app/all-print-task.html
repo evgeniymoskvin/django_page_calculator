@@ -8,63 +8,37 @@
     <div class="d-flex w-100" id="display_div">
         <div style="width: 100%">
             <div class="text-36px-bold mt-5">
-                Все заявки на печать
+                Все заявки
             </div>
+            <div class="text-16px-light mt-3"> Всего задач: {{ len_all_tasks }}</div>
             <div class="mt-3">
                 <table id="all-print-tasks" class="table table-hover">
                     <thead>
                     <tr>
-                        <th class="th_tables" scope="col">#</th>
-                        <th class="th_tables" scope="col" style="text-align: center">№ заявки</th>
-                        <th class="th_tables" scope="col" style="text-align: center">Автор</th>
-                        <th class="th_tables" scope="col" style="text-align: center">Заказчик</th>
-                        <th class="th_tables" scope="col" style="text-align: center">Объект</th>
-                        <th class="th_tables" scope="col" style="text-align: center">Кол-во<br>листов</th>
-                        <th class="th_tables" scope="col" style="text-align: center">Дата</th>
-                        <th class="th_tables" scope="col" style="text-align: center">Статус</th>
+                        <th class="th_tables" scope="col" style="width: 30px">#</th>
+                        <th class="th_tables" scope="col" style="text-align: center; width: 100px">№ заявки</th>
+                        <th class="th_tables" scope="col" style="text-align: center; width: 100px;">Автор</th>
+                        <th class="th_tables" scope="col" style="text-align: center; width: 75px;">Заказчик</th>
+                        <th class="th_tables" scope="col" style="text-align: center;width: 250px;">Объект</th>
+                        <th class="th_tables" scope="col" style="text-align: center; width: 50px;">Кол-во<br>листов</th>
+                        <th class="th_tables" scope="col" style="text-align: center; width: 150px;">Дата</th>
+                        <th class="th_tables" scope="col" style="text-align: center; width: 150px; ">Статус</th>
                     </tr>
                     </thead>
 
-                    <tbody>
-                    {% for obj in all_tasks %}
-                        <tr class="tr-tables" style="cursor: context-menu" onclick="openModalWindow({{ obj.id }})">
-                            <th class="th_tables" scope="row" style="width: 30px">{{ forloop.counter }}</th>
-                            <td class="td_tables" style="width: 100px; text-align: center">
-                                {{ obj.inventory_number_request }}</td>
-                            <td class="td_tables" style="width: 150px; text-align: center">
-                                {{ obj.emp_upload_file.last_name }} {{ obj.emp_upload_file.first_name|slice:':1' }}.{{ obj.emp_upload_file.middle_name|slice:':1' }}.
-                            </td>
-                            <td class="td_tables" style="width: 75px; text-align: center">
-                                {{ obj.order.order }}
-                            </td>
-                            <td class="td_tables" style="width: 250px; text-align: center"
-                                data-toggle="tooltip" data-bs-placement="bottom"
-                                rel="txtTooltip" data-bs-html="true"
-                                title="{{ obj.object }}">
-                                {{ obj.object|truncatechars:50 }}
-                            </td>
-                            <td class="td_tables" style="width: 50px; text-align: center">
-                                {{ obj.count_pages }}
-                            </td>
-                            <td class="td_tables" style="width: 150px; text-align: center">
-                                {{ obj.add_file_date }}
-                            </td>
-                            <td class="td_tables" style="width: 150px; text-align: center"
-                                    {% if obj.status == 2 or obj.status == 3 %}
-                                data-toggle="tooltip" data-bs-placement="bottom"
-                                rel="txtTooltip" data-bs-html="true"
-                                title="{{ obj.date_change_status }}"
-                                    {% endif %}>
-                                {{ obj.get_status_display }}
-                            </td>
+                    <tbody id="table_inside" data-ajax-url="{% url 'get-all-task' %}">
 
-                        </tr>
-                    {% endfor %}
                     </tbody>
                 </table>
             </div>
+            <div id="loader_tasks" class="d-flex w-100 justify-content-center">
+                <div class="loader-big"></div>
+            </div>
+            <div class="d-flex mt-5"></div>
         </div>
     </div>
+    <div id="now_value" hidden>30</div>
+    <div id="len_all_tasks" hidden>{{ len_all_tasks }}</div>
 
 
 
@@ -76,7 +50,77 @@
 
     <script>
 
+        let pagination_value = 20
+
         $(document).ready(function () {
+            loadContent()
+        })
+
+        function loadContent() {
+            $('#loader_tasks').removeClass('d-none')
+            $('#loader_tasks').addClass('d-flex')
+            let now_value = Number($("#now_value").text())
+            // Здесь вы можете добавить код для получения контента, например, с использованием AJAX-запроса
+            // В данном примере мы просто создадим фиктивные элементы контента
+            let url = $("#table_inside").attr("data-ajax-url")
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    'now_value': now_value
+                },
+                success: function (data) {
+                    $("#table_inside").html(data)
+                    $("#now_value").text(now_value + pagination_value)
+                    $('#loader_tasks').removeClass('d-flex')
+                    $('#loader_tasks').addClass('d-none')
+                }
+            })
+        }
+
+
+        // Функция throttle будет принимать 2 аргумента:
+        // - callee, функция, которую надо вызывать;
+        // - timeout, интервал в мс, с которым следует пропускать вызовы.
+        function throttle(callee, timeout) {
+            // Таймер будет определять,
+            // надо ли нам пропускать текущий вызов.
+            let timer = null
+            return function perform(...args) {
+                // Если таймер есть, то функция уже была вызвана,
+                // и значит новый вызов следует пропустить.
+                if (timer) return
+                // Если таймера нет, значит мы можем вызвать функцию:
+                timer = setTimeout(() => {
+                    // Аргументы передаём неизменными в функцию-аргумент:
+                    callee(...args)
+                    // По окончании очищаем таймер:
+                    clearTimeout(timer)
+                    timer = null
+                }, timeout)
+            }
+        }
+
+        const throttledDoSomething = throttle(checkScroll, 250)
+        window.addEventListener('scroll', throttledDoSomething)
+        {#window.addEventListener('scroll', callback);#}
+
+
+        function checkScroll() {
+            let now_value = Number($("#now_value").text())
+            let all_value = Number($("#len_all_tasks").text()) + pagination_value
+            console.log('now_value', now_value)
+            console.log('all_value', all_value)
+            if (now_value < all_value) {
+                if ((($(window).scrollTop() + $(window).height()) + 250) >= $(document).height()) {
+                    console.log('scroll_loaded')
+                    loadContent()
+                }
+            }
+        }
+
+
+        /*$(document).ready(function () {
             var table = $('#all-print-tasks').DataTable({
                     {#order: [[1, 'asc']],#}
                     dom:
@@ -134,7 +178,7 @@
             exel_button.textContent = ''
             exel_button.classList.add("exel_button_icon")
         }
-
+*/
 
         function openModalWindow(val) {
             var url = $("#detailModalWindow").attr("data-ajax-url")
