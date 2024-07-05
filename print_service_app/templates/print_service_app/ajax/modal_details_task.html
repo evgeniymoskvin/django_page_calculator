@@ -3,8 +3,11 @@
         <div class="modal-header modal-header_clearance">
             <h5 class="modal-title text-24px-regular"
                 style="cursor: context-menu">{{ obj.inventory_number_request }}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+            <div>
+                <button id="change_task" class="icon-edit" data-bs-dismiss="modal"
+                        aria-label="Close" data-ajax-id='{{ obj.id }}'></button>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
         </div>
         <form id="form_send_status_file" method="POST" action="" data-ajax-url="{% url 'get-tasks-print' %}">
             {% csrf_token %}
@@ -20,7 +23,9 @@
 
                         <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
                             <div class="d-flex text-20px-light">Автор</div>
-                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.emp_upload_file.last_name }} {{ obj.emp_upload_file.first_name|slice:':1' }}.{{ obj.emp_upload_file.middle_name|slice:':1' }}. (тел. {{obj.emp_upload_file.user_phone }})</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.emp_upload_file.last_name }} {{ obj.emp_upload_file.first_name|slice:':1' }}.{{ obj.emp_upload_file.middle_name|slice:':1' }}.
+                                (тел. {{ obj.emp_upload_file.user_phone }})
+                            </div>
                         </div>
 
                         <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
@@ -61,6 +66,10 @@
                             <div class="d-flex text-20px-light">Допуск подсчета</div>
                             <div class="d-flex text-20px-light padding-left-30 text-align-end">±{{ obj.user_clearance }}мм.</div>
                         </div>
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex text-20px-light">Количество копий</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.copy_count }}</div>
+                        </div>
 
 
                         {% if obj.print_folding is not None %}
@@ -100,9 +109,10 @@
                         </div>
                         <div class="d-flex text-20px-light mt-2">Распознанные
                             {% if color_pages > 0 %}
-                            ч/б
+                                ч/б
                             {% endif %}
-                            форматы:</div>
+                            форматы:
+                        </div>
                         <div class="d-flex w-100 flex-row flex-wrap justify-content-between">
                             {% if obj_info.a0 > 0 %}
                                 <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
@@ -275,192 +285,192 @@
                         </div>
 
 
-                    {% if color_pages > 0 %}
-                        <div class="d-flex text-20px-light mt-2">Распознанные цветные форматы:</div>
-                        <div class="d-flex w-100 flex-row flex-wrap justify-content-between">
-                            {% if obj_info.a0_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A0:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a0_color }}</div>
-                                </div>
-                            {% endif %}
+                        {% if color_pages > 0 %}
+                            <div class="d-flex text-20px-light mt-2">Распознанные цветные форматы:</div>
+                            <div class="d-flex w-100 flex-row flex-wrap justify-content-between">
+                                {% if obj_info.a0_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A0:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a0_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a0x2_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A0x2:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a0x2_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a0x2_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A0x2:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a0x2_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a0x3_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A0x3:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a0x3_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a0x3_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A0x3:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a0x3_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a1_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A1:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a1_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a1_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A1:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a1_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a1x3_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A1x3:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a1x3_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a1x3_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A1x3:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a1x3_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a1x4_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A1x4:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a1x4_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a1x4_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A1x4:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a1x4_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a2_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A2:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a2_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a2_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A2:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a2_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a2x3_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A2x3:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a2x3_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a2x3_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A2x3:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a2x3_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a2x4_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A2x4:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a2x4_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a2x4_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A2x4:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a2x4_color }}</div>
+                                    </div>
+                                {% endif %}
 
 
-                            {% if obj_info.a2x5_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A2x5:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a2x5_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a2x5_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A2x5:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a2x5_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a3_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A3:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a3_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a3_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A3:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a3_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a3x3_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A3x3:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a3x3_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a3x3_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A3x3:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a3x3_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a3x4_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A3x4:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a3x4_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a3x4_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A3x4:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a3x4_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a3x5_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A3x5:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a3x5_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a3x5_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A3x5:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a3x5_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a3x6_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A3x6:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a3x6_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a3x6_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A3x6:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a3x6_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a3x7_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A3x7:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a3x7_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a3x7_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A3x7:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a3x7_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a4_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A4:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a4_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a4_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A4:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a4_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a4x3_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A4x3:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a4x3_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a4x3_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A4x3:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a4x3_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a4x4_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A4x4:</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a4x4_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a4x4_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A4x4:</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a4x4_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a4x5_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A4x5:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a4x5_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a4x5_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A4x5:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a4x5_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a4x6_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A4x6:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a4x6_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a4x6_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A4x6:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a4x6_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a4x7_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A4x7:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a4x7_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a4x7_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A4x7:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a4x7_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a4x8_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A4x8:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a4x8_color }}</div>
-                                </div>
-                            {% endif %}
+                                {% if obj_info.a4x8_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A4x8:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a4x8_color }}</div>
+                                    </div>
+                                {% endif %}
 
-                            {% if obj_info.a4x9_color > 0 %}
-                                <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">A4x9:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ obj_info.a4x9_color }}</div>
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endif %}
+                                {% if obj_info.a4x9_color > 0 %}
+                                    <div class="d-flex col-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">A4x9:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ obj_info.a4x9_color }}</div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
 
-                    {% if len_bad_dict_temp > 0 %}
-                        <div class="d-flex text-20px-light mt-2">Нераспознанные форматы:</div>
-                        <div class="d-flex w-100 flex-row flex-wrap justify-content-between">
+                        {% if len_bad_dict_temp > 0 %}
+                            <div class="d-flex text-20px-light mt-2">Нераспознанные форматы:</div>
+                            <div class="d-flex w-100 flex-row flex-wrap justify-content-between">
 
-                            {% for key, value in bad_lists.items %}
-                                <div class="d-flex col-12 col-lg-5 flex-row justify-content-start align-items-center mt-2">
-                                    <div class="d-flex text-20px-regular">{{ key }}:&nbsp;</div>
-                                    <div class="d-flex text-20px-light">{{ value }}</div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                                {% for key, value in bad_lists.items %}
+                                    <div class="d-flex col-12 col-lg-5 flex-row justify-content-start align-items-center mt-2">
+                                        <div class="d-flex text-20px-regular">{{ key }}:&nbsp;</div>
+                                        <div class="d-flex text-20px-light">{{ value }}</div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -469,7 +479,8 @@
                     {% if obj.file_to_print %}
                         <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
                             <div class="d-flex text-20px-light">Файл</div>
-                            <div class="d-flex text-20px-light"><a id="download_file" href="{% url 'download_file' obj.id %}"
+                            <div class="d-flex text-20px-light"><a id="download_file"
+                                                                   href="{% url 'download_file' obj.id %}"
                                                                    download>Скачать</a></div>
                         </div>
                     {% endif %}
@@ -529,7 +540,7 @@
                         onclick="$('#sendFileModal').modal('hide');">Отмена
                 </button>
                 <button class="button_blue_clearance button_blue_clearance_send_file" type="submit">
-                    Отправить
+                    Сохранить
                 </button>
             </div>
         </form>
@@ -537,6 +548,26 @@
 </div>
 
 <script>
+
+    $('#change_task').click(function (e) {
+        e.preventDefault();
+        var form_url = $("#changeDetailModalWindow").attr("data-ajax-url")
+        var obj_id = $("#change_task").attr("data-ajax-id")
+        console.log(form_url)
+        $.ajax({
+            type: "GET",
+            url: form_url,
+            data: {'obj_id': obj_id},
+            success: function (data) {
+                $("#changeDetailModalWindow").html(data)
+                $('#detailModalWindow').modal('hide');
+                $('#changeDetailModalWindow').modal('show');
+            }
+        })
+    })
+
+    {#$('#changeDetailModalWindow').modal('show');#}
+
 
     $(function () {
         // инициализации подсказок для всех элементов на странице, имеющих атрибут data-toggle="tooltip"

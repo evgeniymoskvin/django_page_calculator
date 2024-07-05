@@ -1,0 +1,222 @@
+<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog_send-file">
+    <div class="modal-content modal-content_clearance">
+        <div class="modal-header modal-header_clearance">
+            <h5 class="modal-title text-24px-regular" style="cursor: context-menu">
+                Редактировать {{ obj.inventory_number_request }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+        </div>
+        <form id="form_edit_task" method="POST" data-ajax-url="{% url 'get-edit-modal' %}">
+            {% csrf_token %}
+            <div class="modal-body modal-body_clearance">
+                <div class="d-flex w-100 justify-content-between align-items-center flex-column">
+                    <div class="d-flex flex-row">
+                        <input type="file" id="send_file" name="file"
+                               data-ajax-url="{% url 'print-send' %}"
+                               hidden>
+                        <input class="d-none" name='obj_id' id="obj_id" hidden>
+                        <div class="d-flex text-18px-bold" id="temp_file_name"></div>
+                        <div class="d-none" id="inventory_num"
+                             data-ajax-inventory="{{ obj.inventory_number_file }}"></div>
+                        <div class="d-none" id="obj_id_div"
+                             data-ajax-id="{{ obj.id }}"></div>
+                    </div>
+
+                    <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex text-20px-light">Инв. №</div>
+                        <div class="d-flex">
+                            <input class="input_text_clearance" type="text"
+                                   id="input_inventory_number_file_value"
+                                   name="input_inventory_number_file_value"
+                                   required
+                                   style="text-align: center; width: 300px">
+                        </div>
+                    </div>
+                    <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex text-20px-light">Заказчик</div>
+                        <div class="d-flex">
+                            <select class="form-select" style="min-width: 300px"
+                                    name="order_id"
+                                    id="order_id"
+                                    required>
+                                {% for ord in orders %}
+                                    <option value="{{ ord.id }}"
+                                            {% if obj.order.id == ord.id %}
+                                            selected
+                                            {% endif %}>
+                                        {{ ord }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex text-20px-light">Объект</div>
+                        <div class="d-flex" style="max-width: 300px">
+                            <select class="form-select" style="min-width: 300px"
+                                    name="object_id"
+                                    id="object_id" data-contracts-url="{% url 'get-contracts' %}"
+                                    required>
+                                {% if not obj.object %}
+                                    <option selected value="">Объект</option>
+                                {% endif %}
+                                {% for object in objects %}
+                                    <option value="{{ object.id }}"
+                                            {% if obj.object.id == object.id %}
+                                            selected
+                                            {% endif %}>
+                                        {{ object }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex text-20px-light">Договор</div>
+                        <div class="d-flex">
+                            <select class="form-select" style="width: 300px"
+                                    name="contract_id"
+                                    id="contract_id"
+                                    {% if not obj.contract %}
+                                    disabled
+                                    {% endif %}>
+                                {% if not obj.contract %}
+                                    <option selected>Договор</option>
+                                {% endif %}
+                                {% for contract in contracts %}
+                                    <option value="{{ contract.id }}"
+                                            {% if obj.contract.id == contract.id %}
+                                            selected
+                                            {% endif %}>
+                                        {{ contract.contract_name }}</option>
+                                {% endfor %}
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex text-20px-light">Кол-во экземпляров</div>
+                        <div class="d-flex">
+                            <input class="input_text_clearance" type="text"
+                                   id="copy_count_value"
+                                   name="copy_count_value"
+                                   required
+                                   style="text-align: center; width: 300px">
+                        </div>
+                    </div>
+                    <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex text-20px-light">Вид документации</div>
+                        <div class="d-flex">
+                            <select class="form-select" style="min-width: 300px"
+                                    name="TypeWorkTask_id"
+                                    id="TypeWorkTask_id">
+                                <option value="0" {% if obj.task_type_work == 0 %}selected{% endif %}>
+                                    Не указан
+                                </option>
+                                <option value="1" {% if obj.task_type_work == 1 %}selected{% endif %}>
+                                    Рабочая документация
+                                </option>
+                                <option value="2" {% if obj.task_type_work == 2 %}selected{% endif %}>
+                                    Проектная документация
+                                </option>
+                                <option value="3" {% if obj.task_type_work == 3 %}selected{% endif %}>
+                                    ОБИН
+                                </option>
+                                <option value="4" {% if obj.task_type_work == 4 %}selected{% endif %}>
+                                    НИОКР
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex text-20px-light">Фальцовка</div>
+                        <div class="d-flex">
+                            <select class="form-select" style="min-width: 300px"
+                                    name="folding_id"
+                                    id="folding_id"
+                                    required>
+                                <option value="" selected>Выберите</option>
+                                <option value="0" {% if obj.print_folding == 0 %}selected{% endif %}>
+                                    Не требуется
+                                </option>
+                                <option value="1" {% if obj.print_folding == 1 %}selected{% endif %}>
+                                    Требуется
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex text-20px-light">Цветной</div>
+                        <div class="d-flex">
+                            <select class="form-select" style="min-width: 300px"
+                                    name="color_id"
+                                    id="color_id"
+                                    required>
+                                <option value="0" {% if obj.color == 0 %}selected{% endif %}>Нет</option>
+                                <option value="1" {% if obj.color == 1 %}selected{% endif %}>Да</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer modal-footer_clearance justify-content-between">
+
+                <button type="button" class="button_grey_clearance"
+                        data-bs-dismiss="modal"
+                        onclick="$('#changeDetailModalWindow').modal('hide');">Отмена
+                </button>
+                <button class="button_blue_clearance button_blue_clearance_send_file" type="submit">
+                    Отправить
+                </button>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        document.getElementById('input_inventory_number_file_value').value = $("#inventory_num").attr("data-ajax-inventory")
+        document.getElementById('obj_id').value = $("#obj_id_div").attr("data-ajax-id")
+        document.getElementById('copy_count_value').value = {{ obj.copy_count }};
+
+    })
+
+    $("#object_id").change(function () {
+        var url = $("#object_id").attr("data-contracts-url");
+        var objectId = $(this).val();  // получаем object ID из HTML input
+
+        $.ajax({                       // формируем AJAX запрос
+            url: url,                    // подгружаем URL адрес для запроса
+            data: {
+                'object': objectId       // добавляем objectID в query параметры GET запроса
+            },
+            success: function (data) {   // `data` результат выполнения  функции `load_contract`
+                console.log(data)
+                $("#contract_id").prop('disabled', false);
+                $("#contract_id").html(data);  // помещаем результат в выпадающее меню
+            }
+        });
+
+    });
+
+
+    $('#form_edit_task').submit(function (e) {
+        e.preventDefault()
+        {#document.getElementById('obj_id_for_change_status').value = $("#hidden-div-obj-info").attr("data-ajax-change")#}
+        var form = $(this)
+        var form_url = $("#form_edit_task").attr("data-ajax-url")
+
+        $.ajax({
+            type: "POST",
+            url: form_url,
+            data: form.serialize(),
+            success: function (data) {
+                $('#changeDetailModalWindow').modal('hide');
+            },
+            error: function () {
+                $('#changeDetailModalWindow').modal('hide');
+                $('#error_modal').modal('show');
+            }
+        })
+    })
+</script>

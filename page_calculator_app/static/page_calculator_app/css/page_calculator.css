@@ -171,6 +171,7 @@ html {
     font-family: "Rosatom_light", serif;
     color: #1D222A;
 }
+
 .text-16px-bold {
     font-size: 16px;
     font-family: "Rosatom_bold", serif;
@@ -800,6 +801,32 @@ row__color {
     mask-repeat: no-repeat;
     height: 21px;
     padding-left: 16px; /* Or size of icon + spacing */
+}
+
+.icon-edit {
+
+    box-sizing: content-box;
+    border: 0;
+    border-radius: .25rem;
+    opacity: .5;
+
+    -webkit-mask-image: url("../icons/pen-to-square-regular.svg");
+    mask-image: url("../icons/pen-to-square-regular.svg");
+    background-color: #1D222A;
+
+    -webkit-mask-position: center center;
+    mask-position: center center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+
+    height: 21px;
+    padding-left: 16px; /* Or size of icon + spacing */
+
+        transition-duration: .15s;
+}
+
+.icon-edit:hover{
+    opacity: 1;
 }
 
 /*.form-select-print {*/

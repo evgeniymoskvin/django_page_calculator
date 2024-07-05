@@ -12,6 +12,10 @@
     <div class="modal fade" id="detailModalWindow" data-ajax-url="{% url 'get-info-task-print' %}" tabindex="-1">
     </div>
 
+    <!-- Модальное окно изменения заявки -->
+    <div class="modal fade" id="changeDetailModalWindow" data-ajax-url="{% url 'get-edit-modal' %}" tabindex="-1">
+    </div>
+
     <script>
         function openModalWindow(val) {
             var url = $("#detailModalWindow").attr("data-ajax-url")
@@ -50,7 +54,12 @@
                 }
             });
         }
+
+
+
     </script>
+
+
 
 {% endblock %}
 

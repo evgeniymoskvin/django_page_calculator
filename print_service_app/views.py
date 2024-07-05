@@ -27,7 +27,7 @@ import openpyxl
 
 from random import randint
 from page_calculator_app.models import PrintFilesModel, ListsFileModel, EmployeeModel, PrintPagePermissionModel, \
-    ChangeStatusHistoryModel
+    ChangeStatusHistoryModel, OrdersModel, ObjectModel, ContractModel
 
 
 def check_permission_user(req_user):
@@ -121,6 +121,35 @@ class GetInfoPrintTaskView(View):
             celery_email_print_done.delay(int(print_task_id))
         return HttpResponse(status=200)
 
+
+class GetEditModalWindow(View):
+    """ Редактирование задачи сорудником типографии"""
+    def get (self, request):
+        print(request.GET)
+        obj_task = PrintFilesModel.objects.get(id=request.GET.get('obj_id'))
+        orders = OrdersModel.objects.get_queryset().order_by('order')
+        objects = ObjectModel.objects.get_queryset().filter(show=True).order_by('object_name')
+        # object_id = int(request.GET.get('object'))
+        try:
+            contracts = ContractModel.objects.get_queryset().filter(contract_object_id=obj_task.object.id).filter(
+                show=True).order_by(
+                'contract_name')
+        except Exception as e:
+            print(f'Контракт у {obj_task.id} не указан: {e}')
+            contracts = ContractModel.objects.get_queryset()
+        content = {'objects': objects,
+                   'orders': orders,
+                   'obj': obj_task,
+                   'contracts': contracts}
+        return render(request, 'print_service_app/ajax/modal_edit_task.html', content)
+
+    def post(self, request):
+        print(f'GetEditModalWindow - request.POST: {request.POST}')
+        obj_id = request.POST['obj_id']
+        task_obj = PrintFilesModel.objects.get(id=obj_id)
+
+
+        return HttpResponse(status=200)
 
 class GetInfoReportPrintTaskView(View):
     def get(self, request):

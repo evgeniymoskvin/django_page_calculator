@@ -9,7 +9,7 @@ from pdf2image import convert_from_path
 
 
 def check_date_in_db():
-    today_year = f'{datetime.datetime.today().year}{str(datetime.datetime.today().month).rjust(2, "0")}{datetime.datetime.today().day}'
+    today_year = f'{datetime.datetime.today().year}{str(datetime.datetime.today().month).rjust(2, "0")}{str(datetime.datetime.today().day).rjust(2, "0")}'
     try:
         last_task_in_db = CountTasksModel.objects.latest('id')
         print(f'try:{last_task_in_db}')
@@ -155,7 +155,3 @@ def detect_color_image(file, thumb_size=40, MSE_cutoff=1, adjust_color_bias=True
     else:
         print("Don't know...", bands)
         return 'dontknow'
-
-
-
-
