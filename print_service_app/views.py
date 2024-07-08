@@ -124,7 +124,8 @@ class GetInfoPrintTaskView(View):
 
 class GetEditModalWindow(View):
     """ Редактирование задачи сорудником типографии"""
-    def get (self, request):
+
+    def get(self, request):
         print(request.GET)
         obj_task = PrintFilesModel.objects.get(id=request.GET.get('obj_id'))
         orders = OrdersModel.objects.get_queryset().order_by('order')
@@ -144,12 +145,20 @@ class GetEditModalWindow(View):
         return render(request, 'print_service_app/ajax/modal_edit_task.html', content)
 
     def post(self, request):
+        """Сохранение изменений задачи"""
         print(f'GetEditModalWindow - request.POST: {request.POST}')
-        obj_id = request.POST['obj_id']
-        task_obj = PrintFilesModel.objects.get(id=obj_id)
-
-
+        task_obj = PrintFilesModel.objects.get(id=request.POST['obj_id'])
+        task_obj.inventory_number_file = request.POST['input_inventory_number_file_value']
+        task_obj.order_id = request.POST['order_id']
+        task_obj.object_id = request.POST['object_id']
+        task_obj.contract_id = request.POST['contract_id']
+        task_obj.copy_count = request.POST['copy_count_value']
+        task_obj.task_type_work = request.POST['TypeWorkTask_id']
+        task_obj.print_folding = request.POST['folding_id']
+        task_obj.color = request.POST['color_id']
+        task_obj.save()
         return HttpResponse(status=200)
+
 
 class GetInfoReportPrintTaskView(View):
     def get(self, request):

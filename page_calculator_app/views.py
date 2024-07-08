@@ -402,6 +402,7 @@ def get_contracts(request):
 
 
 class GetInfoMyTaskView(View):
+    """Просмотр деталей задания для сотрудника"""
     def get(self, request):
         obj_id = int(request.GET.get('object'))
         obj = PrintFilesModel.objects.get(id=obj_id)
@@ -427,6 +428,10 @@ class CancelMyTaskView(View):
         cancel_print_task_obj = PrintFilesModel.objects.get(id=cancel_print_task_id)
         cancel_print_task_obj.status = 0
         cancel_print_task_obj.date_change_status = datetime.datetime.now()
+        file_path = os.path.join(settings.MEDIA_ROOT, str(cancel_print_task_obj.file_to_print))
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        cancel_print_task_obj.file_to_print = None
         cancel_print_task_obj.save()
         return HttpResponse(status=200)
 
