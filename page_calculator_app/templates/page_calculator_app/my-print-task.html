@@ -16,9 +16,9 @@
                     <tr>
                         <th class="th_tables" scope="col">#</th>
                         <th class="th_tables" scope="col" style="text-align: center">№ заявки</th>
-                        <th class="th_tables" scope="col" style="text-align: center">Заказ</th>
-                        <th class="th_tables" scope="col" style="text-align: center">Объект</th>
-                        <th class="th_tables" scope="col" style="text-align: center">Кол-во<br>листов</th>
+                        <th class="th_tables" scope="col" style="text-align: center; width: 100px;">Заказчик</th>
+                        <th class="th_tables" scope="col" style="text-align: center;width: 225px;">Объект</th>
+                        <th class="th_tables" scope="col" style="text-align: center; width: 55px;">Кол-во<br>листов</th>
                         <th class="th_tables" scope="col" style="text-align: center">Дата</th>
                         <th class="th_tables" scope="col" style="text-align: center">Статус</th>
                     </tr>
@@ -39,13 +39,13 @@
                                 title="{{ obj.object }}">
                                 {{ obj.object|truncatechars:50 }}
                             </td>
-                            <td class="td_tables" style="width: 150px; text-align: center">
+                            <td class="td_tables" style="width:55px; text-align: center">
                                 {{ obj.count_pages }}
                             </td>
                             <td class="td_tables" style="width: 150px; text-align: center">
                                 {{ obj.add_file_date }}
                             </td>
-                            <td class="td_tables" style="width: 150px; text-align: center"
+                            <td class="td_tables" style="width: 75px; text-align: center"
                                     {% if obj.status == 2 or obj.status == 3 %}
                                 data-toggle="tooltip" data-bs-placement="bottom"
                                 rel="txtTooltip" data-bs-html="true"
@@ -103,6 +103,9 @@
         </div>
     </div>
 
+    <!-- Модальное окно изменения заявки -->
+    <div class="modal fade" id="changeDetailModalWindow" data-ajax-url="{% url 'get-edit-modal' %}" tabindex="-1">
+    </div>
 
     <script>
 
@@ -135,7 +138,6 @@
             );
             table.buttons().container().appendTo($('.col-sm-6:eq(0)', table.table().container()));
             newStyleButton()
-            {#newStyleButton()#}
             var all_forms = document.querySelectorAll(".form-select")
             for (var i = 0; i < all_forms.length; i++) {
                 all_forms[i].style.minHeight = '0px';

@@ -123,9 +123,10 @@ class GetInfoPrintTaskView(View):
 
 
 class GetEditModalWindow(View):
-    """ Редактирование задачи сорудником типографии"""
+    """ Редактирование задачи сотрудником типографии"""
 
     def get(self, request):
+        """Загрузка модального окна редактирования задачи"""
         print(request.GET)
         obj_task = PrintFilesModel.objects.get(id=request.GET.get('obj_id'))
         orders = OrdersModel.objects.get_queryset().order_by('order')
