@@ -63,6 +63,10 @@
                             </div>
                         {% endif %}
                         <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex text-20px-light">Марка</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.mark_print_file.mark_doc }}</div>
+                        </div>
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
                             <div class="d-flex text-20px-light">Допуск подсчета</div>
                             <div class="d-flex text-20px-light padding-left-30 text-align-end">±{{ obj.user_clearance }}мм.</div>
                         </div>

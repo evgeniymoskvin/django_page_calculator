@@ -295,7 +295,7 @@ def get_dispatcher_report_xls(objects_tasks: list):
             correction_number,  # Номер корректировки
             '',  # Инв. № альбома ...
             task_type_work,  # Марка документации
-            '',  # Раздел проекта
+            task.mark_print_file,  # Раздел проекта
             task.emp_upload_file.department_group.group_dep_abr,  # Управление
             contract_name,  # Договор
             task_order,  # код заказчика

@@ -7,7 +7,7 @@ from django.views import View
 from django.conf import settings
 from .forms import UploadFileForm
 from .models import PrintFilesModel, EmployeeModel, OrdersModel, ObjectModel, ContractModel, CountTasksModel, \
-    ListsFileModel, PrintPagePermissionModel
+    ListsFileModel, PrintPagePermissionModel, MarkDocModel
 from .functions import check_date_in_db, check_color_pages
 from print_service_app.tasks import celery_check_color_pages
 from print_service_app.views import check_permission_user
@@ -92,10 +92,12 @@ class IndexView(View):
         # Данные для модального окна отправки файла на печать
         orders = OrdersModel.objects.get_queryset().order_by('order')
         objects = ObjectModel.objects.get_queryset().filter(show=True).order_by('object_name')
+        marks = MarkDocModel.objects.get_queryset().order_by('mark_doc')
         content = {'form': form,
                    "orders": orders,
                    'clearance': clearance,
                    'objects': objects,
+                   'marks' : marks,
                    'user_permission': user_permission}
         return render(request, 'page_calculator_app/index.html', content)
 
@@ -303,6 +305,7 @@ class PrintView(View):
             print_folding=int(request.POST.get('folding_id')),
             user_clearance=user_clearance,
             color=int(request.POST.get('color_id')),
+            mark_print_file_id=int(request.POST.get('mark_id')),
         )
         new_task_to_print.save()
         print(f"Сохранили задачу в базу за {time.time() - start_time} секунд от момента старта")
