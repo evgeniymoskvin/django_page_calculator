@@ -27,7 +27,7 @@ import openpyxl
 
 from random import randint
 from page_calculator_app.models import PrintFilesModel, ListsFileModel, EmployeeModel, PrintPagePermissionModel, \
-    ChangeStatusHistoryModel, OrdersModel, ObjectModel, ContractModel
+    ChangeStatusHistoryModel, OrdersModel, ObjectModel, ContractModel, MarkDocModel
 
 
 def check_permission_user(req_user):
@@ -131,6 +131,7 @@ class GetEditModalWindow(View):
         obj_task = PrintFilesModel.objects.get(id=request.GET.get('obj_id'))
         orders = OrdersModel.objects.get_queryset().order_by('order')
         objects = ObjectModel.objects.get_queryset().filter(show=True).order_by('object_name')
+        marks = MarkDocModel.objects.get_queryset()
         # object_id = int(request.GET.get('object'))
         try:
             contracts = ContractModel.objects.get_queryset().filter(contract_object_id=obj_task.object.id).filter(
@@ -142,7 +143,8 @@ class GetEditModalWindow(View):
         content = {'objects': objects,
                    'orders': orders,
                    'obj': obj_task,
-                   'contracts': contracts}
+                   'contracts': contracts,
+                   'marks': marks}
         return render(request, 'print_service_app/ajax/modal_edit_task.html', content)
 
     def post(self, request):
@@ -157,6 +159,7 @@ class GetEditModalWindow(View):
         task_obj.task_type_work = request.POST['TypeWorkTask_id']
         task_obj.print_folding = request.POST['folding_id']
         task_obj.color = request.POST['color_id']
+        task_obj.mark_print_file_id = request.POST['mark_id']
         task_obj.save()
         return HttpResponse(status=200)
 
