@@ -4,8 +4,12 @@
         <div class="modal-header modal-header_clearance">
             <h5 class="modal-title text-24px-regular"
                 style="cursor: context-menu">{{ obj.inventory_number_request }}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+            <div>
+                <button id="change_task" class="icon-edit" data-bs-dismiss="modal"
+                        aria-label="Close" data-ajax-id='{{ obj.id }}'></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
         </div>
         <div class="modal-body modal-body_clearance">
             <div class="d-flex row flex-row w-100">
@@ -512,6 +516,24 @@
 </div>
 
 <script>
+
+
+    $('#change_task').click(function (e) {
+        e.preventDefault();
+        var form_url = $("#changeDetailModalWindow").attr("data-ajax-url")
+        var obj_id = $("#change_task").attr("data-ajax-id")
+        console.log(form_url)
+        $.ajax({
+            type: "GET",
+            url: form_url,
+            data: {'obj_id': obj_id},
+            success: function (data) {
+                $("#changeDetailModalWindow").html(data)
+                $('#detailModalWindow').modal('hide');
+                $('#changeDetailModalWindow').modal('show');
+            }
+        })
+    })
 
     $(function () {
         // инициализации подсказок для всех элементов на странице, имеющих атрибут data-toggle="tooltip"
