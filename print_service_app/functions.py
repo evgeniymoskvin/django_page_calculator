@@ -275,6 +275,12 @@ def get_dispatcher_report_xls(objects_tasks: list):
             print(f'Не удалось определить код объекта: {e}')
             object_code = ''
 
+        try:
+            mark_doc = task.mark_print_file.mark_doc
+        except Exception as e:
+            print(f'Не удалось определить марку документа: {e}')
+            mark_doc = ''
+
         if task.task_type_work == 0:
             task_type_work = '-'
         elif task.task_type_work == 1:
@@ -295,7 +301,7 @@ def get_dispatcher_report_xls(objects_tasks: list):
             correction_number,  # Номер корректировки
             '',  # Инв. № альбома ...
             task_type_work,  # Марка документации
-            task.mark_print_file,  # Раздел проекта
+            mark_doc,  # Раздел проекта
             task.emp_upload_file.department_group.group_dep_abr,  # Управление
             contract_name,  # Договор
             task_order,  # код заказчика
