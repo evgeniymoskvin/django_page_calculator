@@ -482,7 +482,7 @@ class GeneratePrintReportTableView(View):
                     mime_type, _ = mimetypes.guess_type(file_path_to_export)
                     response = HttpResponse(fh.read(), content_type=mime_type)
                     response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(
-                        f'{PrintFilesModel.objects.get(id=pk).inventory_number_request}-print')
+                        f'{PrintFilesModel.objects.get(id=pk).inventory_number_request}-print.xlsx')
                     return response
             raise Http404
         else:
@@ -531,7 +531,7 @@ class GenerateDispatcherReportTableView(View):
                     mime_type, _ = mimetypes.guess_type(file_path_to_export)
                     response = HttpResponse(fh.read(), content_type=mime_type)
                     response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(
-                        f'{PrintFilesModel.objects.get(id=pk).inventory_number_request}-dispatcher')
+                        f'{PrintFilesModel.objects.get(id=pk).inventory_number_request}-dispatcher.xlsx')
                     return response
             raise Http404
         else:
@@ -575,7 +575,7 @@ class DownloadExportReportView(View):
             with open(file_path_to_export, 'rb') as fh:
                 mime_type, _ = mimetypes.guess_type(file_path_to_export)
                 response = HttpResponse(fh.read(), content_type=mime_type)
-                response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(f'export_print')
+                response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(f'export_print.xlsx')
                 return response
         raise Http404
 
@@ -590,6 +590,6 @@ class DownloadDispatcherExportReportView(View):
             with open(file_path_to_export, 'rb') as fh:
                 mime_type, _ = mimetypes.guess_type(file_path_to_export)
                 response = HttpResponse(fh.read(), content_type=mime_type)
-                response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(f'export_dispatcher')
+                response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(f'export_dispatcher.xlsx')
                 return response
         raise Http404

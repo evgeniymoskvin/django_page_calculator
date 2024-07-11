@@ -25,6 +25,8 @@ django-redis==5.4.0
 docxcompose==1.4.0
 docxtpl==0.17.0
 et-xmlfile==1.1.0
+gevent==24.2.1
+greenlet==3.0.3
 hyperlink==21.0.0
 idna==3.7
 incremental==22.10.0
@@ -59,4 +61,5 @@ typing_extensions==4.11.0
 tzdata==2024.1
 vine==5.1.0
 wcwidth==0.2.13
+zope.event==5.0
 zope.interface==6.4.post2
