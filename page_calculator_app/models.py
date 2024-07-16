@@ -43,7 +43,9 @@ class ContractModel(models.Model):
     """Таблица договоров"""
     contract_object = models.ForeignKey(ObjectModel, on_delete=models.PROTECT, verbose_name="Объект", default=1)
     contract_name = models.CharField(max_length=650, verbose_name="Номер договора")
+    contract_code = models.CharField(max_length=500, verbose_name="Код договора", null=True, blank=True)
     show = models.BooleanField("Отображать договор", default=True)
+    show_in_print = models.BooleanField("Отображать только в печати", default=False)
 
     class Meta:
         verbose_name = _("номер договора")
@@ -240,7 +242,7 @@ class PrintFilesModel(models.Model):
 
     class PrintFileStatusChoice(models.IntegerChoices):
         """Статус кода Kks"""
-        CANCELED = 0, _('Аннулирован')
+        CANCELED = 0, _('Отменен')
         ACTUAL = 1, _('Актуален')
         WORK = 2, _('В работе')
         DONE = 3, _('Готов')

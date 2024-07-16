@@ -7,16 +7,11 @@ from django.core.mail import EmailMessage
 from PIL import Image, ImageStat
 from pdf2image import convert_from_path
 
-
-
 from page_calculator_app.models import PrintFilesModel, ListsFileModel
 
 from django_page_calculator.celery import app
 
-from .email_functions import task_print_done
-
-
-
+from .email_functions import task_print_done, task_print_cancel
 
 
 @app.task()
@@ -49,7 +44,14 @@ def celery_email_print_done(task_done_id):
 
 
 @app.task()
+def celery_email_print_cancel(task_done_id, text_cancel):
+    task_print_cancel(task_done_id, text_cancel)
+    return f'Печать id={task_done_id} отменена. Письмо отправлено.'
+
+
+@app.task()
 def celery_check_color_pages(file_path, all_lists_file, lists_file_id):
+    """Разбор файла на цветные листы"""
     start_time = time.time()
     lists_file = ListsFileModel.objects.get(id=lists_file_id)
     print(f'Определение чб и цветного для {lists_file.print_file.inventory_number_request}')
@@ -62,7 +64,7 @@ def celery_check_color_pages(file_path, all_lists_file, lists_file_id):
 
     for count, page in enumerate(pages):
         result_check_color = detect_color_image(page)
-        print(f'Лист {count+1} - result_check_color: {result_check_color}')
+        print(f'Лист {count + 1} - result_check_color: {result_check_color}')
         if result_check_color is True:
             if all_lists_file[count][2] == 'A0':
                 lists_file.a0 -= 1

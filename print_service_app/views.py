@@ -18,7 +18,7 @@ from django.forms import DateField
 import mimetypes
 import os.path
 
-from .tasks import celery_email_print_done
+from .tasks import celery_email_print_done, celery_email_print_cancel
 from page_calculator_app.functions import save_status_log
 from .functions import get_print_report_xls, get_dispatcher_report_xls
 
@@ -119,6 +119,9 @@ class GetInfoPrintTaskView(View):
         # Отправка письма через Celery
         if int(request.POST['TypeWorkTask_id']) == 3:
             celery_email_print_done.delay(int(print_task_id))
+        elif int(request.POST['TypeWorkTask_id']) == 0:
+            print('Статус задачи', request.POST['TypeWorkTask_id'])
+            celery_email_print_cancel.delay(int(print_task_id), request.POST['WhyCancel'])
         return HttpResponse(status=200)
 
 
@@ -414,7 +417,7 @@ class AllTaskView(View):
 
 def get_all_task(request):
     "Подгрузка списка всех задач"
-    time.sleep(1)
+    # time.sleep(1)
     print(request.GET)
     now_value = int(request.GET.get('now_value'))
     all_tasks_in_project = PrintFilesModel.objects.order_by('-id')
@@ -479,7 +482,8 @@ class GeneratePrintReportTableView(View):
                                                'export_print.xlsx')
             if os.path.exists(file_path_to_export):
                 with open(file_path_to_export, 'rb') as fh:
-                    mime_type, _ = mimetypes.guess_type(file_path_to_export)
+                    # mime_type, _ = mimetypes.guess_type(file_path_to_export)
+                    mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     response = HttpResponse(fh.read(), content_type=mime_type)
                     response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(
                         f'{PrintFilesModel.objects.get(id=pk).inventory_number_request}-print.xlsx')
@@ -528,7 +532,8 @@ class GenerateDispatcherReportTableView(View):
                                                'export_dispatcher.xlsx')
             if os.path.exists(file_path_to_export):
                 with open(file_path_to_export, 'rb') as fh:
-                    mime_type, _ = mimetypes.guess_type(file_path_to_export)
+                    # mime_type, _ = mimetypes.guess_type(file_path_to_export)
+                    mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     response = HttpResponse(fh.read(), content_type=mime_type)
                     response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(
                         f'{PrintFilesModel.objects.get(id=pk).inventory_number_request}-dispatcher.xlsx')
@@ -573,7 +578,8 @@ class DownloadExportReportView(View):
                                            'export_print.xlsx')
         if os.path.exists(file_path_to_export):
             with open(file_path_to_export, 'rb') as fh:
-                mime_type, _ = mimetypes.guess_type(file_path_to_export)
+                # mime_type, _ = mimetypes.guess_type(file_path_to_export)
+                mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 response = HttpResponse(fh.read(), content_type=mime_type)
                 response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(f'export_print.xlsx')
                 return response
@@ -588,7 +594,7 @@ class DownloadDispatcherExportReportView(View):
                                            'export_dispatcher.xlsx')
         if os.path.exists(file_path_to_export):
             with open(file_path_to_export, 'rb') as fh:
-                mime_type, _ = mimetypes.guess_type(file_path_to_export)
+                mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 response = HttpResponse(fh.read(), content_type=mime_type)
                 response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(f'export_dispatcher.xlsx')
                 return response

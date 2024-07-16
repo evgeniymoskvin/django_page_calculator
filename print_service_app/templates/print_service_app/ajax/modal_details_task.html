@@ -513,9 +513,9 @@
                                     name="TypeWorkTask_id"
                                     id="TypeWorkTask_id">
                                 {% if obj.status == 0 %}
-                                    <option value="0" selected>Аннулирован</option>
+                                    <option value="0" selected>Отменен</option>
                                 {% else %}
-                                    <option value="0">Аннулирован</option>
+                                    <option value="0">Отменен</option>
                                 {% endif %}
                                 {% if obj.status == 1 %}
                                     <option value="1" selected>Актуален</option>
@@ -535,6 +535,10 @@
                             </select>
                         </div>
                     </div>
+                    <div class="d-none w-50 flex-row justify-content-between align-items-center mt-2" id="WhyCancel">
+                        {#                        <div class="d-flex text-20px-light">Причина</div>#}
+                        <input type="text" class="d-flex w-100 input_text_clearance" name="WhyCancel" placeholder="Причина отмены" style="padding-left: 15px">
+                    </div>
                 </div>
             </div>
 
@@ -552,6 +556,23 @@
 </div>
 
 <script>
+
+    $('#TypeWorkTask_id').change(function () {
+            var selectedIndex = $('#TypeWorkTask_id').prop('selectedIndex');
+            console.log('selectedIndex', selectedIndex)
+            if (selectedIndex == 0) {
+                $('#WhyCancel').removeClass('d-none')
+                $('#WhyCancel').addClass('d-flex')
+            } else {
+                $('#WhyCancel').removeClass('d-flex')
+                $('#WhyCancel').addClass('d-none')
+            }
+        }
+    )
+
+    $('#download_file').click(function () {
+        $('#TypeWorkTask_id').prop('selectedIndex', 2)
+    })
 
     $('#change_task').click(function (e) {
         e.preventDefault();
