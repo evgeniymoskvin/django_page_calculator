@@ -490,8 +490,6 @@
                     {% endif %}
                     <div class="d-flex w-50 flex-row justify-content-between align-items-center mt-2">
                         <div class="d-flex text-20px-light">Бланк</div>
-                        {#                                                <div class="d-flex text-20px-light"><a href="{% url 'blank' obj.id %}"#}
-                        {#                                                                                        target="_blank" rel="noopener noreferrer">Скачать</a></div>#}
                         <div class="d-flex text-20px-light">
                             <a href="#" class="service"
                                onclick='window.open("{% url "blank" obj.id %}","Popup", "location,status,scrollbars,resizable,width=800")'>
