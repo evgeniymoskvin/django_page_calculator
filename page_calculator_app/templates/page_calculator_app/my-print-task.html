@@ -4,6 +4,11 @@
     Заявки на печать
 {% endblock %}
 
+{% block css_script %}
+    <script type="text/javascript"
+            src="{% static 'page_calculator_app/DataTables/datatables.js' %}"></script>
+{% endblock %}
+
 {% block content %}
     <div class="d-flex w-100" id="display_div">
         <div style="width: 100%">

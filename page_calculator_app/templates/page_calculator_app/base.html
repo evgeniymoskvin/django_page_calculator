@@ -27,8 +27,9 @@
     <script type="text/javascript" src="{% static 'page_calculator_app/jQuery-3.6.0/jquery-3.6.0.min.js' %}"></script>
     <script type="text/javascript"
             src="{% static 'page_calculator_app/Bootstrap-5-5.1.3/js/bootstrap.bundle.js' %}"></script>
-    <script type="text/javascript"
-            src="{% static 'page_calculator_app/DataTables/datatables.js' %}"></script>
+    {% block css_script %}
+    {% endblock %}
+
     <script type="text/javascript"
             src="{% static 'page_calculator_app/jQuery-ui/jquery-ui.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'page_calculator_app/select2/select2.min.js' %}"></script>
