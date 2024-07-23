@@ -36,7 +36,10 @@
                 <h2 class="accordion-header" id="panelsStayOpen-headingOne{{ forloop.counter }}">
                     <div class="accordion-button {% if files_count > 1 %}collapsed{% endif %}" type="button"
                          data-bs-toggle="collapse"
-                         data-bs-target="#panelsStayOpen-collapseOne{{ forloop.counter }}" aria-expanded="false"
+                         data-bs-target="#panelsStayOpen-collapseOne{{ forloop.counter }}"
+                         {% if files_count > 1 %}aria-expanded="false"
+                         {% else %}aria-expanded="true"
+                         {% endif %}
                          aria-controls="panelsStayOpen-collapseOne{{ forloop.counter }}"
                          data-bs-parent="#accordion"
                             {% if value.error %}
@@ -64,7 +67,7 @@
                 </h2>
 
                 <div id="panelsStayOpen-collapseOne{{ forloop.counter }}"
-                     class="accordion-collapse {% if files_count > 1 %}collapse{% endif %}{% if files_count == 0 %}{% endif %}"
+                     class="accordion-collapse {% if files_count > 1 %}collapse{% endif %}{% if files_count == 0 %}collapse show{% endif %}"
                      aria-labelledby="panelsStayOpen-headingOne{{ forloop.counter }}">
                     {% if value.error != 1 %}
                         <div class="accordion-body">

@@ -4,6 +4,8 @@
             <h5 class="modal-title text-24px-regular"
                 style="cursor: context-menu">{{ obj.inventory_number_request }}</h5>
             <div>
+                <button id="change_lists" class="icon-edit-lists" data-bs-dismiss="modal"
+                        aria-label="Close" data-ajax-id='{{ obj.id }}'></button>
                 <button id="change_task" class="icon-edit" data-bs-dismiss="modal"
                         aria-label="Close" data-ajax-id='{{ obj.id }}'></button>
                 <button class="btn-close" data-bs-dismiss="modal"></button>
@@ -535,7 +537,8 @@
                     </div>
                     <div class="d-none w-50 flex-row justify-content-between align-items-center mt-2" id="WhyCancel">
                         {#                        <div class="d-flex text-20px-light">Причина</div>#}
-                        <input type="text" class="d-flex w-100 input_text_clearance" name="WhyCancel" placeholder="Причина отмены" style="padding-left: 15px">
+                        <input type="text" class="d-flex w-100 input_text_clearance" name="WhyCancel"
+                               placeholder="Причина отмены" style="padding-left: 15px">
                     </div>
                 </div>
             </div>
@@ -590,7 +593,22 @@
     })
 
     {#$('#changeDetailModalWindow').modal('show');#}
-
+    $('#change_lists').click(function (e) {
+        e.preventDefault();
+        var form_url = $("#changeDetailListsModalWindow").attr("data-ajax-url")
+        var obj_id = $("#change_lists").attr("data-ajax-id")
+        console.log(form_url)
+        $.ajax({
+            type: "GET",
+            url: form_url,
+            data: {'obj_id': obj_id},
+            success: function (data) {
+                $("#changeDetailListsModalWindow").html(data)
+                $('#detailModalWindow').modal('hide');
+                $('#changeDetailListsModalWindow').modal('show');
+            }
+        })
+    })
 
     $(function () {
         // инициализации подсказок для всех элементов на странице, имеющих атрибут data-toggle="tooltip"

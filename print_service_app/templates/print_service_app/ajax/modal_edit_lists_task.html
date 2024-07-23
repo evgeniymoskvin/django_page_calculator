@@ -1,0 +1,142 @@
+<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable modal-dialog_change-status">
+    <div class="modal-content modal-content_clearance">
+        <div class="modal-header modal-header_clearance">
+            <h5 class="modal-title text-24px-regular" style="cursor: context-menu">
+                Редактировать листы {{ obj.inventory_number_request }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+        </div>
+        <form id="form_edit_task" method="POST" data-ajax-url="{% url 'get-edit-lists-modal' %}">
+            {% csrf_token %}
+            <div class="modal-body modal-body_clearance">
+                <div class="d-flex flex-row justify-content-between">
+                    <!-- Левая часть-->
+                    <div class="d-flex w-100 justify-content-between align-items-center flex-column">
+                        <!-- A4-->
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex flex-row  align-items-center">
+                                <div class="d-flex text-20px-light" style="margin-right: 15px">A4</div>
+                                <div class="d-flex">
+                                    <input class="input_text_clearance input_text_change_lists" type="text"
+                                           name="input_a4" id="input_a4">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- A3-->
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex flex-row  align-items-center">
+                                <div class="d-flex text-20px-light" style="margin-right: 15px">A3</div>
+                                <div class="d-flex">
+                                    <input class="input_text_clearance input_text_change_lists" type="text"
+                                           name="input_a3" id="input_a3">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- A2-->
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex flex-row  align-items-center">
+                                <div class="d-flex text-20px-light" style="margin-right: 15px">A2</div>
+                                <div class="d-flex">
+                                    <input class="input_text_clearance input_text_change_lists" type="text"
+                                           name="input_a2" id="input_a2">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- A1-->
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex flex-row  align-items-center">
+                                <div class="d-flex text-20px-light" style="margin-right: 15px">A1</div>
+                                <div class="d-flex">
+                                    <input class="input_text_clearance input_text_change_lists" type="text"
+                                           name="input_a1" id="input_a1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- A0-->
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex flex-row  align-items-center">
+                                <div class="d-flex text-20px-light" style="margin-right: 15px">A0</div>
+                                <div class="d-flex">
+                                    <input class="input_text_clearance input_text_change_lists" type="text"
+                                           name="input_a0" id="input_a0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex w-100 justify-content-between align-items-center flex-column">
+                        {{ lists_of_task }}
+                    </div>
+
+
+                    <div class="d-flex w-100 justify-content-between align-items-center flex-column">
+                        {{ lists_of_task }}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer modal-footer_clearance justify-content-between">
+
+                <button type="button" class="button_grey_clearance"
+                        data-bs-dismiss="modal"
+                        onclick="$('#changeDetailListsModalWindow').modal('hide');">Отмена
+                </button>
+                <button class="button_blue_clearance button_blue_clearance_send_file" type="submit">
+                    Отправить
+                </button>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        document.getElementById('input_inventory_number_file_value').value = $("#inventory_num").attr("data-ajax-inventory")
+        document.getElementById('obj_id').value = $("#obj_id_div").attr("data-ajax-id")
+        document.getElementById('copy_count_value').value = {{ obj.copy_count }};
+
+    })
+
+    $("#object_id").change(function () {
+        var url = $("#object_id").attr("data-contracts-url");
+        var objectId = $(this).val();  // получаем object ID из HTML input
+
+        $.ajax({                       // формируем AJAX запрос
+            url: url,                    // подгружаем URL адрес для запроса
+            data: {
+                'object': objectId       // добавляем objectID в query параметры GET запроса
+            },
+            success: function (data) {   // `data` результат выполнения  функции `load_contract`
+                console.log(data)
+                $("#contract_id").prop('disabled', false);
+                $("#contract_id").html(data);  // помещаем результат в выпадающее меню
+            }
+        });
+
+    });
+
+
+    $('#form_edit_task').submit(function (e) {
+        e.preventDefault()
+        {#document.getElementById('obj_id_for_change_status').value = $("#hidden-div-obj-info").attr("data-ajax-change")#}
+        var form = $(this)
+        var form_url = $("#form_edit_task").attr("data-ajax-url")
+
+        $.ajax({
+            type: "POST",
+            url: form_url,
+            data: form.serialize(),
+            success: function (data) {
+                $('#changeDetailModalWindow').modal('hide');
+            },
+            error: function () {
+                $('#changeDetailModalWindow').modal('hide');
+                $('#error_modal').modal('show');
+            }
+        })
+    })
+</script>

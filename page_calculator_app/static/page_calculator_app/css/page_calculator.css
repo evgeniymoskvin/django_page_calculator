@@ -341,6 +341,11 @@ html {
     color: grey;
 }
 
+.input_text_change_lists{
+    width: 65px;
+    padding-left: 10px;
+}
+
 
 .button_blue {
     min-width: 200px;
@@ -822,10 +827,37 @@ row__color {
     height: 21px;
     padding-left: 16px; /* Or size of icon + spacing */
 
-        transition-duration: .15s;
+    transition-duration: .15s;
 }
 
-.icon-edit:hover{
+.icon-edit:hover {
+    opacity: 1;
+}
+
+
+.icon-edit-lists {
+    box-sizing: content-box;
+    border: 0;
+    border-radius: .25rem;
+    opacity: .5;
+
+    -webkit-mask-image: url("../icons/file-invoice-solid.svg");
+    mask-image: url("../icons/file-invoice-solid.svg");
+    background-color: #1D222A;
+
+    -webkit-mask-position: center center;
+    mask-position: center center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+
+    height: 21px;
+    margin-right: 5px;
+    padding-right: 16px; /* Or size of icon + spacing */
+
+    transition-duration: .15s;
+}
+
+.icon-edit-lists:hover {
     opacity: 1;
 }
 

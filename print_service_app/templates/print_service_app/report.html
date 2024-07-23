@@ -76,6 +76,11 @@
     <div class="modal fade" id="changeDetailModalWindow" data-ajax-url="{% url 'get-edit-modal' %}" tabindex="-1">
     </div>
 
+    <!-- Модальное окно изменения листов заявки -->
+    <div class="modal fade" id="changeDetailListsModalWindow" data-ajax-url="{% url 'get-edit-lists-modal' %}"
+         tabindex="-1">
+    </div>
+
     <script>
 
 
@@ -138,7 +143,7 @@
         });
 
         $('#create_dispatcher_report').click(function (e) {
-             console.log('generate_dispatchet_report_table_list')
+            console.log('generate_dispatchet_report_table_list')
             var dateStart = new Date($('#date_start').val())
             var dayStart = dateStart.getDate()
             var monthStart = dateStart.getMonth() + 1

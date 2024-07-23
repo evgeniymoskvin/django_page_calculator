@@ -27,6 +27,7 @@ urlpatterns = [
     path('ajax/get-all-task', views.get_all_task, name='get-all-task'),
     path('ajax/get-info', views.GetInfoPrintTaskView.as_view(), name='get-info-task-print'),
     path('ajax/get-edit-modal', views.GetEditModalWindow.as_view(), name='get-edit-modal'),
+    path('ajax/get-edit-lists-modal', views.GetEditListsModalWindow.as_view(), name='get-edit-lists-modal'),
     path('ajax/get-report-info', views.GetInfoReportPrintTaskView.as_view(), name='get-info-report-task-print'),
     path('download_file/<int:pk>', views.DownloadFileView.as_view(), name='download_file'),
     path('download_blank/<int:pk>', views.DownloadBlankView.as_view(), name='download_blank'),

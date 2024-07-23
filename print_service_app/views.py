@@ -167,6 +167,21 @@ class GetEditModalWindow(View):
         return HttpResponse(status=200)
 
 
+class GetEditListsModalWindow(View):
+    """ Редактирование задачи сотрудником типографии"""
+
+    def get(self, request):
+        """Загрузка модального окна редактирования задачи"""
+        print(request.GET)
+        obj_task = PrintFilesModel.objects.get(id=request.GET.get('obj_id'))
+        lists_of_task = ListsFileModel.objects.get(print_file_id=obj_task.id)
+
+        content = {
+            'obj': obj_task,
+            'lists_of_task': lists_of_task}
+        return render(request, 'print_service_app/ajax/modal_edit_lists_task.html', content)
+
+
 class GetInfoReportPrintTaskView(View):
     def get(self, request):
         obj_id = int(request.GET.get('object'))

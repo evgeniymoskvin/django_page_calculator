@@ -5,6 +5,8 @@
             <h5 class="modal-title text-24px-regular"
                 style="cursor: context-menu">{{ obj.inventory_number_request }}</h5>
             <div>
+                <button id="change_lists" class="icon-edit-lists" data-bs-dismiss="modal"
+                        aria-label="Close" data-ajax-id='{{ obj.id }}'></button>
                 <button id="change_task" class="icon-edit" data-bs-dismiss="modal"
                         aria-label="Close" data-ajax-id='{{ obj.id }}'></button>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -543,6 +545,24 @@
             }
         })
     })
+
+    $('#change_lists').click(function (e) {
+        e.preventDefault();
+        var form_url = $("#changeDetailListsModalWindow").attr("data-ajax-url")
+        var obj_id = $("#change_lists").attr("data-ajax-id")
+        console.log(form_url)
+        $.ajax({
+            type: "GET",
+            url: form_url,
+            data: {'obj_id': obj_id},
+            success: function (data) {
+                $("#changeDetailListsModalWindow").html(data)
+                $('#detailModalWindow').modal('hide');
+                $('#changeDetailListsModalWindow').modal('show');
+            }
+        })
+    })
+
 
     $(function () {
         // инициализации подсказок для всех элементов на странице, имеющих атрибут data-toggle="tooltip"
