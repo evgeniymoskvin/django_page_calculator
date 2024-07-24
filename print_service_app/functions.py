@@ -31,6 +31,7 @@ def get_print_report_xls(objects_tasks: list):
             print(f'Get last history error: {e}')
             date_change_status_to_done = ''
             who_change_status_to_done = ''
+            who_change_status_to_done = ''
         row = ['',  # № п/п
                date_change_status_to_done,  # Дата выполнения
                '',  # Инв. № тома Элерон

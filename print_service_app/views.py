@@ -175,11 +175,202 @@ class GetEditListsModalWindow(View):
         print(request.GET)
         obj_task = PrintFilesModel.objects.get(id=request.GET.get('obj_id'))
         lists_of_task = ListsFileModel.objects.get(print_file_id=obj_task.id)
+        try:
+            json_other_black_lists = ast.literal_eval(lists_of_task.other_pages)
+            len_other_black_lists = len(json_other_black_lists)
+        except Exception as e:
+            print(e)
+            len_other_black_lists = 0
+            json_other_black_lists = ''
+
+        try:
+            json_other_color_lists = ast.literal_eval(lists_of_task.other_pages_color)
+            len_other_color_lists = len(json_other_color_lists)
+        except Exception as e:
+            print(e)
+            json_other_color_lists = ''
+            len_other_color_lists = ''
 
         content = {
             'obj': obj_task,
-            'lists_of_task': lists_of_task}
+            'lists_of_task': lists_of_task,
+            'other_black_lists': json_other_black_lists,
+            'len_other_black_lists': len_other_black_lists,
+            'other_color_lists': json_other_color_lists,
+            'len_other_color_lists': len_other_color_lists}
         return render(request, 'print_service_app/ajax/modal_edit_lists_task.html', content)
+
+    def post(self, request):
+        """Сохранение изменений задачи"""
+        print(f'request.POST: {request.POST}')
+        task_obj = PrintFilesModel.objects.get(id=request.POST['obj_id'])
+        task_lists = ListsFileModel.objects.get(print_file=task_obj)
+        # Переводим request.post в словарь
+        result_dict = dict(request.POST.lists())
+        # Чистим от лишних ключей
+        del result_dict['csrfmiddlewaretoken']
+        del result_dict['obj_id']
+        a4_count = 0  # Новый счетчик форматов А4
+
+        # Обновляем листы согласно input-ам
+        task_lists.a4 = result_dict['input_a4'][0]
+        del result_dict['input_a4']
+        task_lists.a4_color = result_dict['input_a4_color'][0]
+        del result_dict['input_a4_color']
+        a4_count += 1 * (int(task_lists.a4) + int(task_lists.a4_color))
+
+        task_lists.a3 = result_dict['input_a3'][0]
+        del result_dict['input_a3']
+        task_lists.a3_color = result_dict['input_a3_color'][0]
+        del result_dict['input_a3_color']
+        a4_count += 2 * (int(task_lists.a3) + int(task_lists.a3_color))
+
+        task_lists.a2 = result_dict['input_a2'][0]
+        del result_dict['input_a2']
+        task_lists.a2_color = result_dict['input_a2_color'][0]
+        del result_dict['input_a2_color']
+        a4_count += 4 * (int(task_lists.a2) + int(task_lists.a2_color))
+
+        task_lists.a1 = result_dict['input_a1'][0]
+        del result_dict['input_a1']
+        task_lists.a1_color = result_dict['input_a1_color'][0]
+        del result_dict['input_a1_color']
+        a4_count += 8 * (int(task_lists.a1) + int(task_lists.a1_color))
+
+        task_lists.a0 = result_dict['input_a0'][0]
+        del result_dict['input_a0']
+        task_lists.a0_color = result_dict['input_a0_color'][0]
+        del result_dict['input_a0_color']
+        a4_count += 16 * (int(task_lists.a0) + int(task_lists.a0_color))
+
+        task_lists.a4x3 = result_dict['input_a4x3'][0]
+        del result_dict['input_a4x3']
+        task_lists.a4x3_color = result_dict['input_a4x3_color'][0]
+        del result_dict['input_a4x3_color']
+        a4_count += 3 * (int(task_lists.a4x3) + int(task_lists.a4x3_color))
+
+        task_lists.a4x4 = result_dict['input_a4x4'][0]
+        del result_dict['input_a4x4']
+        task_lists.a4x4_color = result_dict['input_a4x4_color'][0]
+        del result_dict['input_a4x4_color']
+        a4_count += 4 * (int(task_lists.a4x4) + int(task_lists.a4x4_color))
+
+        task_lists.a4x5 = result_dict['input_a4x5'][0]
+        del result_dict['input_a4x5']
+        task_lists.a4x5_color = result_dict['input_a4x5_color'][0]
+        del result_dict['input_a4x5_color']
+        a4_count += 5 * (int(task_lists.a4x5) + int(task_lists.a4x5_color))
+
+        task_lists.a4x6 = result_dict['input_a4x6'][0]
+        del result_dict['input_a4x6']
+        task_lists.a4x6_color = result_dict['input_a4x6_color'][0]
+        del result_dict['input_a4x6_color']
+        a4_count += 6 * (int(task_lists.a4x6) + int(task_lists.a4x6_color))
+
+        task_lists.a4x7 = result_dict['input_a4x7'][0]
+        del result_dict['input_a4x7']
+        task_lists.a4x7_color = result_dict['input_a4x7_color'][0]
+        del result_dict['input_a4x7_color']
+        a4_count += 7 * (int(task_lists.a4x7) + int(task_lists.a4x7_color))
+
+        task_lists.a4x8 = result_dict['input_a4x8'][0]
+        del result_dict['input_a4x8']
+        task_lists.a4x8_color = result_dict['input_a4x8_color'][0]
+        del result_dict['input_a4x8_color']
+        a4_count += 8 * (int(task_lists.a4x8) + int(task_lists.a4x8_color))
+
+        task_lists.a4x9 = result_dict['input_a4x9'][0]
+        del result_dict['input_a4x9']
+        task_lists.a4x9_color = result_dict['input_a4x9_color'][0]
+        del result_dict['input_a4x9_color']
+        a4_count += 9 * (int(task_lists.a4x9) + int(task_lists.a4x9_color))
+
+        task_lists.a3x3 = result_dict['input_a3x3'][0]
+        del result_dict['input_a3x3']
+        task_lists.a3x3_color = result_dict['input_a3x3_color'][0]
+        del result_dict['input_a3x3_color']
+        a4_count += 6 * (int(task_lists.a3x3) + int(task_lists.a3x3_color))
+
+        task_lists.a3x4 = result_dict['input_a3x4'][0]
+        del result_dict['input_a3x4']
+        task_lists.a3x4_color = result_dict['input_a3x4_color'][0]
+        del result_dict['input_a3x4_color']
+        a4_count += 8 * (int(task_lists.a3x4) + int(task_lists.a3x4_color))
+
+        task_lists.a3x5 = result_dict['input_a3x5'][0]
+        del result_dict['input_a3x5']
+        task_lists.a3x5_color = result_dict['input_a3x5_color'][0]
+        del result_dict['input_a3x5_color']
+        a4_count += 10 * (int(task_lists.a3x5) + int(task_lists.a3x5_color))
+
+        task_lists.a3x6 = result_dict['input_a3x6'][0]
+        del result_dict['input_a3x6']
+        task_lists.a3x6_color = result_dict['input_a3x6_color'][0]
+        del result_dict['input_a3x6_color']
+        a4_count += 12 * (int(task_lists.a3x6) + int(task_lists.a3x6_color))
+
+        task_lists.a3x7 = result_dict['input_a3x7'][0]
+        del result_dict['input_a3x7']
+        task_lists.a3x7_color = result_dict['input_a3x7_color'][0]
+        del result_dict['input_a3x7_color']
+        a4_count += 14 * (int(task_lists.a3x7) + int(task_lists.a3x7_color))
+
+        task_lists.a2x3 = result_dict['input_a2x3'][0]
+        del result_dict['input_a2x3']
+        task_lists.a2x3_color = result_dict['input_a2x3_color'][0]
+        del result_dict['input_a2x3_color']
+        a4_count += 12 * (int(task_lists.a2x3) + int(task_lists.a2x3_color))
+
+        task_lists.a2x4 = result_dict['input_a2x4'][0]
+        del result_dict['input_a2x4']
+        task_lists.a2x4_color = result_dict['input_a2x4_color'][0]
+        del result_dict['input_a2x4_color']
+        a4_count += 16 * (int(task_lists.a2x4) + int(task_lists.a2x4_color))
+
+        task_lists.a2x5 = result_dict['input_a2x5'][0]
+        del result_dict['input_a2x5']
+        task_lists.a2x5_color = result_dict['input_a2x5_color'][0]
+        del result_dict['input_a2x5_color']
+        a4_count += 20 * (int(task_lists.a2x5) + int(task_lists.a2x5_color))
+
+        task_lists.a1x3 = result_dict['input_a1x3'][0]
+        del result_dict['input_a1x3']
+        task_lists.a1x3_color = result_dict['input_a1x3_color'][0]
+        del result_dict['input_a1x3_color']
+        a4_count += 24 * (int(task_lists.a1x3) + int(task_lists.a1x3_color))
+
+        task_lists.a1x4 = result_dict['input_a1x4'][0]
+        del result_dict['input_a1x4']
+        task_lists.a1x4_color = result_dict['input_a1x4_color'][0]
+        del result_dict['input_a1x4_color']
+        a4_count += 32 * (int(task_lists.a1x4) + int(task_lists.a1x4_color))
+        task_lists.a0x2 = result_dict['input_a0x2'][0]
+        del result_dict['input_a0x2']
+        task_lists.a0x2_color = result_dict['input_a0x2_color'][0]
+        del result_dict['input_a0x2_color']
+        a4_count += 32 * (int(task_lists.a0x2) + int(task_lists.a0x2_color))
+
+        task_lists.a0x3 = result_dict['input_a0x3'][0]
+        del result_dict['input_a0x3']
+        task_lists.a0x3_color = result_dict['input_a0x3_color'][0]
+        del result_dict['input_a0x3_color']
+        a4_count += 48 * (int(task_lists.a0x3) + int(task_lists.a0x3_color))
+        # Приводим словарь к виду, который в базе данных
+        dict_to_other = {}
+        for key, value in result_dict.items():
+            if int(value[0]) > 0:
+                dict_to_other[key] = int(value[0])
+        task_lists.other_pages = dict_to_other
+        task_lists.save()
+        task_obj.a4_count_formats = a4_count
+        task_obj.save()
+
+        print(task_obj)
+        print(task_lists)
+        print(result_dict)
+        print(dict_to_other)
+
+        return HttpResponse(status=200)
 
 
 class GetInfoReportPrintTaskView(View):

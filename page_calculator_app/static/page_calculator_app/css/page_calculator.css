@@ -341,9 +341,12 @@ html {
     color: grey;
 }
 
-.input_text_change_lists{
-    width: 65px;
+.input_text_change_lists {
+    width: 67px;
+    height: 22px;
     padding-left: 10px;
+    font-size: 16px;
+    border-radius: 4px;
 }
 
 
@@ -434,6 +437,9 @@ html {
     box-shadow: 2px 4px 11px -3px rgba(155, 168, 176, 0.45);
 }
 
+.button_dark_blue{
+    border: rgb(108, 172, 228);
+}
 
 .button_blue_clearance_send_file {
     padding: 0;
@@ -490,6 +496,12 @@ html {
 
 .modal-dialog_change-status {
     width: 1100px;
+    height: 225px;
+
+}
+
+.modal-dialog_change-lists {
+    width: 600px;
     height: 225px;
 
 }
@@ -611,6 +623,11 @@ html {
 
 .border_right {
     border-right: 1px solid rgb(212, 213, 217);
+}
+
+.border_right_h-100 {
+    border-right: 1px solid rgb(212, 213, 217);
+    height: 100%;
 }
 
 .padding-left-30 {
