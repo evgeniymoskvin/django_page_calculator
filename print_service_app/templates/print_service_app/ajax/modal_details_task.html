@@ -55,7 +55,7 @@
                                 <div class="d-flex text-20px-light padding-left-30 text-align-end"
                                      data-toggle="tooltip" data-bs-placement="bottom"
                                      rel="txtTooltip" data-bs-html="true"
-                                     title="{{ obj.contract.contract_name }}">{{ obj.contract.contract_name|truncatechars:50 }}</div>
+                                     title="{{ obj.contract}}">{{ obj.contract.object_code }}. {{ obj.contract.contract_name|truncatechars:50 }}</div>
                             </div>
                         {% endif %}
                         {% if obj.task_type_work != 0 %}
