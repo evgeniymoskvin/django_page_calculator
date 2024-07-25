@@ -91,7 +91,7 @@ class IndexView(View):
         form = UploadFileForm()  # Форма выгрузки файла
         # Данные для модального окна отправки файла на печать
         orders = OrdersModel.objects.get_queryset().order_by('order')
-        objects = ObjectModel.objects.get_queryset().filter(show=True).order_by('object_name')
+        objects = ObjectModel.objects.get_queryset().filter(show=True).order_by('object_code')
         marks = MarkDocModel.objects.get_queryset().order_by('mark_doc')
         content = {'form': form,
                    "orders": orders,
