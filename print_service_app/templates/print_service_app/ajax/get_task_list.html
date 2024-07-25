@@ -11,6 +11,7 @@
                 <th class="th_tables" scope="col" style="text-align: center">Автор</th>
                 <th class="th_tables" scope="col" style="text-align: center">Заказчик</th>
                 <th class="th_tables" scope="col" style="text-align: center">Объект</th>
+                <th class="th_tables" scope="col" style="text-align: center">Инв. №</th>
                 <th class="th_tables" scope="col" style="text-align: center">Кол-во<br>листов</th>
                 <th class="th_tables" scope="col" style="text-align: center">Дата</th>
                 <th class="th_tables" scope="col" style="text-align: center">Статус</th>
@@ -19,7 +20,17 @@
 
             <tbody>
             {% for obj in tasks_to_print %}
-                <tr class="tr-tables" style="cursor: context-menu" onclick="openModalWindow({{ obj.id }})">
+                <tr class="tr-tables" style="cursor: context-menu;
+                        {% if obj.status == 0 %}
+                            background-color: rgba(255,175,175,0.11);
+                        {% elif obj.status == 1 %}
+                            background-color: rgba(255,240,115,0.11);
+                        {% elif obj.status == 2 %}
+                            background-color: rgba(108,172,228,0.11);
+                        {% elif obj.status == 3 %}
+                            background-color: rgba(140,206,90,0.11);
+                        {% endif %};
+                        " onclick="openModalWindow({{ obj.id }})">
                     <th class="th_tables" scope="row" style="width: 30px">{{ forloop.counter }}</th>
                     <td class="td_tables" style="width: 100px; text-align: center">
                         {{ obj.inventory_number_request }}</td>
@@ -29,11 +40,16 @@
                     <td class="td_tables" style="width: 75px; text-align: center">
                         {{ obj.order.order }}
                     </td>
-                    <td class="td_tables" style="width: 250px; text-align: center"
+                    <td class="td_tables" style="width: 75px; text-align: center"
                         data-toggle="tooltip" data-bs-placement="bottom"
                         rel="txtTooltip" data-bs-html="true"
                         title="{{ obj.object }}">
-                        {{ obj.object|truncatechars:50 }}
+                        {{ obj.object.object_code|truncatechars:50 }}
+                    </td>
+                    <td class="td_tables" style="width: 175px; text-align: center"
+                        data-toggle="tooltip" data-bs-placement="bottom"
+                        rel="txtTooltip" data-bs-html="true">
+                        {{ obj.inventory_number_file|truncatechars:50 }}
                     </td>
                     <td class="td_tables" style="width: 50px; text-align: center">
                         {{ obj.count_pages }}
