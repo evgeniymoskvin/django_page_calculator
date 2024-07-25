@@ -3,6 +3,6 @@
         id="object_id" disabled>
     <option selected value="">Договор</option>
     {% for obj in contracts %}
-    <option value="{{ obj.id }}">{{ obj.contract_code }}. {{ obj.contract_name|truncatechars:50 }}</option>
+    <option value="{{ obj.id }}">{{ obj.contract_code }}. {{ obj.contract_name|truncatechars:200 }}</option>
 {% endfor %}
 </select>
