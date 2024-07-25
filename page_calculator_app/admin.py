@@ -1,6 +1,6 @@
 from django.contrib import admin
 from page_calculator_app.models import EmployeeModel, MoreDetailsEmployeeModel, PrintFilesModel, ListsFileModel, \
-    PrintPagePermissionModel, ChangeStatusHistoryModel, CpeModel, OrdersModel, ObjectModel
+    PrintPagePermissionModel, ChangeStatusHistoryModel, CpeModel, OrdersModel, ObjectModel, ContractModel
 
 
 class EmployeeAdmin(admin.ModelAdmin):
@@ -33,6 +33,10 @@ class PrintFilesAdmin(admin.ModelAdmin):
 class ChangeStatusHistoryAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
+class ContractAdmin(admin.ModelAdmin):
+    ordering = ['contract_code']
+    list_filter = ['contract_object']
+
 
 admin.site.register(PrintFilesModel, PrintFilesAdmin)
 admin.site.register(EmployeeModel, EmployeeAdmin)
@@ -40,5 +44,6 @@ admin.site.register(ChangeStatusHistoryModel, ChangeStatusHistoryAdmin)
 admin.site.register(ListsFileModel)
 admin.site.register(CpeModel)
 admin.site.register(ObjectModel, ObjectsAdmin)
+admin.site.register(ContractModel, ContractAdmin)
 admin.site.register(OrdersModel, OrdersAdmin)
 admin.site.register(PrintPagePermissionModel)

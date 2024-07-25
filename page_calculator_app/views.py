@@ -399,7 +399,7 @@ def get_contracts(request):
     print(request.GET)
     object_id = int(request.GET.get('object'))
     contracts = ContractModel.objects.get_queryset().filter(contract_object_id=object_id).filter(show=True).order_by(
-        'contract_name')
+        'contract_code')
     content = {'contracts': contracts}
     return render(request, 'page_calculator_app/ajax/load_contracts.html', content)
 
