@@ -172,6 +172,7 @@ class MoreDetailsEmployeeModel(models.Model):
     date_birthday_show = models.BooleanField(verbose_name="Отображать день рождения", default=False, null=True)
     city_dep = models.ForeignKey(CityDepModel, on_delete=models.PROTECT, null=True, verbose_name="Город/Подразделение",
                                  blank=True)
+    send_email_salary_blank = models.BooleanField(verbose_name="Отсылать расчетный листок", default=False)
 
     class Meta:
         managed = False
