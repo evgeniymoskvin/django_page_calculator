@@ -273,6 +273,7 @@ class PrintFilesModel(models.Model):
     print_folding = models.BooleanField(verbose_name='Фальцовка', null=True, blank=True, default=False)
     color = models.BooleanField(verbose_name='Цветное', null=True, blank=True, default=False)
     mark_print_file = models.ForeignKey(MarkDocModel, verbose_name='Марка документации', null=True, blank=True, on_delete=models.SET_NULL, default=None)
+    comment = models.CharField(verbose_name='Комментарий', null=True, blank=True, max_length=500)
 
     class Meta:
         verbose_name = _('файл на печать')
