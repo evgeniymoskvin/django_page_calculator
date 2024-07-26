@@ -17,7 +17,8 @@
                         <input class="d-none" name='obj_id' id="obj_id" hidden>
                         <div class="d-flex text-18px-bold" id="temp_file_name"></div>
                         <div class="d-none" id="inventory_num"
-                             data-ajax-inventory="{{ obj.inventory_number_file }}"></div>
+                             data-ajax-inventory="{{ obj.inventory_number_file }}"
+                             data-ajax-comment="{{ obj.comment }}"></div>
                         <div class="d-none" id="obj_id_div"
                              data-ajax-id="{{ obj.id }}"></div>
                     </div>
@@ -178,6 +179,16 @@
                             </select>
                         </div>
                     </div>
+                    <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                        <div class="d-flex text-20px-light">Комментарий</div>
+                        <div class="d-flex">
+                            <input class="input_text_clearance" type="text"
+                                   id="input_comment_value"
+                                   name="input_comment_value"
+                                   style="text-align: center; width: 300px">
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <div class="modal-footer modal-footer_clearance justify-content-between">
@@ -200,7 +211,7 @@
         document.getElementById('input_inventory_number_file_value').value = $("#inventory_num").attr("data-ajax-inventory")
         document.getElementById('obj_id').value = $("#obj_id_div").attr("data-ajax-id")
         document.getElementById('copy_count_value').value = {{ obj.copy_count }};
-
+        document.getElementById('input_comment_value').value = $("#inventory_num").attr("data-ajax-comment")
     })
 
     $("#object_id").change(function () {

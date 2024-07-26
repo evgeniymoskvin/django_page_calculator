@@ -35,49 +35,65 @@
 <body class="content-fade">
 
 <div class="d-flex container flex-column mt-3">
-    <div class="d-flex text-18px-bold ">
+    <div class="d-flex text-16px-bold ">
         Заявка в ОУВиХПМ на выполнение работ
     </div>
-    <div class="d-flex text-18px-bold">
+    <div class="d-flex text-16px-bold">
         № {{ print_task.inventory_number_request }}
     </div>
-    <div class="d-flex text-16px-light mt-3">
-        <span class="text-16px-bold">Дата поступления:&nbsp</span> {{ print_task.add_file_date }}
+
+    <div class="d-flex text-14px-bold mt-3">
+        <span class="text-14px-light">Дата поступления:&nbsp</span> {{ print_task.add_file_date }}
     </div>
-    <div class="d-flex text-16px-light ">
-        <span class="text-16px-bold">Инв. №:&nbsp</span> {{ print_task.inventory_number_file }}
+
+    <div class="d-flex text-14px-bold ">
+        <span class="text-14px-light">Инв. №:&nbsp</span> {{ print_task.inventory_number_file }}
     </div>
-    <div class="d-flex text-16px-light ">
-        <span class="text-16px-bold">Заказ:&nbsp</span> {{ print_task.order }}
+
+    <div class="d-flex text-14px-bold ">
+        <span class="text-14px-light">Исполнитель:&nbsp</span> {{ print_task.emp_upload_file }}
+        ({{ print_task.emp_upload_file.user_phone }})
     </div>
-    <div class="d-flex text-16px-light ">
-        <span class="text-16px-bold">Объект:&nbsp</span> {{ print_task.object|truncatechars:75 }}
+
+    {% if print_task.comment %}
+        <div class="d-flex text-14px-bold ">
+            <span class="text-14px-light">Комментарий:&nbsp</span>{{ print_task.comment }}
+        </div>
+    {% endif %}
+    <div class="d-flex text-14px-bold ">
+        <span class="text-14px-light">Код заказчика:&nbsp</span> {{ print_task.order.order }}&nbsp<span
+            class="text-14px-light">-&nbsp{{ print_task.order.order_name }}</span>
     </div>
-    <div class="d-flex text-16px-light ">
-        <span class="text-16px-bold">Договор:&nbsp</span> {{ print_task.contract.contract_code }}. {{ print_task.contract.contract_name|truncatechars:50 }}
+    <div class="d-flex text-14px-bold ">
+        <span class="text-14px-light">Код объекта:&nbsp</span> {{ print_task.object.object_code }}&nbsp<span
+            class="text-14px-light">-&nbsp{{ print_task.object.object_name|truncatechars:75 }}</span>
     </div>
-    <div class="d-flex text-16px-light ">
-        <span class="text-16px-bold">Исполнитель:&nbsp</span> {{ print_task.emp_upload_file }} ({{ print_task.emp_upload_file.user_phone }})
+    <div class="d-flex text-14px-bold ">
+        <span class="text-14px-light">Договор:&nbsp</span> {{ print_task.contract.contract_code }}.&nbsp<span
+            class="text-14px-light">{{ print_task.contract.contract_name|truncatechars:50 }}</span>
     </div>
-    <div class="d-flex text-16px-light ">
-        <span class="text-16px-bold">Отдел:&nbsp</span>{{ print_task.emp_upload_file.department.command_number }}, {{ print_task.emp_upload_file.department_group.group_dep_name }}
+
+    <div class="d-flex text-14px-bold ">
+        <span class="text-14px-light">Управление:&nbsp</span>{{ print_task.emp_upload_file.department_group.group_dep_abr }}&nbsp<span
+            class="text-14px-light">-&nbsp{{ print_task.emp_upload_file.department_group.group_dep_name }}</span>
     </div>
-    <div class="d-flex text-16px-light ">
-        <span class="text-16px-bold">Вид документации:&nbsp</span>{{ print_task.get_task_type_work_display }}
+    <div class="d-flex text-14px-bold ">
+        <span class="text-14px-light">Вид документации:&nbsp</span>{{ print_task.get_task_type_work_display }}
     </div>
-    <div class="d-flex text-16px-light ">
-        <span class="text-16px-bold">Марка документа:&nbsp</span>{{ print_task.mark_print_file }}
+    <div class="d-flex text-14px-bold ">
+        <span class="text-14px-light">Марка документа:&nbsp</span>{{ print_task.mark_print_file.mark_doc }}&nbsp<span
+            class="text-14px-light">-&nbsp{{ print_task.mark_print_file.mark_doc_full_name }}</span>
     </div>
-    <div class="d-flex text-16px-light ">
-        <span class="text-16px-bold">Допуск подсчета:&nbsp</span>±{{ print_task.user_clearance }}мм.
+    <div class="d-flex text-14px-bold ">
+        <span class="text-14px-light">Допуск подсчета:&nbsp</span>±{{ print_task.user_clearance }}мм.
     </div>
-    <div class="d-flex text-16px-light ">
-        <span class="text-16px-bold">Количество экземпляров:&nbsp</span>{{ print_task.copy_count }}
+    <div class="d-flex text-14px-bold ">
+        <span class="text-14px-light">Количество экземпляров:&nbsp</span>{{ print_task.copy_count }}
     </div>
 
     {% if print_task.print_folding is not None %}
-        <div class="d-flex text-16px-light ">
-            <span class="text-16px-bold">Фальцовка:&nbsp</span>
+        <div class="d-flex text-14px-bold ">
+            <span class="text-14px-light">Фальцовка:&nbsp</span>
             {% if print_task.print_folding %}
                 Требуется
             {% else %}
@@ -86,8 +102,8 @@
         </div>
     {% endif %}
 
-    <div class="d-flex text-16px-light ">
-        <span class="text-16px-bold">Цветной:&nbsp</span>
+    <div class="d-flex text-14px-bold ">
+        <span class="text-14px-light">Цветной:&nbsp</span>
         {% if print_task.color %}
             Да
         {% else %}
@@ -95,13 +111,14 @@
         {% endif %}
     </div>
 
-    <div class="d-flex text-16px-light ">
-        <span class="text-16px-bold">Количество листов:&nbsp</span>{{ print_task.count_pages }}
+    <div class="d-flex text-14px-bold ">
+        <span class="text-14px-light">Количество листов:&nbsp</span>{{ print_task.count_pages }}
     </div>
-
-    <div class="d-flex text-16px-light ">
-        <span class="text-16px-bold">Количество цветных:&nbsp</span>{{ color_pages }}
-    </div>
+    {% if print_task.color %}
+        <div class="d-flex text-14px-bold ">
+            <span class="text-14px-light">Количество цветных:&nbsp</span>{{ color_pages }}
+        </div>
+    {% endif %}
 
     <div class="d-flex text-16px-light ">
         <span class="text-16px-bold">Количество форматов А4:&nbsp</span>{{ print_task.a4_count_formats }}

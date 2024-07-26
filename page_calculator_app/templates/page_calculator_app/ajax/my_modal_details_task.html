@@ -72,6 +72,14 @@
                         </div>
                     {% endif %}
 
+                    {% if obj.comment %}
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-2">
+                            <div class="d-flex text-20px-light">Комментарий</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">
+                                {{ obj.comment }}
+                            </div>
+                        </div>
+                    {% endif %}
 
                 </div>
                 <!-- Правая часть-->

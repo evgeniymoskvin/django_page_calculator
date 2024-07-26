@@ -155,6 +155,7 @@ class GetEditModalWindow(View):
         print(f'GetEditModalWindow - request.POST: {request.POST}')
         task_obj = PrintFilesModel.objects.get(id=request.POST['obj_id'])
         task_obj.inventory_number_file = request.POST['input_inventory_number_file_value']
+        task_obj.comment = request.POST['input_comment_value']
         task_obj.order_id = request.POST['order_id']
         task_obj.object_id = request.POST['object_id']
         task_obj.contract_id = request.POST['contract_id']

@@ -178,6 +178,27 @@ html {
     color: #1D222A;
 }
 
+.text-14px-bold {
+    font-size: 14px;
+    font-family: "Rosatom_bold", serif;
+    color: #1D222A;
+}
+
+.text-14px-regular {
+    font-size: 14px;
+    font-family: "Rosatom_regular", serif;
+    color: #1D222A;
+}
+
+.text-14px-light {
+    font-size: 14px;
+    font-family: "Rosatom_light", serif;
+    color: #1D222A;
+}
+
+
+
+
 .red_text_error {
     text-align: end;
     margin-right: 45px;

@@ -146,9 +146,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # CACHALOT_UNCACHABLE_TABLES = frozenset(('django_migrations', 'auth_user', 'django_session'))
-CELERY_BROKER_URL = 'redis://192.168.20.50:6379//0'
-CELERY_RESULT_BACKEND = 'redis://192.168.20.50:6379/0'
+# CELERY_BROKER_URL = 'redis://192.168.20.50:6379//0'
+# CELERY_RESULT_BACKEND = 'redis://192.168.20.50:6379/0'
+# FORKED_BY_MULTIPROCESSING = 1
+
+CELERY_BROKER_URL = 'redis://161.11.20.121:6379//10'
+CELERY_RESULT_BACKEND = 'redis://161.11.20.121:6379/10'
 FORKED_BY_MULTIPROCESSING = 1
+
 # CELERY_BROKER_URL = 'redis://redis:6379//0'
 # CELERY_RESULT_BACKEND = 'redis://0.0.0.0:6379/0'
 CACHES = {
@@ -160,3 +165,13 @@ CACHES = {
         }
     }
 }
+
+EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = '161.11.16.20'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'print@el-spb.local'
+EMAIL_HOST_PASSWORD = 'Istok123'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+SERVER_EMAIL = 'print@el-spb.local'
+DEFAULT_FROM_EMAIL = 'print@el-spb.local'

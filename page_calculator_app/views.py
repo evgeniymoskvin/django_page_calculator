@@ -306,6 +306,7 @@ class PrintView(View):
             user_clearance=user_clearance,
             color=int(request.POST.get('color_id')),
             mark_print_file_id=int(request.POST.get('mark_id')),
+            comment=request.POST.get('input_comment_value'),
         )
         new_task_to_print.save()
         print(f"Сохранили задачу в базу за {time.time() - start_time} секунд от момента старта")

@@ -20,3 +20,5 @@ app.conf.beat_schedule = {
         'schedule': 30.0
     }
 }
+
+# C:\projects\django_page_calculator\venv\Scripts\python.exe C:\projects\django_page_calculator\venv\Scripts\celery.exe -A django_page_calculator worker -l info --pool=solo
