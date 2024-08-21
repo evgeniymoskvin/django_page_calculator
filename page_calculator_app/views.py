@@ -11,18 +11,13 @@ from .models import PrintFilesModel, EmployeeModel, OrdersModel, ObjectModel, Co
 from .functions import check_date_in_db, check_color_pages
 from print_service_app.tasks import celery_check_color_pages
 from print_service_app.views import check_permission_user
-from PIL import Image, ImageStat
-from django.http import HttpResponse
-import mimetypes
 from django.http import HttpResponse
 
-import json
 import os
 import ast
 
 import math
 import PyPDF2
-from pdf2image import convert_from_path
 
 # Словарь с размерами листов по ГОСТ
 PAGE_SIZE_STANDARD = {
@@ -97,7 +92,7 @@ class IndexView(View):
                    "orders": orders,
                    'clearance': clearance,
                    'objects': objects,
-                   'marks' : marks,
+                   'marks': marks,
                    'user_permission': user_permission}
         return render(request, 'page_calculator_app/index.html', content)
 
@@ -258,23 +253,9 @@ class ChangeClearanceView(View):
         return resp
 
 
-# class GetBlancView(View):
-#     def get(self, request):
-#         print(f'request.GET: {request.GET}')
-#         print(f'request.FILES: {request.FILES}')
-#         print(f'request.COOKIES: {request.COOKIES}')
-#         json_result = request.GET['json']
-#         print(json_result)
-#         print(type(json_result))
-#         dict_result = ast.literal_eval(json_result)
-#         print(dict_result)
-#         print(type(dict_result))
-#
-#         return HttpResponse(status=200)
-
-
 class PrintView(View):
     """Отправка файлов на печать"""
+
     def post(self, request):
         print(f'request.user: {request.user}')
         print(f'request.POST: {request.POST}')
@@ -385,6 +366,7 @@ class PrintView(View):
 
 class MyPrintTaskView(View):
     """Список заданий на печать сотрудника"""
+
     def get(self, request):
         user_permission = check_permission_user(request.user)
         emp = EmployeeModel.objects.get(user=request.user)
@@ -407,6 +389,7 @@ def get_contracts(request):
 
 class GetInfoMyTaskView(View):
     """Просмотр деталей задания для сотрудника"""
+
     def get(self, request):
         obj_id = int(request.GET.get('object'))
         obj = PrintFilesModel.objects.get(id=obj_id)
@@ -426,6 +409,7 @@ class GetInfoMyTaskView(View):
 
 class CancelMyTaskView(View):
     """Отмена задания на печать сотрудником"""
+
     def post(self, request):
         print(request.POST)
         cancel_print_task_id = request.POST['number_task']

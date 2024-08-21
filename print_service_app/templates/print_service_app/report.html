@@ -184,8 +184,7 @@
         $('#make_report_form').submit(function (e) {
             e.preventDefault()
             {
-                var url =
-                {% url 'report' %}
+                var url = {% url 'report' %}
                 var data = new FormData($('#make_report_form').get(0))
 
 
@@ -198,8 +197,6 @@
                     contentType: false,
                     success: function (data) {
                         $("#report_result").html(data)
-                        {#$('#sendFileModal').modal('hide');#}
-                        {#$('#good_send_modal').modal('show');#}
                         console.log('report done')
                     },
                     error: function () {
@@ -211,17 +208,3 @@
     </script>
 
 {% endblock %}
-
-
-/*href_site = window.location.href
-href_ws = href_site + 'ws/some_url/'
-console.log(href_ws)
-var socket = new WebSocket('ws://localhost:8003/ws/some_url/')
-socket.onmessage = function (event){
-var data = JSON.parse(event.data)
-console.log(data)
-document.getElementById('display_div').innerText = data.message
-document.getElementById('display_div2').innerText = data.orm_result.data
-}
-*/
-

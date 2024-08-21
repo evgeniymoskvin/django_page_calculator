@@ -24,7 +24,7 @@ def check_date_in_db():
 
 
 def save_status_log(print_task_id, print_task_status, emp_id):
-    """Сохарнение лога"""
+    """Сохранение лога, запись в таблицу ChangeStatusHistoryModel"""
     new_history_log = ChangeStatusHistoryModel(
         print_task_id=print_task_id,
         status=print_task_status,
