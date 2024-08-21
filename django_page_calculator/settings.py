@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-*&!tk_t9r&lhy9y1qa0sg0ucz&hcn!yb-n$912)up5ngh%khfm
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0', '45.132.18.6', 'localhost', '127.0.0.1']
 
 # Application definition
 
@@ -146,8 +146,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # CACHALOT_UNCACHABLE_TABLES = frozenset(('django_migrations', 'auth_user', 'django_session'))
-CELERY_BROKER_URL = 'redis://192.168.20.50:6379//0'
-CELERY_RESULT_BACKEND = 'redis://192.168.20.50:6379/0'
+CELERY_BROKER_URL = 'redis://redis:6379//0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 # FORKED_BY_MULTIPROCESSING = 1
 
 # CELERY_BROKER_URL = 'redis://161.11.20.121:6379//10'
@@ -159,7 +159,7 @@ FORKED_BY_MULTIPROCESSING = 1
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://192.168.20.50:6379/1",
+        "LOCATION": "redis://redis:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }

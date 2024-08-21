@@ -57,9 +57,9 @@ def celery_check_color_pages(file_path, all_lists_file, lists_file_id):
     lists_file = ListsFileModel.objects.get(id=lists_file_id)
     print(f'Определение чб и цветного для {lists_file.print_file.inventory_number_request}')
     # Для windows
-    pages = convert_from_path(file_path, 50, fmt='jpeg', poppler_path=r'C:\Program Files\poppler-24.02.0\Library\bin')
+    # pages = convert_from_path(file_path, 50, fmt='jpeg', poppler_path=r'C:\Program Files\poppler-24.02.0\Library\bin')
     # Для linux
-    # pages = convert_from_path(file_path, 50, fmt='jpeg')
+    pages = convert_from_path(file_path, 50, fmt='jpeg')
     to_jpeg_time = time.time() - start_time
     print(f"Разбиралось на jpeg: {to_jpeg_time} секунд")
 

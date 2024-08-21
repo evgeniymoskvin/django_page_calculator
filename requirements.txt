@@ -39,7 +39,7 @@ openpyxl==3.1.4
 pdf2image==1.17.0
 pillow==10.3.0
 prompt_toolkit==3.0.47
-psycopg2==2.9.9
+#psycopg2==2.9.9
 pyasn1==0.6.0
 pyasn1_modules==0.4.0
 pycparser==2.22
@@ -55,7 +55,7 @@ sqlparse==0.5.0
 tinydb==4.8.0
 tinydb-smartcache==2.0.0
 Twisted==24.3.0
-twisted-iocpsupport==1.0.4
+#twisted-iocpsupport==1.0.4
 txaio==23.1.1
 typing_extensions==4.11.0
 tzdata==2024.1
