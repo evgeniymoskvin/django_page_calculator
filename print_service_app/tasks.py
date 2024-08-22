@@ -1,4 +1,3 @@
-
 import datetime
 import os
 import time
@@ -18,11 +17,12 @@ from .email_functions import task_print_done, task_print_cancel
 @app.task()
 def delete_files():
     """
-    Удаление файлов из хранилища и базы данных спустя 7 дней для заданий со статусом 'Аннулировано' и 'Готов'
+    Удаление приложенных файлов из хранилища и базы данных спустя 7 дней
+    для заданий со статусом 'Аннулировано' и 'Готов'
     """
     today = datetime.datetime.today()
-    count_tasks = 0
-    count_delete_tasks_files = 0
+    count_tasks = 0  # Счетчик всех заданий
+    count_delete_tasks_files = 0  # Счетчик удаленных файлов
     all_print_tasks = PrintFilesModel.objects.get_queryset().filter(Q(status=3) | Q(status=0))
     for task in all_print_tasks:
         task_date = task.date_change_status.date()
@@ -40,12 +40,18 @@ def delete_files():
 
 @app.task()
 def celery_email_print_done(task_done_id):
+    """
+    Отправка письма о готовности задачи через celery
+    """
     task_print_done(task_done_id)
     return f'Печать id={task_done_id} выполнена. Письмо отправлено.'
 
 
 @app.task()
 def celery_email_print_cancel(task_done_id, text_cancel):
+    """
+    Отправка письма об отмене задачи через celery
+    """
     task_print_cancel(task_done_id, text_cancel)
     return f'Печать id={task_done_id} отменена. Письмо отправлено.'
 
@@ -56,16 +62,17 @@ def celery_check_color_pages(file_path, all_lists_file, lists_file_id):
     start_time = time.time()
     lists_file = ListsFileModel.objects.get(id=lists_file_id)
     print(f'Определение чб и цветного для {lists_file.print_file.inventory_number_request}')
-    # Для windows
+    # Для windows (poppler)
     # pages = convert_from_path(file_path, 50, fmt='jpeg', poppler_path=r'C:\Program Files\poppler-24.02.0\Library\bin')
-    # Для linux
+    # Для linux (poppler-utils)
     pages = convert_from_path(file_path, 50, fmt='jpeg')
-    to_jpeg_time = time.time() - start_time
+    to_jpeg_time = time.time() - start_time  # Время конвертации pdf в jpg файлы
     print(f"Разбиралось на jpeg: {to_jpeg_time} секунд")
 
     for count, page in enumerate(pages):
         result_check_color = detect_color_image(page)
         print(f'Лист {count + 1} - result_check_color: {result_check_color}')
+        # Перераспределяем листы чб и цвет
         if result_check_color is True:
             if all_lists_file[count][2] == 'A0':
                 lists_file.a0 -= 1
@@ -149,7 +156,7 @@ def celery_check_color_pages(file_path, all_lists_file, lists_file_id):
 
 def detect_color_image(file, thumb_size=40, MSE_cutoff=1, adjust_color_bias=True):
     """
-    Определение цветных и чб листов
+    Функция определение цветных и чб листов
     """
     pil_img = file
     bands = pil_img.getbands()

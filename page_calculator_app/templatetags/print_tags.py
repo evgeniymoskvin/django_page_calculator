@@ -6,18 +6,21 @@ register = template.Library()
 
 @register.simple_tag()
 def get_name(user):
+    """Получение имени сотрудника"""
     full_user = EmployeeModel.objects.get(user=user)
     return full_user
 
 
 @register.simple_tag()
 def get_short_name(user):
+    """Получение имени и инициалов сотрудника"""
     full_user = EmployeeModel.objects.get(user=user)
     return f'{full_user.last_name} {full_user.first_name[:1]}.{full_user.middle_name[:1]}'
 
 
 @register.simple_tag()
 def get_who_change_status_in_work(id_task):
+    """Получение информации о сотруднике изменившем статус (в работе)"""
     try:
         tasks = ChangeStatusHistoryModel.objects.all().filter(print_task_id=id_task)
         first_recording_in_work = tasks.filter(status=2).first().emp
@@ -28,6 +31,7 @@ def get_who_change_status_in_work(id_task):
 
 @register.simple_tag()
 def get_when_change_status_in_work(id_task):
+    """Получение информации о дате изменения статуса (в работе)"""
     try:
         tasks = ChangeStatusHistoryModel.objects.all().filter(print_task_id=id_task)
         first_recording_in_work = tasks.filter(status=2).first()
@@ -39,6 +43,7 @@ def get_when_change_status_in_work(id_task):
 
 @register.simple_tag()
 def get_who_change_status_done(id_task):
+    """Получение информации о сотруднике выполнившем работу"""
     try:
         tasks = ChangeStatusHistoryModel.objects.all().filter(print_task_id=id_task)
         last_recording_done = tasks.filter(status=3).last()
@@ -51,6 +56,7 @@ def get_who_change_status_done(id_task):
 
 @register.simple_tag()
 def get_when_change_status_done(id_task):
+    """Получение информации о дате изменения статуса (готов)"""
     try:
         tasks = ChangeStatusHistoryModel.objects.all().filter(print_task_id=id_task)
         last_recording_done = tasks.filter(status=3).last()

@@ -6,6 +6,9 @@ class MultipleFileInput(forms.ClearableFileInput):
 
 
 class MultipleFileField(forms.FileField):
+    """
+    Форма для отправки нескольких файлов одновременно
+    """
     def __init__(self, *args, **kwargs):
         kwargs.setdefault("widget", MultipleFileInput())
         super().__init__(*args, **kwargs)
@@ -20,6 +23,9 @@ class MultipleFileField(forms.FileField):
 
 
 class UploadFileForm(forms.Form):
+    """
+    Форма для отправки на главной странице
+    """
     file = MultipleFileField(label="Выберите или переместите файлы в это окно",
                              widget=MultipleFileInput(attrs={'class': 'd-flex, input_my_form',
                                                              'multiple': 'True'

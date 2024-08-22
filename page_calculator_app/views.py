@@ -158,14 +158,13 @@ class GetAnswerView(View):
 
                 pdf_reader = PyPDF2.PdfReader(file)
                 num_pages = len(pdf_reader.pages)
-                all_lists_count += num_pages
+                all_lists_count += num_pages  # Суммируем к общему количеству листов
                 for i in range(num_pages):
                     checker = 0  # В случае если размер по ГОСТ устанавливаем 1
                     box = pdf_reader.pages[i]
                     # Переводим значения в миллиметры
                     width = math.ceil(float(box.mediabox.width) * 0.35273159)
                     height = math.ceil(float(box.mediabox.height) * 0.35273159)
-                    # list_pages.append([height, width])
                     # Приводим к одной ориентации
                     if width < height:
                         small = width
@@ -265,10 +264,12 @@ class PrintView(View):
         start_time = time.time()
         # Формируем запись со счетчиком заявок в день
         check_date_in_db()
+        # Берем последнюю запись из таблицы CountTasksModel
         last_task_in_db = CountTasksModel.objects.latest('id')
         last_task_in_db.count += 1
         last_task_in_db.save()
         user_clearance = int(request.COOKIES['clearance'])
+        # Записываем данные по файлу
         new_task_to_print = PrintFilesModel(
             filename=request.FILES['file'].name,
             inventory_number_file=request.POST.get('input_inventory_number_file_value'),
@@ -368,6 +369,7 @@ class MyPrintTaskView(View):
     """Список заданий на печать сотрудника"""
 
     def get(self, request):
+        # Проверяем права пользователя для корректного отображения модальных окон просмотра задач
         user_permission = check_permission_user(request.user)
         emp = EmployeeModel.objects.get(user=request.user)
         emp_tasks = PrintFilesModel.objects.get_queryset().filter(emp_upload_file=emp).order_by('-id')
@@ -378,7 +380,7 @@ class MyPrintTaskView(View):
 
 
 def get_contracts(request):
-    """ajax для получения договоров по заказу"""
+    """Функция для ajax запроса получения договоров по заказу"""
     print(request.GET)
     object_id = int(request.GET.get('object'))
     contracts = ContractModel.objects.get_queryset().filter(contract_object_id=object_id).filter(show=True).order_by(
@@ -388,12 +390,13 @@ def get_contracts(request):
 
 
 class GetInfoMyTaskView(View):
-    """Просмотр деталей задания для сотрудника"""
+    """Просмотр деталей задания для пользователей"""
 
     def get(self, request):
         obj_id = int(request.GET.get('object'))
         obj = PrintFilesModel.objects.get(id=obj_id)
         try:
+            # Получаем информацию по листам задачи
             obj_info = ListsFileModel.objects.get(print_file_id=obj.id)
             bad_lists = obj_info.other_pages
             dict_temp_file_json = ast.literal_eval(bad_lists)
@@ -412,32 +415,14 @@ class CancelMyTaskView(View):
 
     def post(self, request):
         print(request.POST)
-        cancel_print_task_id = request.POST['number_task']
+        cancel_print_task_id = request.POST['number_task']  # id задачи
         cancel_print_task_obj = PrintFilesModel.objects.get(id=cancel_print_task_id)
-        cancel_print_task_obj.status = 0
-        cancel_print_task_obj.date_change_status = datetime.datetime.now()
+        cancel_print_task_obj.status = 0  # установка статуса "отменен"
+        cancel_print_task_obj.date_change_status = datetime.datetime.now()  # Установка даты изменения
+        # Удаление файла после отмены задачи
         file_path = os.path.join(settings.MEDIA_ROOT, str(cancel_print_task_obj.file_to_print))
         if os.path.exists(file_path):
             os.remove(file_path)
         cancel_print_task_obj.file_to_print = None
         cancel_print_task_obj.save()
-        return HttpResponse(status=200)
-
-
-class DeleteFileView(View):
-    def get(self, request, pk):
-        today = datetime.datetime.today()
-        count_tasks = 0
-        count_delete_tasks_files = 0
-        all_print_tasks = PrintFilesModel.objects.get_queryset().filter(status=3)
-        for task in all_print_tasks:
-            task_date = task.date_change_status.date()
-            task_date_delta = (today - task_date).days
-            count_tasks += 1
-            if task_date_delta > 7:
-                file_path = os.path.join(settings.MEDIA_ROOT, str(task.file_to_print))
-                if os.path.exists(file_path):
-                    os.remove(file_path)
-                task.file_to_print = None
-                task.save()
         return HttpResponse(status=200)

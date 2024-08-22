@@ -461,7 +461,9 @@ class BlankPageView(View):
     def get(self, request, pk):
         print_task = PrintFilesModel.objects.get(id=pk)
         pages_info = ListsFileModel.objects.get(print_file=print_task)
+        # Считаем цветные листы
         color_pages = pages_info.a0_color + pages_info.a0x2_color + pages_info.a0x3_color + pages_info.a1_color + pages_info.a1x3_color + pages_info.a1x4_color + pages_info.a2_color + pages_info.a2x3_color + pages_info.a2x4_color + pages_info.a2x5_color + pages_info.a3_color + pages_info.a3x3_color + pages_info.a3x4_color + pages_info.a3x5_color + pages_info.a3x6_color + pages_info.a3x7_color + pages_info.a4_color + pages_info.a4x3_color + pages_info.a4x4_color + pages_info.a4x5_color + pages_info.a4x6_color + pages_info.a4x7_color + pages_info.a4x8_color + pages_info.a4x9_color
+        # Формируем словарь с плохими листами
         bad_pages = ast.literal_eval(pages_info.other_pages)
         len_bad_pages = len(bad_pages)
         content = {'print_task': print_task,

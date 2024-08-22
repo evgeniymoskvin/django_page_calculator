@@ -9,6 +9,9 @@ from pdf2image import convert_from_path
 
 
 def check_date_in_db():
+    """
+    Функция формирования названия на основе текущей даты
+    """
     today_year = f'{datetime.datetime.today().year}{str(datetime.datetime.today().month).rjust(2, "0")}{str(datetime.datetime.today().day).rjust(2, "0")}'
     try:
         last_task_in_db = CountTasksModel.objects.latest('id')

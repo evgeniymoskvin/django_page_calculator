@@ -58,13 +58,14 @@
 
 
     <script>
-
+        //Пагинация 20 задач(заявок)
         let pagination_value = 20
 
         $(document).ready(function () {
             loadContent()
         })
 
+        // Подгрузка контента
         function loadContent() {
             $('#loader_tasks').removeClass('d-none')
             $('#loader_tasks').addClass('d-flex')
@@ -114,7 +115,7 @@
         window.addEventListener('scroll', throttledDoSomething)
         {#window.addEventListener('scroll', callback);#}
 
-
+        // Определяем, надо ли подгружать заявки
         function checkScroll() {
             let now_value = Number($("#now_value").text())
             let all_value = Number($("#len_all_tasks").text()) + pagination_value
@@ -127,67 +128,6 @@
                 }
             }
         }
-
-
-        /*$(document).ready(function () {
-            var table = $('#all-print-tasks').DataTable({
-                    {#order: [[1, 'asc']],#}
-                    dom:
-                    //"<'row'<'col-sm-12'tr>>",
-                    //"<'row'<'col-sm-12 col-md-2'l><'col-sm-2 col-md-2 col-xxl-4'B><'col-sm-12 col-md-6'f>>" +
-                        "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-                        "<'row'<'col-sm-12'tr>>" +
-                        //"<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-                        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>" +
-                        "<'col-sm-2 col-md-2 col-xxl-2'B>",
-                    "language":
-                        {
-                            "lengthMenu": "_MENU_",
-                            "zeroRecords": "Записи не найдены",
-                            "info": "Показано с _START_ по _END_ из _TOTAL_ записей",
-                            "search": "Поиск",
-                            "paginate": {
-                                "next": "Следующая",
-                                "previous": "Предыдущая"
-                            }
-                        },
-                    "aLengthMenu": [[1, 5, 10, 15, 20, 25, -1], [1, 5, 10, 15, 20, 25, "Все"]],
-                    "iDisplayLength": 15,
-                    buttons: ['pdf', 'excel']
-                }
-            );
-            table.buttons().container().appendTo($('.col-sm-6:eq(0)', table.table().container()));
-            newStyleButton()
-            {#newStyleButton()#}
-            var all_forms = document.querySelectorAll(".form-select")
-            for (var i = 0; i < all_forms.length; i++) {
-                all_forms[i].style.minHeight = '0px';
-            }
-
-
-        });
-
-
-        function newStyleButton() {
-            const pdf_button = document.getElementsByClassName("btn btn-secondary buttons-pdf buttons-html5")[0]
-            console.log(pdf_button);
-            pdf_button.classList.remove("btn")
-            pdf_button.classList.remove("btn-secondary")
-            pdf_button.classList.remove("buttons-pdf")
-            pdf_button.classList.remove("buttons-html5")
-            pdf_button.textContent = ''
-            pdf_button.classList.add("pdf_button_icon")
-
-            const exel_button = document.getElementsByClassName("btn btn-secondary buttons-excel buttons-html5")[0]
-            console.log(exel_button);
-            exel_button.classList.remove("btn")
-            exel_button.classList.remove("btn-secondary")
-            exel_button.classList.remove("buttons-excel")
-            exel_button.classList.remove("buttons-html5")
-            exel_button.textContent = ''
-            exel_button.classList.add("exel_button_icon")
-        }
-*/
 
         function openModalWindow(val) {
             var url = $("#detailModalWindow").attr("data-ajax-url")

@@ -22,6 +22,7 @@
     </div>
 
     <script>
+        //Модальное окно с задачей
         function openModalWindow(val) {
             var url = $("#detailModalWindow").attr("data-ajax-url")
             $.ajax({
@@ -37,13 +38,12 @@
                 }
             })
         }
-    </script>
 
-    <script>
         $(document).ready(function () {
             load()
         })
 
+        // Постоянное обновление контента на странице
         function load() {
             var url = $("#display_div").attr("data-ajax-url");
             $.ajax({
@@ -59,24 +59,6 @@
                 }
             });
         }
-
-
     </script>
-
-
-
 {% endblock %}
-
-
-/*href_site = window.location.href
-href_ws = href_site + 'ws/some_url/'
-console.log(href_ws)
-var socket = new WebSocket('ws://localhost:8003/ws/some_url/')
-socket.onmessage = function (event){
-var data = JSON.parse(event.data)
-console.log(data)
-document.getElementById('display_div').innerText = data.message
-document.getElementById('display_div2').innerText = data.orm_result.data
-}
-*/
 

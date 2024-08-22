@@ -85,8 +85,7 @@
     </div>
 
     <script>
-
-
+        // Окно для формирования отчета по одной задаче
         function openReportModalWindow(val) {
             var url = $("#detailReportModalWindow").attr("data-ajax-url")
             $.ajax({
@@ -102,13 +101,13 @@
                 }
             })
         }
-
+        // Окно для выбора какой отчет скачать
         $('#show_modal_report').click(function (e) {
             e.preventDefault();
             $('#download_report_modal').modal('show');
         })
 
-
+        // Формирование отчета (по выводу) на промежуток дат
         $('#create_print_report').click(function (e) {
             console.log('create_print_report')
             var dateStart = new Date($('#date_start').val())
@@ -145,6 +144,7 @@
                 })
         });
 
+        // Формирование отчета (по заявкам) на промежуток дат
         $('#create_dispatcher_report').click(function (e) {
             console.log('generate_dispatchet_report_table_list')
             var dateStart = new Date($('#date_start').val())
@@ -181,6 +181,7 @@
                 })
         })
 
+        // Формирование списка задач(заявок) на странице отчета
         $('#make_report_form').submit(function (e) {
             e.preventDefault()
             {

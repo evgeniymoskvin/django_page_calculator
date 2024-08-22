@@ -13,8 +13,8 @@ def task_print_done(print_task_id):
                                 to=[print_task.emp_upload_file.user.email])
     try:
         email_author.send()
-        print(f'Письмо по заданию {print_task_name} отправлено {print_task.emp_upload_file}: {print_task.emp_upload_file.user.email}')
-        # print(email_author)
+        print(
+            f'Письмо по заданию {print_task_name} отправлено {print_task.emp_upload_file}: {print_task.emp_upload_file.user.email}')
     except Exception as e:
         print(f'Error send email: {e}')
 
@@ -28,7 +28,7 @@ def task_print_cancel(print_task_id, text_cancel):
                                 to=[print_task.emp_upload_file.user.email])
     try:
         email_author.send()
-        print(f'Письмо отмены задания {print_task_name} отправлено {print_task.emp_upload_file}: {print_task.emp_upload_file.user.email}')
-        # print(email_author)
+        print(
+            f'Письмо отмены задания {print_task_name} отправлено {print_task.emp_upload_file}: {print_task.emp_upload_file.user.email}')
     except Exception as e:
         print(f'Error send email: {e}')

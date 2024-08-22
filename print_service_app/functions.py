@@ -12,12 +12,15 @@ def get_print_report_xls(objects_tasks: list):
     """
     Формирование отчета Print
     """
+    # Исходный файл
     file_xlsx_path = os.path.join(settings.BASE_DIR, 'print_service_app', 'xlsx', 'GurnRas_Print&Scan.xlsx')
+    # Выгружаемый файл
     file_path_to_export = os.path.join(settings.BASE_DIR, 'print_service_app', 'xlsx', 'export_print.xlsx')
     wb = openpyxl.load_workbook(filename=file_xlsx_path, data_only=True)
     page = wb.active
     for task in objects_tasks:
         try:
+            # Проверяем есть ли информация по листам для задачи
             pages_info_task = ListsFileModel.objects.get(print_file=task)
         except:
             pages_info_task = ListsFileModel()
@@ -32,6 +35,9 @@ def get_print_report_xls(objects_tasks: list):
             date_change_status_to_done = ''
             who_change_status_to_done = ''
             who_change_status_to_done = ''
+
+        # Заполняем строку excel таблицы согласно утвержденному шаблону
+
         row = ['',  # № п/п
                date_change_status_to_done,  # Дата выполнения
                '',  # Инв. № тома Элерон
@@ -212,6 +218,7 @@ def get_print_report_xls(objects_tasks: list):
                pages_info_task.a0x3_color * task.copy_count,
                who_change_status_to_done
                ]
+        # Добавляем строку
         page.append(row)
     try:
         wb.save(filename=file_path_to_export)
@@ -225,13 +232,15 @@ def get_dispatcher_report_xls(objects_tasks: list):
     """
     Формирование диспетчерского отчета
     """
+    # Исходный файл
     file_xlsx_path = os.path.join(settings.BASE_DIR, 'print_service_app', 'xlsx', 'dispatcher_blank.xlsx')
+    # Выгружаемый файл
     file_path_to_export = os.path.join(settings.BASE_DIR, 'print_service_app', 'xlsx', 'export_dispatcher.xlsx')
     wb = openpyxl.load_workbook(filename=file_xlsx_path, data_only=True)
     page = wb.active
     for task in objects_tasks:
+        # История изменений
         try:
-            # task= PrintFilesModel()
             task_history = ChangeStatusHistoryModel.objects.all().filter(print_task=task)
             last_recording_done = task_history.filter(status=3).last()
             date_last = last_recording_done.date_change_status
@@ -241,27 +250,28 @@ def get_dispatcher_report_xls(objects_tasks: list):
             print(f'Get last history error: {e}')
             date_change_status_to_done = ''
             who_change_status_to_done = ''
+        # Отделить номер инвентарный, в случае если название указано с "И"
         inventory_name = task.inventory_number_file.split('И')[0]
-
+        # Определить номер изменения, если было "И"
         try:
             correction_number = f'И{task.inventory_number_file.split("И")[1]}'
         except Exception as e:
             print(f'Номер изменения в названии альбома не найден: {e}')
             correction_number = ''
-
+        # Определяем "главного" ГИП-а по объекту
         try:
             cpe_task = CpeModel.objects.get_queryset().filter(cpe_object=task.object).filter(cpe_important=True)[
                 0].cpe_user.last_name
         except Exception as e:
             print(f'Не удалось определить ГИП-а: {e}')
             cpe_task = ''
-
+        # Определяем номер договора
         try:
             contract_name = task.contract.contract_name
         except Exception as e:
             print(f'Не удалось определить договор: {e}')
             contract_name = ''
-
+        # Определяем номер заказчика
         try:
             task_order = task.order.order
             task_order_name = task.order.order_name
@@ -269,19 +279,19 @@ def get_dispatcher_report_xls(objects_tasks: list):
             print(f'Не удалось определить заказчика: {e}')
             task_order = ''
             task_order_name = ''
-
+        # Определяем код объекта
         try:
             object_code = task.object.object_code
         except Exception as e:
             print(f'Не удалось определить код объекта: {e}')
             object_code = ''
-
+        # Определяем марку документации
         try:
             mark_doc = task.mark_print_file.mark_doc
         except Exception as e:
             print(f'Не удалось определить марку документа: {e}')
             mark_doc = ''
-
+        # Определяем тип вида работ
         if task.task_type_work == 0:
             task_type_work = '-'
         elif task.task_type_work == 1:
@@ -294,13 +304,13 @@ def get_dispatcher_report_xls(objects_tasks: list):
             task_type_work = 'НИОКР'
         else:
             task_type_work = ''
-
+        # Формируем строку для внесения в excel
         row = [
             task.inventory_number_request,  # Номер заявки
             task.add_file_date.strftime('%d.%m.%Y'),  # Дата приема
             inventory_name,  # Инв номер альбома ...
             correction_number,  # Номер корректировки
-            '',  # Инв. № альбома ...
+            '',  # ...
             task_type_work,  # Марка документации
             mark_doc,  # Раздел проекта
             task.emp_upload_file.department_group.group_dep_abr,  # Управление

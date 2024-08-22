@@ -129,7 +129,7 @@
     </div>
 
     <script>
-
+        // Подключение DataBles для удобного отображения таблиц
         $(document).ready(function () {
             var table = $('#my-print-tasks').DataTable({
                     {#order: [[1, 'asc']],#}
@@ -167,7 +167,7 @@
 
         });
 
-
+        // Новый стиль кнопок excel и pdf
         function newStyleButton() {
             const pdf_button = document.getElementsByClassName("btn btn-secondary buttons-pdf buttons-html5")[0]
             console.log(pdf_button);
@@ -188,7 +188,7 @@
             exel_button.classList.add("exel_button_icon")
         }
 
-
+        //Отмена задания на печать
         $('#form_cancel_print_file').submit(function (e) {
                 e.preventDefault()
                 var url = $('#MyCancelTaskModalWindow').attr('data-ajax-url')
@@ -218,7 +218,7 @@
             }
         )
 
-
+        // Открытие модального окна с деталями по задаче
         function openMyModalWindow(val) {
             var url = $("#MyModalWindow").attr("data-ajax-url")
             $.ajax({

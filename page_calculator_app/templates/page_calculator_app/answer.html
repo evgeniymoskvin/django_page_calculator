@@ -7,18 +7,10 @@
         <div class="d-flex text-20px-regular">Допуск:&nbsp;</div>
         <div class="d-flex text-20px-bold">{{ clearance }} мм</div>
     </div>
-    {#    <div class="d-flex flex-row">#}
-    {#        <div class="d-flex text-18px-regular">Всего загружено файлов:&nbsp;</div>#}
-    {#        <div class="d-flex text-18px-bold">{{ files_count }}</div>#}
-    {#    </div>#}
     <div class="d-flex flex-row">
         <div class="d-flex text-20px-regular">PDF файлов:&nbsp;</div>
         <div class="d-flex text-20px-bold">{{ good_files }} из {{ files_count }}</div>
     </div>
-    {#    <div class="d-flex flex-row">#}
-    {#        <div class="d-flex text-18px-regular">Всего листов в файлах:&nbsp;</div>#}
-    {#        <div class="d-flex text-18px-bold">{{ all_lists_count }}</div>#}
-    {#    </div>#}
     <div class="d-flex flex-row">
         <div class="d-flex text-20px-regular">Распознано листов:&nbsp;</div>
         <div class="d-flex text-20px-bold">{{ all_lists_approve }} из {{ all_lists_count }}</div>
@@ -30,7 +22,6 @@
 
 
     <div class="accordion w-100" id="accordion" style="margin-top: 60px">
-        {#    <div class="accordion w-100 mt-5" id="accordion">#}
         {% for key, value in exit_dict.items %}
             <div class="accordion-item" style="margin-top: 6px">
                 <h2 class="accordion-header" id="panelsStayOpen-headingOne{{ forloop.counter }}">
@@ -119,25 +110,9 @@
                                                     data-bs-target="#detailFileInfo{{ forloop.counter }}">
                                                 Информация о листах
                                             </button>
-                                            {% comment %}
-                                            <button type="button" class="d-flex mt-3 button_blue_details_outline"
-                                                    data-ajax-name='{{ key }}'
-                                                    data-ajax-url="{% url 'get-blanc' %}"
-                                                    data-ajax-json ='{{ value.good_lists }}'
-                                                    onclick="downloadBlanc(this)">
-                                                Заявка на печать
-                                            </button>
-
-                                            <button type="button" class="d-flex button_blue_details_outline button_blue_details_outline_word"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#detailFileInfo{{ forloop.counter }}">
-                                                <i class="fa icon-pen-menu"></i>
-                                            </button>
-{% endcomment %}
                                             {% if user.is_authenticated %}
                                                 <button type="button" class="d-flex mt-3 button_blue_details_outline"
                                                         data-ajax-name='{{ key }}'
-{#                                                        data-ajax-url="{% url 'get-blanc' %}"#}
                                                         data-ajax-count-pages = "{{ value.count_pages }}"
                                                         data-ajax-json='{{ value.good_lists }}'
                                                         data-ajax-a4formats='{{ value.a4_count }}'
@@ -160,7 +135,7 @@
                             {% endif %}
 
 
-                            <!-- Модальное окно для {{ key }}-->
+                            <!-- Модальное окно для файла {{ key }}-->
 
                             <div class="modal fade" id="detailFileInfo{{ forloop.counter }}" tabindex="-1">
                                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
@@ -231,7 +206,7 @@
     });
     let allFiles = new DataTransfer()
 
-    //Значение допуска печатаем в консоль для проверки
+    //Значение допуска и файлы печатаем в консоль для проверки
     $(function () {
         var cookieObjectValue = (document.cookie.match('(^|; )' + encodeURIComponent('clearance') + '=([^;]+)') || []).pop() || null;
         console.log(cookieObjectValue)
@@ -244,12 +219,13 @@
         console.log('allFiles.files', allFiles.files)
     })
 
-
+    // Окно просмотра деталей по загруженному файлу
     function onClickDetails() {
         $('#detailFileInfo').modal('show');
 
     }
 
+    // Очистка результата подсчета
     function clearResult() {
         $('#id_file').val('');
 
@@ -268,10 +244,11 @@
         $('#clearance_info').addClass('d-flex')
         $('#start_body').animate({opacity: 1}, 400)
         $('#clearance_info').animate({opacity: 1}, 400)
-
+        // установка статуса 0, для корректной работы drag and drop
         status_calc = 0
     }
 
+    // Скачивание бланка больше не актуально
     function downloadBlanc(blancName) {
         var name_file = $(blancName).attr("data-ajax-name")
         var url_blanc = $(blancName).attr("data-ajax-url")
@@ -295,7 +272,7 @@
         })
     }
 
-
+    // Открыть окно отправки фала на печать
     function sendFile(el) {
         document.getElementById('temp_file_name').innerText = $(el).attr("data-ajax-name")
         document.getElementById('temp_file_json').value = $(el).attr("data-ajax-json")
@@ -308,6 +285,7 @@
 
     }
 
+    // Отправка файла(задачи) на печать
     $('#form_send_one_file').submit(function (e) {
             e.preventDefault()
             {

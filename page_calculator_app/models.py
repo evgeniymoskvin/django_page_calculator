@@ -20,7 +20,7 @@ class OrdersModel(models.Model):
         db_table = 'ToDo_tasks_ordersmodel'
 
     def __str__(self):
-        return f'{self.order} - { self.order_name}'
+        return f'{self.order} - {self.order_name}'
 
 
 class ObjectModel(models.Model):
@@ -73,6 +73,7 @@ class JobTitleModel(models.Model):
 
 
 class CityDepModel(models.Model):
+    """Таблица городов"""
     city = models.CharField(verbose_name="Город", max_length=100)
     name_dep = models.CharField(verbose_name="Наименование организации", max_length=350)
 
@@ -87,7 +88,7 @@ class CityDepModel(models.Model):
 
 
 class GroupDepartmentModel(models.Model):
-    """Список управлений"""
+    """Таблица управлений"""
     group_dep_abr = models.CharField("Сокращенное название управления", max_length=10)
     group_dep_name = models.CharField("Полное название управления", max_length=250)
     city_dep = models.ForeignKey(CityDepModel, verbose_name="Город", on_delete=models.SET_NULL, null=True, blank=True)
@@ -104,7 +105,7 @@ class GroupDepartmentModel(models.Model):
 
 
 class CommandNumberModel(models.Model):
-    """Номера отделов"""
+    """Таблица отделов"""
     command_number = models.IntegerField("Номер отдела/Сокращение")
     command_name = models.CharField("Наименование отдела", max_length=150)
     department = models.ForeignKey(GroupDepartmentModel, verbose_name="Управление", on_delete=models.SET_NULL,
@@ -162,6 +163,7 @@ def upload_to(instance, filename):
 
 
 class MoreDetailsEmployeeModel(models.Model):
+    """Дополнительная информация по сотрудникам"""
     emp = models.OneToOneField(EmployeeModel, models.CASCADE, verbose_name="Пользователь")
     photo = models.ImageField(verbose_name="Файл", null=True, blank=True,
                               upload_to=upload_to)
@@ -201,6 +203,7 @@ class CpeModel(models.Model):
 
 
 def upload_print_file(instance, filename):
+    """Функция присваивания пути хранения загружаемому файлу"""
     # name_to_path = str(instance.emp.id)
     new_path = path.join('files', 'print_files', f'{datetime.now().year}{datetime.now().month}{datetime.now().day}',
                          # "media", filename)
@@ -226,6 +229,8 @@ class MarkDocModel(models.Model):
 
 
 class PrintFilesModel(models.Model):
+    """Таблица задач на печать"""
+
     class TypeTask(models.IntegerChoices):
         """        Выбор вида документации        """
         NONETASK = 0, _('Не указан')
@@ -272,7 +277,8 @@ class PrintFilesModel(models.Model):
                                          default=0)
     print_folding = models.BooleanField(verbose_name='Фальцовка', null=True, blank=True, default=False)
     color = models.BooleanField(verbose_name='Цветное', null=True, blank=True, default=False)
-    mark_print_file = models.ForeignKey(MarkDocModel, verbose_name='Марка документации', null=True, blank=True, on_delete=models.SET_NULL, default=None)
+    mark_print_file = models.ForeignKey(MarkDocModel, verbose_name='Марка документации', null=True, blank=True,
+                                        on_delete=models.SET_NULL, default=None)
     comment = models.CharField(verbose_name='Комментарий', null=True, blank=True, max_length=500)
 
     class Meta:
@@ -285,7 +291,7 @@ class PrintFilesModel(models.Model):
 
 class ListsFileModel(models.Model):
     """
-    Таблица с количеством листов по файлам
+    Таблица с количеством листов по задачам
     """
     print_file = models.OneToOneField(PrintFilesModel, on_delete=models.CASCADE, null=False, blank=False)
     a0 = models.IntegerField(verbose_name="A0", default=0, blank=True)
@@ -362,7 +368,9 @@ class PrintPagePermissionModel(models.Model):
 
 
 class CountTasksModel(models.Model):
-    """Счетчик задач за каждый день"""
+    """
+    Счетчик задач за каждый день
+    """
     count = models.IntegerField(verbose_name='Количество заявок', default=0)
     date_of_print = models.CharField(verbose_name='Дата обработки заявок', max_length=150)
     auto_date = models.DateTimeField('Дата для сортировок', auto_now_add=True, null=True)
@@ -376,6 +384,9 @@ class CountTasksModel(models.Model):
 
 
 class ChangeStatusHistoryModel(models.Model):
+    """
+    Лог изменения статусов задач
+    """
     class PrintFileStatusChoice(models.IntegerChoices):
         """Статус кода Kks"""
         CANCELED = 0, _('Аннулирован')
