@@ -49,171 +49,171 @@ def get_print_report_xls(objects_tasks: list):
                '',  # Наклейка А4
                '',  # Наклейка А5
                # A4
-               pages_info_task.a4 * task.copy_count,  # А4
+               pages_info_task.a4,  # А4
                '',  # Скан
                pages_info_task.a4 * task.copy_count,  # Всего
-               pages_info_task.a4_color * task.copy_count,  # A4 цвет
+               pages_info_task.a4_color,  # A4 цвет
                '',  # Скан
                pages_info_task.a4_color * task.copy_count,  # А4 цвет всего
                # A3
-               pages_info_task.a3 * task.copy_count,  # A3
+               pages_info_task.a3,  # A3
                '',  # Скан
                pages_info_task.a3 * task.copy_count,  # Всего
-               pages_info_task.a3_color * task.copy_count,  # А3 цвет
+               pages_info_task.a3_color,  # А3 цвет
                '',  # Скан
                pages_info_task.a3_color * task.copy_count,  # А3 цвет всего
                # A2
-               pages_info_task.a2 * task.copy_count,  # А2
+               pages_info_task.a2,  # А2
                '',  # Скан
                pages_info_task.a2 * task.copy_count,  # A2 всего
-               pages_info_task.a2_color * task.copy_count,  # А2 цвет
+               pages_info_task.a2_color,  # А2 цвет
                '',  # Скан
                pages_info_task.a2_color * task.copy_count,  # A2 цвет всего
                # A1
-               pages_info_task.a1 * task.copy_count,  # a1
+               pages_info_task.a1,  # a1
                '',  # Скан
                pages_info_task.a1 * task.copy_count,  # a1 всего
-               pages_info_task.a1_color * task.copy_count,  # a1 цветной
+               pages_info_task.a1_color,  # a1 цветной
                '',  # Скан
                pages_info_task.a1_color * task.copy_count,  # a1 цветной всего
                # A0
-               pages_info_task.a0 * task.copy_count,  # a0
+               pages_info_task.a0,  # a0
                '',  # Скан
                pages_info_task.a0 * task.copy_count,  # a0 всего
-               pages_info_task.a0_color * task.copy_count,  # a0 цветной
+               pages_info_task.a0_color,  # a0 цветной
                '',  # Скан
                pages_info_task.a0_color * task.copy_count,  # а0 цветной всего
                # A4x3
-               pages_info_task.a4x3 * task.copy_count,  # A4x3
+               pages_info_task.a4x3,  # A4x3
                '',  # Скан
                pages_info_task.a4x3 * task.copy_count,  # A4x3 всего
-               pages_info_task.a4x3_color * task.copy_count,  # A4x3 цветной
+               pages_info_task.a4x3_color,  # A4x3 цветной
                '',  # Скан
                pages_info_task.a4x3_color * task.copy_count,  # a4x3 цветной всего
                # A4x4
-               pages_info_task.a4x4 * task.copy_count,
+               pages_info_task.a4x4,
                '',  # Скан
                pages_info_task.a4x4 * task.copy_count,
-               pages_info_task.a4x4_color * task.copy_count,
+               pages_info_task.a4x4_color,
                '',  # Скан
                pages_info_task.a4x4_color * task.copy_count,
                # A4x5
-               pages_info_task.a4x5 * task.copy_count,
+               pages_info_task.a4x5,
                '',  # Скан
                pages_info_task.a4x5 * task.copy_count,
-               pages_info_task.a4x5_color * task.copy_count,
+               pages_info_task.a4x5_color,
                '',  # Скан
                pages_info_task.a4x5_color * task.copy_count,
                # A4x6
-               pages_info_task.a4x6 * task.copy_count,
+               pages_info_task.a4x6,
                '',  # Скан
                pages_info_task.a4x6 * task.copy_count,
-               pages_info_task.a4x6_color * task.copy_count,
+               pages_info_task.a4x6_color,
                '',  # Скан
                pages_info_task.a4x6_color * task.copy_count,
                # A4x7
-               pages_info_task.a4x7 * task.copy_count,
+               pages_info_task.a4x7,
                '',  # Скан
                pages_info_task.a4x7 * task.copy_count,
-               pages_info_task.a4x7_color * task.copy_count,
+               pages_info_task.a4x7_color,
                '',  # Скан
                pages_info_task.a4x7_color * task.copy_count,
                # A4x8
-               pages_info_task.a4x8 * task.copy_count,
+               pages_info_task.a4x8,
                '',  # Скан
                pages_info_task.a4x8 * task.copy_count,
-               pages_info_task.a4x8_color * task.copy_count,
+               pages_info_task.a4x8_color,
                '',  # Скан
                pages_info_task.a4x8_color * task.copy_count,
                # A4x9
-               pages_info_task.a4x9 * task.copy_count,
+               pages_info_task.a4x9,
                '',  # Скан
                pages_info_task.a4x9 * task.copy_count,
-               pages_info_task.a4x9_color * task.copy_count,
+               pages_info_task.a4x9_color,
                '',  # Скан
                pages_info_task.a4x9_color * task.copy_count,
                # A3x3
-               pages_info_task.a3x3 * task.copy_count,
+               pages_info_task.a3x3,
                '',  # Скан
                pages_info_task.a3x3 * task.copy_count,
-               pages_info_task.a3x3_color * task.copy_count,
+               pages_info_task.a3x3_color,
                '',  # Скан
                pages_info_task.a3x3_color * task.copy_count,
                # A3x4
-               pages_info_task.a3x4 * task.copy_count,
+               pages_info_task.a3x4,
                '',  # Скан
                pages_info_task.a3x4 * task.copy_count,
-               pages_info_task.a3x4_color * task.copy_count,
+               pages_info_task.a3x4_color,
                '',  # Скан
                pages_info_task.a3x4_color * task.copy_count,
                # A3x5
-               pages_info_task.a3x5 * task.copy_count,
+               pages_info_task.a3x5,
                '',  # Скан
                pages_info_task.a3x5 * task.copy_count,
-               pages_info_task.a3x5_color * task.copy_count,
+               pages_info_task.a3x5_color,
                '',  # Скан
                pages_info_task.a3x5_color * task.copy_count,
                # A3x6
-               pages_info_task.a3x6 * task.copy_count,
+               pages_info_task.a3x6,
                '',  # Скан
                pages_info_task.a3x6 * task.copy_count,
-               pages_info_task.a3x6_color * task.copy_count,
+               pages_info_task.a3x6_color,
                '',  # Скан
                pages_info_task.a3x6_color * task.copy_count,
                # A3x7
-               pages_info_task.a3x7 * task.copy_count,
+               pages_info_task.a3x7,
                '',  # Скан
                pages_info_task.a3x7 * task.copy_count,
-               pages_info_task.a3x7_color * task.copy_count,
+               pages_info_task.a3x7_color,
                '',  # Скан
                pages_info_task.a3x7_color * task.copy_count,
                # A2x3
-               pages_info_task.a2x3 * task.copy_count,
+               pages_info_task.a2x3,
                '',  # Скан
                pages_info_task.a2x3 * task.copy_count,
-               pages_info_task.a2x3_color * task.copy_count,
+               pages_info_task.a2x3_color,
                '',  # Скан
                pages_info_task.a2x3_color * task.copy_count,
                # A2x4
-               pages_info_task.a2x4 * task.copy_count,
+               pages_info_task.a2x4,
                '',  # Скан
                pages_info_task.a2x4 * task.copy_count,
-               pages_info_task.a2x4_color * task.copy_count,
+               pages_info_task.a2x4_color,
                '',  # Скан
                pages_info_task.a2x4_color * task.copy_count,
                # A2x5
-               pages_info_task.a2x5 * task.copy_count,
+               pages_info_task.a2x5,
                '',  # Скан
                pages_info_task.a2x5 * task.copy_count,
-               pages_info_task.a2x5_color * task.copy_count,
+               pages_info_task.a2x5_color,
                '',  # Скан
                pages_info_task.a2x5_color * task.copy_count,
                # A1x3
-               pages_info_task.a1x3 * task.copy_count,
+               pages_info_task.a1x3,
                '',  # Скан
                pages_info_task.a1x3 * task.copy_count,
-               pages_info_task.a1x3_color * task.copy_count,
+               pages_info_task.a1x3_color,
                '',  # Скан
                pages_info_task.a1x3_color * task.copy_count,
                # A1x4
-               pages_info_task.a1x4 * task.copy_count,
+               pages_info_task.a1x4,
                '',  # Скан
                pages_info_task.a1x4 * task.copy_count,
-               pages_info_task.a1x4_color * task.copy_count,
+               pages_info_task.a1x4_color,
                '',  # Скан
                pages_info_task.a1x4_color * task.copy_count,
                # A0x2
-               pages_info_task.a0x2 * task.copy_count,
+               pages_info_task.a0x2,
                '',  # Скан
                pages_info_task.a0x2 * task.copy_count,
-               pages_info_task.a0x2_color * task.copy_count,
+               pages_info_task.a0x2_color,
                '',  # Скан
                pages_info_task.a0x2_color * task.copy_count,
                # A0x3
-               pages_info_task.a0x3 * task.copy_count,
+               pages_info_task.a0x3,
                '',  # Скан
                pages_info_task.a0x3 * task.copy_count,
-               pages_info_task.a0x3_color * task.copy_count,
+               pages_info_task.a0x3_color,
                '',  # Скан
                pages_info_task.a0x3_color * task.copy_count,
                who_change_status_to_done
