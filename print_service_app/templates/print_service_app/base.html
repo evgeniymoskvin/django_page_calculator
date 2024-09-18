@@ -76,11 +76,14 @@
         </div>
     </div>
 </div>
-
+<div hidden id="url_notification" data-ajax-url="{% url 'get-notification' %}"></div>
 </body>
 
 
 <script>
+
+    let count_of_new_tasks = 0
+    let count_of_show = 0
 
     // Подключение перемещения модальных окон
     $('.modal-dialog').draggable({
@@ -103,6 +106,48 @@
             return false;
         });
     });
+
+    $(document).ready(function () {
+        loadNotification()
+    })
+
+    function loadNotification() {
+        let url = $("#url_notification").attr("data-ajax-url");
+        $.ajax({
+            url: url,
+            type: 'GET',
+
+            success: async (data) => {
+                if (count_of_show > 0) {
+                    if (data > count_of_new_tasks) {
+                        count_of_new_tasks = data
+                        const perm = await Notification.requestPermission()
+
+                        if (perm === 'granted') {
+                            new Notification('Print service', {
+                                body: 'Есть необработанные задачи: ' + data,
+                                data: {
+                                    url: 'new-tasks-to-print/',
+                                },
+                                tag: 'notif'
+                            })
+                        }
+                    } else {
+                        count_of_new_tasks = data
+                    }
+                } else {
+                    count_of_show = 1
+                    count_of_new_tasks = data
+                }
+                setTimeout(loadNotification, 5000);
+            },
+            error: function (r) {
+                setTimeout(loadNotification, 5000);
+            }
+        });
+    }
+
+
 </script>
 
 </html>

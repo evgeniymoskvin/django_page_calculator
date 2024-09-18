@@ -58,8 +58,15 @@ def get_tasks(request):
     что бы показывать текущие задачи в реальном времени"""
     tasks_to_print = PrintFilesModel.objects.get_queryset().filter(Q(status=1) | Q(status=2)).order_by('-id')
     # Задачи в статусе "Актуальные" и "В работе"
-    content = {"tasks_to_print": tasks_to_print}
+    content = {"tasks_to_print": tasks_to_print,
+               'count_of_tasks': tasks_to_print.count()}
     return render(request, 'print_service_app/ajax/get_task_list.html', content)
+
+def get_tasks_count(request):
+    """Функция для ajax запроса, получения количества не обработанных задач"""
+    tasks_to_print = PrintFilesModel.objects.get_queryset().filter(Q(status=1) | Q(status=2)).order_by('-id')
+    # Задачи в статусе "Актуальные" и "В работе"
+    return HttpResponse(tasks_to_print.count())
 
 
 def get_task_info(obj_id):

@@ -24,6 +24,7 @@ urlpatterns = [
     path('new-tasks-to-print', views.IndexView.as_view(), name='new-tasks'),
     path('all-tasks', views.AllTaskView.as_view(), name='all-tasks'),
     path('ajax/get-list', views.get_tasks, name='get-tasks-print'),
+    path('ajax/get-notification', views.get_tasks_count, name='get-notification'),
     path('ajax/get-all-task', views.get_all_task, name='get-all-task'),
     path('ajax/get-info', views.GetInfoPrintTaskView.as_view(), name='get-info-task-print'),
     path('ajax/get-edit-modal', views.GetEditModalWindow.as_view(), name='get-edit-modal'),

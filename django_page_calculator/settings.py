@@ -24,8 +24,9 @@ SECRET_KEY = 'django-insecure-*&!tk_t9r&lhy9y1qa0sg0ucz&hcn!yb-n$912)up5ngh%khfm
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', '45.132.18.6', 'localhost', '127.0.0.1']
-CSRF_TRUSTED_ORIGINS = ['http://45.132.18.6']
+# ALLOWED_HOSTS = ['0.0.0.0', '45.132.18.6', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = []
+# CSRF_TRUSTED_ORIGINS = ['http://45.132.18.6']
 # Application definition
 
 INSTALLED_APPS = [
@@ -135,8 +136,8 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'login'
 
-SESSION_COOKIE_DOMAIN = '45.132.18.6'
-SESSION_COOKIE_NAME = 'testsessionid'
+# SESSION_COOKIE_DOMAIN = '45.132.18.6'
+# SESSION_COOKIE_NAME = 'testsessionid'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
