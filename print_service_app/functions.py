@@ -267,7 +267,7 @@ def get_dispatcher_report_xls(objects_tasks: list):
             cpe_task = ''
         # Определяем номер договора
         try:
-            contract_name = task.contract.contract_name
+            contract_name = task.contract.contract_code
         except Exception as e:
             print(f'Не удалось определить договор: {e}')
             contract_name = ''
