@@ -427,3 +427,13 @@ class CancelMyTaskView(View):
         cancel_print_task_obj.file_to_print = None
         cancel_print_task_obj.save()
         return HttpResponse(status=200)
+
+
+class PrintFromArchive(View):
+    def get(self, request):
+        user = EmployeeModel.objects.get(user=request.user)
+        chiefs = EmployeeModel.objects.filter(department=user.department).filter(right_to_sign=True)
+        content = {
+            'chiefs': chiefs
+        }
+        return render(request, 'page_calculator_app/print_from_archive.html', content)

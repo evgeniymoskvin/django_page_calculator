@@ -197,8 +197,6 @@ html {
 }
 
 
-
-
 .red_text_error {
     text-align: end;
     margin-right: 45px;
@@ -350,6 +348,11 @@ html {
     font-family: "Rosatom_regular", serif;
 }
 
+.input_text_clearance_paddings {
+    padding: 10px 10px;
+        font-size: 16px;
+}
+
 .input_text_clearance:disabled {
     border: 1px solid rgb(176, 181, 185);
     /*box-shadow: 2px 4px 11px -3px rgba(149, 150, 150, 0.45);*/
@@ -380,6 +383,13 @@ html {
     font-family: "Rosatom_regular", serif;
     color: white;
     transition-duration: .15s;
+}
+
+.button_blue_center {
+    min-width: 200px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
 }
 
 .button_blue:hover {
@@ -458,7 +468,7 @@ html {
     box-shadow: 2px 4px 11px -3px rgba(155, 168, 176, 0.45);
 }
 
-.button_dark_blue{
+.button_dark_blue {
     border: rgb(108, 172, 228);
 }
 
