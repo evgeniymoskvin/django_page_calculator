@@ -30,7 +30,6 @@ class UploadFileForm(forms.Form):
                              widget=MultipleFileInput(attrs={'class': 'd-flex, input_my_form',
                                                              'multiple': 'True'
                                                              }))
-
 # class UploadFileForm(forms.Form):
 #     file = forms.FileField(label="Выберете файл", widget=forms.FileInput(attrs={'class': 'd-flex, input_my_form',
 #                                                                                 }))

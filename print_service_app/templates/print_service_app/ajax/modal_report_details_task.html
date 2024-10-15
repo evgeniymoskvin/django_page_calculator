@@ -3,8 +3,14 @@
     <div class="modal-content modal-content_clearance">
         <div class="modal-header modal-header_clearance">
             <h5 class="modal-title text-24px-regular"
-                style="cursor: context-menu">{{ obj.inventory_number_request }}</h5>
+                style="cursor: context-menu">{{ obj.inventory_number_request }} {% if obj.print_from_archive %}
+                (Печать из архива)
+            {% endif %}</h5>
             <div>
+                {% if obj.print_from_archive and not obj.file_to_print %}
+                    <button id="add_archive_file" class="icon-add-files" data-bs-dismiss="modal"
+                            aria-label="Close" data-ajax-id='{{ obj.id }}'></button>
+                {% endif %}
                 <button id="change_lists" class="icon-edit-lists" data-bs-dismiss="modal"
                         aria-label="Close" data-ajax-id='{{ obj.id }}'></button>
                 <button id="change_task" class="icon-edit" data-bs-dismiss="modal"
@@ -22,6 +28,16 @@
                         <div class="d-flex text-20px-light ">Инв. №</div>
                         <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.inventory_number_file }}</div>
                     </div>
+                    {% if obj.print_from_archive %}
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center">
+                            <div class="d-flex text-20px-light ">Разрешение на изменение</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.print_from_archive_details.permission_number }}</div>
+                        </div>
+                        <div class="d-flex w-100 flex-row justify-content-between align-items-center">
+                            <div class="d-flex text-20px-light ">Цель выводы</div>
+                            <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.print_from_archive_details.get_purpose_of_printing_display }}</div>
+                        </div>
+                    {% endif %}
                     <div class="d-flex w-100 flex-row justify-content-between align-items-center mt-1">
                         <div class="d-flex text-20px-light ">Поступило в работу</div>
                         <div class="d-flex text-20px-light padding-left-30 text-align-end">{{ obj.add_file_date }}</div>

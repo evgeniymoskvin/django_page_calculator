@@ -8,24 +8,43 @@
     <div class="d-flex container back-search min-vh-100 w-100" style="max-width: 1000px">
         <div class="d-flex flex-column w-100">
             <div class="d-flex flex-column" id="id_title_start">
-                <div class="d-flex text-32px-bold" style="margin-top: 190px">
+                <div class="d-flex text-32px-bold" style="margin-top: 150px">
                     Печать файла из архива
                 </div>
-                {#            <div class="d-flex text-18px-light ье-3" style="line-height: 100%">Заявки абсолютно анонимные#}
-                {#            </div>#}
+                <div class="d-flex text-16px-light">
+                    Печать альбомов из архива без прикладывания pdf файла
+                </div>
             </div>
             <form method="POST" id="form-send">
                 {% csrf_token %}
 
                 <div class="d-flex flex-column justify-content-between w-100 mt-3">
                     <div class="d-flex w-100">
+
+                        <input class="d-flex input_text_clearance input_text_clearance_paddings w-100"
+                               id="inventory_number" name="inventory_number"
+                               placeholder="Инвентарный номер" required>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column justify-content-between w-100 mt-2">
+                    <div class="d-flex w-100">
+
+                        <input class="d-flex input_text_clearance input_text_clearance_paddings w-100"
+                               id="permission_number" name="permission_number"
+                               placeholder="Номер разрешения" required>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column justify-content-between w-100 mt-2">
+                    <div class="d-flex w-100">
                         <select class="form-select w-100"
-                                name="subdivision_id"
-                                id="subdivision_id"
-                        >
-                            <option value="" selected>Руководитель</option>
-                            {% for chief in chiefs %}
-                                <option value="{{ chief.id }}">{{ chief.last_name }} {{ chief.first_name }} {{ chief.middle_name }}</option>
+                                name="order_id"
+                                id="order_id"
+                                required>
+                            <option value="" selected>Заказчик</option>
+                            {% for obj in orders %}
+                                <option value="{{ obj.id }}">{{ obj }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -34,27 +53,82 @@
                 <div class="d-flex flex-column justify-content-between w-100 mt-2">
                     <div class="d-flex w-100">
                         <select class="form-select w-100"
-                                name="type_of_question"
-                                id="type_of_question"
+                                name="object_id"
+                                id="object_id" data-contracts-url="{% url 'get-contracts' %}"
                                 required>
-                            <option value="" selected>Тип обращения</option>
-                            <option value="1">Жалоба</option>
-                            <option value="2">Предложение</option>
+                            <option value="" selected>Объект</option>
+                            {% for obj in objects %}
+                                <option value="{{ obj.id }}">{{ obj }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                 </div>
 
-                <div class="d-flex flex-column justify-content-between w-100 mt-2">
-                    <div class="d-flex w-100">
+                <div class="d-flex flex-column justify-content-between w-100" id="contract_cpe_inside">
 
-                <input class="d-flex input_text_clearance input_text_clearance_paddings w-100" id="question_text" name="question_text"
-                          placeholder="Инвентарный номер" required></input>
+                    <div class="d-flex w-100 mt-2">
+                        <select class="form-select w-100"
+                                name="contract_id"
+                                id="contract_id" disabled>
+                            <option selected>Договор</option>
+                        </select>
                     </div>
-                </div>
 
-                <div class="d-flex w-100 mb-2 mt-2">
-                    <button class="d-flex w-100 button_blue button_blue_center" type="submit">Отправить</button>
-                </div>
+                    <div class="d-flex flex-column justify-content-between w-100 mt-2">
+                        <div class="d-flex w-100">
+                            <select class="form-select" style="min-width: 300px"
+                                    name="TypeWorkTask_id"
+                                    id="TypeWorkTask_id" required>
+                                <option value="0" selected>Вид документации (не указан)</option>
+                                <option value="1">Рабочая документация</option>
+                                <option value="2">Проектная документация</option>
+                                <option value="3">ОБИН</option>
+                                <option value="4">НИОКР</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column justify-content-between w-100 mt-2">
+                        <div class="d-flex w-100">
+                            <select class="form-select w-100"
+                                    name="mark_id"
+                                    id="mark_id" data-contracts-url="{% url 'get-contracts' %}"
+                                    required>
+                                <option value="" selected>Марка документации</option>
+                                {% for mark in marks %}
+                                    <option value="{{ mark.id }}">{{ mark }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="d-flex flex-column justify-content-between w-100 mt-2">
+                        <div class="d-flex w-100">
+                            <select class="form-select" style="min-width: 300px"
+                                    name="purpose_of_printing"
+                                    id="purpose_of_printing" required>
+                                <option value="" selected>Цель вывода</option>
+                                <option value="1">Для внесения изменений</option>
+                                <option value="2">Для аннулирования (печать титульных листов)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column justify-content-between w-100 mt-2">
+                        <div class="d-flex w-100">
+
+                            <input class="d-flex input_text_clearance input_text_clearance_paddings w-100"
+                                   id="input_comment_value"
+                                   name="input_comment_value"
+                                   placeholder="Комментарий">
+                        </div>
+                    </div>
+
+                    <div class="d-flex w-100 mb-2 mt-2">
+                        <button class="d-flex w-100 button_blue button_blue_center" id="submit_button" type="submit" disabled>Отправить
+                        </button>
+                    </div>
             </form>
         </div>
     </div>
@@ -68,217 +142,39 @@
         </div>
     </div>
 
+    <!-- Модальное окно ошибки-->
+    <div class="modal fade" id="error_modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog_clearance">
+            <div class="modal-content modal-content_clearance">
+                <div class="modal-header modal-header_clearance">
+                    <h5 class="modal-title text-24px-regular" style="cursor: context-menu">Ошибка</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body modal-body_clearance">
+                    <div class="d-flex w-100 justify-content-between align-items-center">
+                        <div class="d-flex text-20px-light">Что-то пошло не так...</div>
+                    </div>
+                </div>
+                <div class="modal-footer modal-footer_clearance justify-content-center">
+
+                    <button class="button_blue_clearance"
+                            onclick="$('#bad_send_modal').modal('hide');">
+                        Очень жаль
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // Проверка на максимальное значение допуска подсчета, 30мм
-        function checkInput(el) {
-            if (el.value.length > 2) {
-                el.value = el.value.slice(0, 2);
-            }
-            if (el.value > 30) {
-                el.value = 30;
-            }
-        }
-
-        // Открытие модального окна редактирования допуска
-        function onClickСlearanceModal() {
-            $('#clearanceModal').modal('show');
-
-        }
-
-        // Проверка на ввод только чисел в окне допуска
-        function onlyNumberKey(evt) {
-            // Only ASCII character in that range allowed
-            let ASCIICode = (evt.which) ? evt.which : evt.keyCode
-            if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
-                return false;
-            return true;
-        }
-
-        // Изменение допуска
-        $('#id-clearance-modal-form').submit(function (e) {
-            e.preventDefault()
-
-            var form = $(this)
-            var id_clearance_modal_form = $("#id-clearance-modal-form").attr("data-ajax-url")
-
-            $.ajax({
-                type: "POST",
-                url: id_clearance_modal_form,
-                data: form.serialize(),
-                success: function (data) {
-                    var cookieObjectValue = (document.cookie.match('(^|; )' + encodeURIComponent('clearance') + '=([^;]+)') || []).pop() || null;
-                    console.log(cookieObjectValue)
-                    $('#clearance_info_index').text(cookieObjectValue)
-                    $('#clearanceModal').modal('hide');
-                }
-            })
-        })
-
-        // drag and drop
-        const dropZone = document.body;
-        // статус для отображения стартовой страницы или результата
-        let status_calc = 0;
-
-        if (dropZone) {
-            let hoverClassName = 'hover';
-
-            // затягиваем файлы
-            dropZone.addEventListener("dragenter", function (e) {
-                e.preventDefault();
-                dropZone.classList.add(hoverClassName);
-                $('#start_body').removeClass('d-flex')
-                $('#start_body').addClass('d-none')
-                $('#clearance_info').removeClass('d-flex')
-                $('#clearance_info').addClass('d-none')
-                $('#inside').removeClass('d-flex')
-                $('#inside').addClass('d-none')
-
-                $('#all_file_block').addClass('align-items-center')
-                $('#all_file_block').addClass('justify-content-center')
-                $('#form_send_file').addClass('align-items-center')
-                $('#form_send_file').addClass('justify-content-center')
-                $('#drop_file').removeClass('d-none')
-                $('#drop_file').addClass('d-flex')
-                $('body').addClass('grey_background')
-                console.log('dragenter event')
-            });
-
-
-            dropZone.addEventListener("dragend", function (e) {
-                e.preventDefault();
-                dropZone.classList.add(hoverClassName);
-                if (status_calc === 0) {
-                    $('#start_body').removeClass('d-none')
-                    $('#start_body').addClass('d-flex')
-                    $('#clearance_info').removeClass('d-none')
-                    $('#clearance_info').addClass('d-flex')
-                    $('body').removeClass('grey_background')
-                } else {
-                    $('#all_file_block').removeClass('align-items-center')
-                    $('#all_file_block').removeClass('justify-content-center')
-                    $('#form_send_file').removeClass('align-items-center')
-                    $('#form_send_file').removeClass('justify-content-center')
-                    $('#inside').removeClass('d-none')
-                    $('#inside').addClass('d-flex')
-                    $('body').removeClass('grey_background')
-                }
-                $('#drop_file').removeClass('d-flex')
-                $('#drop_file').addClass('d-none')
-                console.log('dragend event')
-            });
-
-            dropZone.addEventListener("dragover", function (e) {
-                e.preventDefault();
-                $('#start_body').removeClass('d-flex')
-                $('#start_body').addClass('d-none')
-                $('#clearance_info').removeClass('d-flex')
-                $('#clearance_info').addClass('d-none')
-                $('#inside').removeClass('d-flex')
-                $('#inside').addClass('d-none')
-
-                $('#all_file_block').addClass('align-items-center')
-                $('#all_file_block').addClass('justify-content-center')
-                $('#form_send_file').addClass('align-items-center')
-                $('#form_send_file').addClass('justify-content-center')
-                $('#drop_file').removeClass('d-none')
-                $('#drop_file').addClass('d-flex')
-                $('body').addClass('grey_background')
-
-                console.log('dragover event')
-                dropZone.classList.add(hoverClassName);
-            });
-
-            dropZone.addEventListener("dragleave", function (e) {
-                e.preventDefault();
-                console.log('dragleave event')
-                if (status_calc === 0) {
-                    $('#start_body').removeClass('d-none')
-                    $('#start_body').addClass('d-flex')
-                    $('#clearance_info').removeClass('d-none')
-                    $('#clearance_info').addClass('d-flex')
-                } else {
-                    $('#all_file_block').removeClass('align-items-center')
-                    $('#all_file_block').removeClass('justify-content-center')
-                    $('#form_send_file').removeClass('align-items-center')
-                    $('#form_send_file').removeClass('justify-content-center')
-                    $('#inside').removeClass('d-none')
-                    $('#inside').addClass('d-flex')
-                }
-                $('body').removeClass('grey_background')
-                $('#drop_file').removeClass('d-flex')
-                $('#drop_file').addClass('d-none')
-                dropZone.classList.remove(hoverClassName);
-
-            });
-
-            // Это самое важное событие, событие, которое дает доступ к файлам
-            dropZone.addEventListener("drop", function (e) {
-                e.preventDefault();
-                $('body').addClass('grey_background')
-                dropZone.classList.remove(hoverClassName);
-                // добавление файлов в input
-                var fileInput = document.getElementById('id_file')
-                fileInput.files = e.dataTransfer.files;
-                console.log('fileInput', fileInput.files)
-                $('#form_send_file').submit();
-            });
-        }
-
-        // если файлы добавили не через drag and drop
-        $('#id_file').change(function () {
-            $('#form_send_file').submit();
-            //sendFile()
-        });
-
-        // отправка файлов на расчет, при добавлении их в форму
-        $('#form_send_file').submit(function (e) {
-            $('#start_body').removeClass('d-flex')
-            $('#start_body').addClass('d-none')
-            $('#clearance_info').removeClass('d-flex')
-            $('#clearance_info').addClass('d-none')
-            $('#drop_file').removeClass('d-flex')
-            $('#drop_file').addClass('d-none')
-            $('body').addClass('grey_background')
-            $('#loader-big').removeClass('d-none')
-            $('#loader-big').addClass('d-flex')
-            e.preventDefault()
-            var data = new FormData($('#form_send_file').get(0))
-            //var form = $(this)
-            var form_send_file = $("#inside").attr("data-ajax-url")
-            console.log('form_send_file')
-            $.ajax({
-                type: "POST",
-                url: form_send_file,
-                data: data,
-                cache: false,
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    $("#inside").html(data)
-                    $('#loader-big').removeClass('d-flex')
-                    $('#loader-big').addClass('d-none')
-                    $('#inside').removeClass('d-none')
-                    $('#all_file_block').removeClass('align-items-center')
-                    $('#all_file_block').removeClass('justify-content-center')
-                    $('#form_send_file').removeClass('align-items-center')
-                    $('#form_send_file').removeClass('justify-content-center')
-                    $('#inside').addClass('d-flex')
-                    $('#inside').animate({opacity: 1}, 200)
-                    status_calc = 1
-                    $('body').removeClass('grey_background')
-
-                    $('#start_body').animate({opacity: 0}, 200)
-                    $('#clearance_info').animate({opacity: 0}, 200)
-                }
-            });
-        })
 
         // При изменении объекта в окне отправке, подгрузка номеров договоров
         $("#object_id").change(function () {
             var url = $("#object_id").attr("data-contracts-url");
             var objectId = $(this).val();
-
+            console.log(objectId)
             $.ajax({
                 url: url,
                 data: {
@@ -292,6 +188,21 @@
             });
 
         });
+
+
+        let inventoryNumber = document.getElementById('inventory_number')
+        inventoryNumber.addEventListener("change", (event) => {
+            checkInventoryNumber()
+        });
+
+        function checkInventoryNumber() {
+            if ((inventoryNumber.value[0] == 'э') || (inventoryNumber.value[0] == 'Э')){
+                $("#submit_button").prop('disabled', false);
+            } else {
+                $("#submit_button").prop('disabled', true);
+            }
+
+        }
 
     </script>
 {% endblock %}

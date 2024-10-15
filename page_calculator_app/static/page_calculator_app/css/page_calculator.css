@@ -172,6 +172,12 @@ html {
     color: #1D222A;
 }
 
+.text-16px-regular {
+    font-size: 16px;
+    font-family: "Rosatom_regular", serif;
+    color: #1D222A;
+}
+
 .text-16px-bold {
     font-size: 16px;
     font-family: "Rosatom_bold", serif;
@@ -350,7 +356,7 @@ html {
 
 .input_text_clearance_paddings {
     padding: 10px 10px;
-        font-size: 16px;
+    font-size: 16px;
 }
 
 .input_text_clearance:disabled {
@@ -385,6 +391,13 @@ html {
     transition-duration: .15s;
 }
 
+.button_blue:disabled {
+    border: 1px solid rgb(217, 220, 222);
+    background-color: rgb(217, 220, 222);
+    /*box-shadow: 2px 4px 11px -3px rgba(149, 150, 150, 0.45);*/
+    color: white;
+}
+
 .button_blue_center {
     min-width: 200px;
     height: 50px;
@@ -396,11 +409,19 @@ html {
     box-shadow: 2px 4px 11px -3px rgba(2, 94, 161, 0.45);
 }
 
+.button_blue:hover:disabled {
+    box-shadow: 0 0 rgba(77, 77, 77, 0.45);
+}
+
 .button_blue:active {
     color: white;
     background: rgb(93, 148, 196);
     box-shadow: 2px 4px 11px -3px rgba(2, 94, 161, 0.45);
 
+}
+
+.button_blue:active:disabled {
+    background: rgba(77, 77, 77, 0.45);
 }
 
 .modal_clearance {
@@ -909,6 +930,33 @@ row__color {
     opacity: 1;
 }
 
+
+.icon-add-files {
+    box-sizing: content-box;
+    border: 0;
+    border-radius: .25rem;
+    opacity: .5;
+
+    -webkit-mask-image: url("../icons/cloud-arrow-up-solid.svg");
+    mask-image: url("../icons/cloud-arrow-up-solid.svg");
+    background-color: #1D222A;
+
+    -webkit-mask-position: center center;
+    mask-position: center center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+
+    height: 25px;
+    margin-right: 5px;
+    padding-right: 16px; /* Or size of icon + spacing */
+
+    transition-duration: .15s;
+}
+
+.icon-add-files:hover {
+    opacity: 1;
+}
+
 /*.form-select-print {*/
 /*    border: 1px solid rgb(108, 172, 228);*/
 /*    border-radius: 8px;*/
@@ -973,3 +1021,4 @@ row__color {
     text-decoration: none;
     opacity: 1
 }
+

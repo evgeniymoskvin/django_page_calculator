@@ -14,6 +14,8 @@ from django.contrib.auth.decorators import login_required
 
 import mimetypes
 import os.path
+import math
+import PyPDF2
 
 from .tasks import celery_email_print_done, celery_email_print_cancel
 from page_calculator_app.functions import save_status_log
@@ -23,6 +25,34 @@ from docxtpl import DocxTemplate
 
 from page_calculator_app.models import PrintFilesModel, ListsFileModel, EmployeeModel, PrintPagePermissionModel, \
     ChangeStatusHistoryModel, OrdersModel, ObjectModel, ContractModel, MarkDocModel
+
+# Словарь с размерами листов по ГОСТ
+PAGE_SIZE_STANDARD = {
+    'A0': (841, 1189, 16),
+    'A0x2': (1189, 1682, 32),
+    'A0x3': (1189, 2523, 48),
+    'A1': (594, 841, 8),
+    'A1x3': (841, 1783, 24),
+    'A1x4': (841, 2378, 32),
+    'A2': (420, 594, 4),
+    'A2x3': (594, 1261, 12),
+    'A2x4': (594, 1682, 16),
+    'A2x5': (594, 2102, 20),
+    'A3': (297, 420, 2),
+    'A3x3': (420, 891, 6),
+    'A3x4': (420, 1189, 8),
+    'A3x5': (420, 1486, 10),
+    'A3x6': (420, 1783, 12),
+    'A3x7': (420, 2080, 14),
+    'A4': (210, 297, 1),
+    'A4x3': (297, 630, 3),
+    'A4x4': (297, 841, 4),
+    'A4x5': (297, 1051, 5),
+    'A4x6': (297, 1261, 6),
+    'A4x7': (297, 1471, 7),
+    'A4x8': (297, 1682, 8),
+    'A4x9': (297, 1892, 9),
+}
 
 
 def check_permission_user(req_user):
@@ -61,6 +91,7 @@ def get_tasks(request):
     content = {"tasks_to_print": tasks_to_print,
                'count_of_tasks': tasks_to_print.count()}
     return render(request, 'print_service_app/ajax/get_task_list.html', content)
+
 
 def get_tasks_count(request):
     """Функция для ajax запроса, получения количества не обработанных задач"""
@@ -471,7 +502,11 @@ class BlankPageView(View):
         # Считаем цветные листы
         color_pages = pages_info.a0_color + pages_info.a0x2_color + pages_info.a0x3_color + pages_info.a1_color + pages_info.a1x3_color + pages_info.a1x4_color + pages_info.a2_color + pages_info.a2x3_color + pages_info.a2x4_color + pages_info.a2x5_color + pages_info.a3_color + pages_info.a3x3_color + pages_info.a3x4_color + pages_info.a3x5_color + pages_info.a3x6_color + pages_info.a3x7_color + pages_info.a4_color + pages_info.a4x3_color + pages_info.a4x4_color + pages_info.a4x5_color + pages_info.a4x6_color + pages_info.a4x7_color + pages_info.a4x8_color + pages_info.a4x9_color
         # Формируем словарь с плохими листами
-        bad_pages = ast.literal_eval(pages_info.other_pages)
+        try:
+            bad_pages = ast.literal_eval(pages_info.other_pages)
+        except Exception as e:
+            print(e)
+            bad_pages = {}
         len_bad_pages = len(bad_pages)
         content = {'print_task': print_task,
                    'pages_info': pages_info,
@@ -870,3 +905,165 @@ class DownloadDispatcherExportReportView(View):
                 response['Content-Disposition'] = 'attachment; filename=' + escape_uri_path(f'export_dispatcher.xlsx')
                 return response
         raise Http404
+
+
+class AddArchiveFileView(View):
+    def get(self, request):
+        obj_id = int(request.GET.get('obj_id'))
+
+        content = {
+            'obj': PrintFilesModel.objects.get(id=obj_id),
+        }
+        return render(request, 'print_service_app/ajax/modal_add_file.html', content)
+
+    def post(self, request):
+        print('POST AddArchiveFileView')
+        print(f'request.user: {request.user}')
+        print(f'request.POST: {request.POST}')
+        print(f'request.FILES: {request.FILES}')
+        print(f'request.FILES: {request.FILES["file"]}')
+        print(f'request.COOKIES: {request.COOKIES}')
+
+
+        clearance = int(request.COOKIES['clearance'])
+        file = request.FILES["file"]
+        pdf_size_file = {
+            'A0': 0,
+            'A0x2': 0,
+            'A0x3': 0,
+            'A1': 0,
+            'A1x3': 0,
+            'A1x4': 0,
+            'A2': 0,
+            'A2x3': 0,
+            'A2x4': 0,
+            'A2x5': 0,
+            'A3': 0,
+            'A3x3': 0,
+            'A3x4': 0,
+            'A3x5': 0,
+            'A3x6': 0,
+            'A3x7': 0,
+            'A4': 0,
+            'A4x3': 0,
+            'A4x4': 0,
+            'A4x5': 0,
+            'A4x6': 0,
+            'A4x7': 0,
+            'A4x8': 0,
+            'A4x9': 0,
+        }
+        pdf_unknown_size_file = {}  # Нераспознанные листы файла
+        a4_count = 0  # Счетчик форматов А4
+        normal_pages = 0  # Счетчик распознанных листов
+        list_pages = []  # Список листов
+        pdf_reader = PyPDF2.PdfReader(file)
+        num_pages = len(pdf_reader.pages)
+        for i in range(num_pages):
+            checker = 0  # В случае если размер по ГОСТ устанавливаем 1
+            box = pdf_reader.pages[i]
+            # Переводим значения в миллиметры
+            width = math.ceil(float(box.mediabox.width) * 0.35273159)
+            height = math.ceil(float(box.mediabox.height) * 0.35273159)
+            # Приводим к одной ориентации
+            if width < height:
+                small = width
+                long = height
+            else:
+                small = height
+                long = width
+            # Проверяем вхождение данных размеров в стандартные, с допуском clearance
+            for key, value in PAGE_SIZE_STANDARD.items():
+                if (value[0] >= small - clearance) and (value[0] <= small + clearance) and (
+                        value[1] <= long + clearance) and (
+                        value[1] >= long - clearance):
+                    normal_pages += 1
+                    a4_count += value[2]
+                    pdf_size_file[key] += 1
+                    checker = 1
+                    list_pages.append([height, width, key])
+            # Если в стандартные значения не вошли
+            if checker == 0:
+                size = f'{small}x{long}'
+                list_pages.append([height, width, 0])
+                try:
+                    pdf_unknown_size_file[size] += 1  # Если такой размер уже есть в словаре
+                except:
+                    pdf_unknown_size_file[size] = 1
+
+        temp_list = []
+        # Создаем словарь с пустыми значениями.
+        for key, value in pdf_size_file.items():
+            if value == 0:
+                temp_list.append(key)
+        # Удаляем из словаря все пустые значения
+        for i in temp_list:
+            del pdf_size_file[i]
+        final_list = []  # итоговый список по файлу
+        for key, value in pdf_size_file.items():
+            if value > 0:
+                final_list.append([key, value])
+        print(pdf_size_file)
+
+        task_obj = PrintFilesModel.objects.get(id=int(request.POST.get('object_add_file')))
+        task_obj.count_pages = num_pages  # список листов по файлу
+        task_obj.a4_count_formats = a4_count  # количество форматов А4
+        task_obj.file_to_print = request.FILES["file"]
+        task_obj.save()
+
+        task_lists = ListsFileModel.objects.get(print_file=task_obj)
+        # Вносим все листы в базу данных
+
+        if 'A0' in pdf_size_file:
+            task_lists.a0 = pdf_size_file['A0']
+        if 'A0x2' in pdf_size_file:
+            task_lists.a0x2 = pdf_size_file['A0x2']
+        if 'A0x3' in pdf_size_file:
+            task_lists.a0x3 = pdf_size_file['A0x3']
+        if 'A1' in pdf_size_file:
+            task_lists.a1 = pdf_size_file['A1']
+        if 'A1x3' in pdf_size_file:
+            task_lists.a1x3 = pdf_size_file['A1x3']
+        if 'A1x4' in pdf_size_file:
+            task_lists.a1x4 = pdf_size_file['A1x4']
+        if 'A2' in pdf_size_file:
+            task_lists.a2 = pdf_size_file['A2']
+        if 'A2x3' in pdf_size_file:
+            task_lists.a2x3 = pdf_size_file['A2x3']
+        if 'A2x4' in pdf_size_file:
+            task_lists.a2x4 = pdf_size_file['A2x4']
+        if 'A2x5' in pdf_size_file:
+            task_lists.a2x5 = pdf_size_file['A2x5']
+        if 'A3' in pdf_size_file:
+            task_lists.a3 = pdf_size_file['A3']
+        if 'A3x3' in pdf_size_file:
+            task_lists.a3x3 = pdf_size_file['A3x3']
+        if 'A3x4' in pdf_size_file:
+            task_lists.a3x4 = pdf_size_file['A3x4']
+        if 'A3x5' in pdf_size_file:
+            task_lists.a3x5 = pdf_size_file['A3x5']
+        if 'A3x6' in pdf_size_file:
+            task_lists.a3x6 = pdf_size_file['A3x6']
+        if 'A3x7' in pdf_size_file:
+            task_lists.a3x7 = pdf_size_file['A3x7']
+        if 'A4' in pdf_size_file:
+            task_lists.a4 = pdf_size_file['A4']
+        if 'A4x3' in pdf_size_file:
+            task_lists.a4x3 = pdf_size_file['A4x3']
+        if 'A4x4' in pdf_size_file:
+            task_lists.a4x4 = pdf_size_file['A4x4']
+        if 'A4x5' in pdf_size_file:
+            task_lists.a4x5 = pdf_size_file['A4x5']
+        if 'A4x6' in pdf_size_file:
+            task_lists.a4x6 = pdf_size_file['A4x6']
+        if 'A4x7' in pdf_size_file:
+            task_lists.a4x7 = pdf_size_file['A4x7']
+        if 'A4x8' in pdf_size_file:
+            task_lists.a4x8 = pdf_size_file['A4x8']
+        if 'A4x9' in pdf_size_file:
+            task_lists.a4x9 = pdf_size_file['A4x9']
+        # Нераспознанные листы
+        task_lists.other_pages = pdf_unknown_size_file
+        task_lists.save()
+
+        return HttpResponse(status=200)

@@ -178,13 +178,14 @@ nav ul, nav li {
     padding-left: 16px; /* Or size of icon + spacing */
 }
 
-.icon-handshake-regular {
-    background-image: url('../icons/handshake-angle-solid.svg');
+.icon-cloud {
+    background-image: url('../icons/cloud-solid.svg');
     background-position: center center;
     background-repeat: no-repeat;
     height: 21px;
     padding-left: 16px; /* Or size of icon + spacing */
 }
+
 
 
 .icon-gear-menu {

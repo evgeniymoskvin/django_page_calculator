@@ -1,0 +1,57 @@
+<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog_send-file">
+    <div class="modal-content modal-content_clearance">
+        <div class="modal-header modal-header_clearance">
+            <h5 class="modal-title text-24px-regular" style="cursor: context-menu">
+                Добавить файл из архива {{ obj.inventory_number_file }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+        </div>
+        <form id="form_add_file" method="POST" data-ajax-url="{% url 'get-add-file-modal' %}"
+              enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-body modal-body_clearance">
+                <div class="d-flex w-100 justify-content-between align-items-center flex-column">
+                    <input id="object_add_file" name="object_add_file" hidden>
+                    <div id="hidden-div-obj-info" data-ajax-change="{{ obj.id }}" hidden></div>
+                    <input type="file" name="file">
+                </div>
+            </div>
+            <div class="modal-footer modal-footer_clearance justify-content-between">
+
+                <button type="button" class="button_grey_clearance"
+                        data-bs-dismiss="modal"
+                        onclick="$('#addFileModalWindow').modal('hide');">Отмена
+                </button>
+                <button class="button_blue_clearance button_blue_clearance_send_file" type="submit">
+                    Отправить
+                </button>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $('#form_add_file').submit(function (e) {
+        e.preventDefault()
+        document.getElementById('object_add_file').value = $("#hidden-div-obj-info").attr("data-ajax-change")
+        var form = $(this)
+        var form_url = $("#form_add_file").attr("data-ajax-url")
+        var data = new FormData($('#form_add_file').get(0))
+        $.ajax({
+            type: "POST",
+            url: form_url,
+            data: data,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                $('#addFileModalWindow').modal('hide');
+            },
+            error: function () {
+                $('#addFileModalWindow').modal('hide');
+                $('#error_modal').modal('show');
+            }
+        })
+    })
+</script>

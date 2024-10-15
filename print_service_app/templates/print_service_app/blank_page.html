@@ -40,6 +40,9 @@
     </div>
     <div class="d-flex text-16px-bold">
         № {{ print_task.inventory_number_request }}
+        {% if print_task.print_from_archive %}
+            (Печать из архива)
+        {% endif %}
     </div>
 
     <div class="d-flex text-14px-bold mt-3">
@@ -48,6 +51,9 @@
 
     <div class="d-flex text-14px-bold ">
         <span class="text-14px-light">Инв. №:&nbsp</span> {{ print_task.inventory_number_file }}
+    </div>
+    <div class="d-flex text-14px-bold ">
+        <span class="text-14px-light">Разрешение на изменение:&nbsp</span> {{ print_task.print_from_archive_details.permission_number }}
     </div>
 
     <div class="d-flex text-14px-bold ">
@@ -123,9 +129,11 @@
     <div class="d-flex text-16px-bold ">
         <span class="text-16px-light">Количество форматов А4:&nbsp</span>{{ print_task.a4_count_formats }}
     </div>
-    <div class="d-flex text-16px-light mt-3">
-        <span class="text-16px-bold">Распознанные форматы:&nbsp</span>
-    </div>
+    {% if print_task.count_pages != 0 %}
+        <div class="d-flex text-16px-light mt-3">
+            <span class="text-16px-bold">Распознанные форматы:&nbsp</span>
+        </div>
+    {% endif %}
     {% if pages_info.a0 > 0 %}
         <div class="d-flex text-16px-light ">
             <span class="text-16px-bold">А0:&nbsp</span>{{ pages_info.a0 }}

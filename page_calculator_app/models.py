@@ -228,6 +228,24 @@ class MarkDocModel(models.Model):
         return f'{self.mark_doc} - {self.mark_doc_full_name}'
 
 
+class ArchivePrintModel(models.Model):
+    class TypeTask(models.IntegerChoices):
+        """Тип печати"""
+        TITLES = 2, _('Для аннулирования (печать титульных листов')
+        CHANGES = 1, _('Для внесения изменений')
+
+    """Таблица печать файла из архива"""
+    permission_number = models.CharField(verbose_name="Номер разрешения", max_length=15, null=True, blank=True)
+    purpose_of_printing = models.IntegerField("Тип вносимых изменений:", choices=TypeTask.choices, default=0)
+
+    class Meta:
+        verbose_name = _('информация печати из архива')
+        verbose_name_plural = _("информация печати из архива")
+
+    def __str__(self):
+        return f'{self.permission_number} - {self.purpose_of_printing}'
+
+
 class PrintFilesModel(models.Model):
     """Таблица задач на печать"""
 
@@ -253,7 +271,7 @@ class PrintFilesModel(models.Model):
         WORK = 2, _('В работе')
         DONE = 3, _('Готов')
 
-    filename = models.CharField(verbose_name="Название файла", max_length=150)
+    filename = models.CharField(verbose_name="Название файла", max_length=150, null=True, blank=True)
     inventory_number_file = models.CharField(verbose_name="Инвентарный номер", max_length=150)
     emp_upload_file = models.ForeignKey(EmployeeModel, null=False, blank=True, on_delete=models.CASCADE,
                                         verbose_name="Пользователь загрузивший файл")
@@ -279,6 +297,9 @@ class PrintFilesModel(models.Model):
     color = models.BooleanField(verbose_name='Цветное', null=True, blank=True, default=False)
     mark_print_file = models.ForeignKey(MarkDocModel, verbose_name='Марка документации', null=True, blank=True,
                                         on_delete=models.SET_NULL, default=None)
+    print_from_archive = models.BooleanField(verbose_name='Печать из архива', default=False)
+    print_from_archive_details = models.ForeignKey(ArchivePrintModel, verbose_name="Детали печати из архива",
+                                                   default=None, null=True, blank=True, on_delete=models.SET_NULL)
     comment = models.CharField(verbose_name='Комментарий', null=True, blank=True, max_length=500)
 
     class Meta:
@@ -387,6 +408,7 @@ class ChangeStatusHistoryModel(models.Model):
     """
     Лог изменения статусов задач
     """
+
     class PrintFileStatusChoice(models.IntegerChoices):
         """Статус кода Kks"""
         CANCELED = 0, _('Аннулирован')

@@ -8,7 +8,7 @@ from django.views import View
 from django.conf import settings
 from .forms import UploadFileForm
 from .models import PrintFilesModel, EmployeeModel, OrdersModel, ObjectModel, ContractModel, CountTasksModel, \
-    ListsFileModel, PrintPagePermissionModel, MarkDocModel
+    ListsFileModel, PrintPagePermissionModel, MarkDocModel, CpeModel, ArchivePrintModel
 from .functions import check_date_in_db, check_color_pages
 from print_service_app.tasks import celery_check_color_pages
 from print_service_app.views import check_permission_user
@@ -95,7 +95,9 @@ class IndexView(View):
                    'objects': objects,
                    'marks': marks,
                    'user_permission': user_permission}
-        return render(request, 'page_calculator_app/index.html', content)
+        resp = render(request, 'page_calculator_app/index.html', content)
+        resp.set_cookie(key='clearance', value=clearance)
+        return resp
 
 
 class GetAnswerView(View):
@@ -431,9 +433,58 @@ class CancelMyTaskView(View):
 
 class PrintFromArchive(View):
     def get(self, request):
-        user = EmployeeModel.objects.get(user=request.user)
-        chiefs = EmployeeModel.objects.filter(department=user.department).filter(right_to_sign=True)
+        orders = OrdersModel.objects.get_queryset().order_by('order')
+        objects = ObjectModel.objects.get_queryset().filter(show=True).order_by('object_code')
+        marks = MarkDocModel.objects.get_queryset().order_by('mark_doc')
         content = {
-            'chiefs': chiefs
+            'orders': orders,
+            'objects': objects,
+            'marks': marks,
         }
         return render(request, 'page_calculator_app/print_from_archive.html', content)
+
+    def post(self, request):
+        print(f'request.user: {request.user}')
+        print(f'request.POST: {request.POST}')
+        print(f'request.COOKIES: {request.COOKIES}')
+
+        # Формируем запись со счетчиком заявок в день
+        check_date_in_db()
+        # Берем последнюю запись из таблицы CountTasksModel
+        last_task_in_db = CountTasksModel.objects.latest('id')
+        last_task_in_db.count += 1
+        last_task_in_db.save()
+        user_clearance = int(request.COOKIES['clearance'])
+
+        # Формируем данные о разрешении
+        new_archive_details = ArchivePrintModel(
+            purpose_of_printing=int(request.POST.get('purpose_of_printing')),
+            permission_number=request.POST.get('permission_number'),
+        )
+        new_archive_details.save()
+
+        new_task_to_print = PrintFilesModel(
+            inventory_number_file=request.POST.get('inventory_number'),
+            order_id=request.POST.get('order_id'),
+            object_id=request.POST.get('object_id'),
+            contract_id=request.POST.get('contract_id'),
+            copy_count=1,
+            task_type_work=request.POST.get('TypeWorkTask_id'),
+            emp_upload_file_id=EmployeeModel.objects.get(user=request.user).id,
+            inventory_number_request=f'{last_task_in_db.date_of_print}-{last_task_in_db.count}',
+            type_task=2,
+            print_folding=1,
+            user_clearance=user_clearance,
+            color=0,
+            mark_print_file_id=int(request.POST.get('mark_id')),
+            comment=request.POST.get('input_comment_value'),
+            print_from_archive=True,
+            print_from_archive_details_id=new_archive_details.id
+        )
+        new_task_to_print.save()
+
+        # Инфомрация о листах
+        print_files_info = ListsFileModel()
+        print_files_info.print_file_id = new_task_to_print.id
+        print_files_info.save()
+        return redirect('my-print-tasks')

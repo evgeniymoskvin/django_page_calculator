@@ -47,3 +47,4 @@ admin.site.register(ObjectModel, ObjectsAdmin)
 admin.site.register(ContractModel, ContractAdmin)
 admin.site.register(OrdersModel, OrdersAdmin)
 admin.site.register(PrintPagePermissionModel)
+
