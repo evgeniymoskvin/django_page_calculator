@@ -231,8 +231,8 @@ class MarkDocModel(models.Model):
 class ArchivePrintModel(models.Model):
     class TypeTask(models.IntegerChoices):
         """Тип печати"""
-        TITLES = 2, _('Для аннулирования (печать титульных листов')
-        CHANGES = 1, _('Для внесения изменений')
+        TITLES = 2, _('Для аннулирования (печать титульного листа и обложки)')
+        CHANGES = 1, _('Для внесения изменений (печать альбома целиком)')
 
     """Таблица печать файла из архива"""
     permission_number = models.CharField(verbose_name="Номер разрешения", max_length=15, null=True, blank=True)

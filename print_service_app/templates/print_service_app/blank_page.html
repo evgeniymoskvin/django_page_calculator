@@ -52,10 +52,14 @@
     <div class="d-flex text-14px-bold ">
         <span class="text-14px-light">Инв. №:&nbsp</span> {{ print_task.inventory_number_file }}
     </div>
-    <div class="d-flex text-14px-bold ">
-        <span class="text-14px-light">Разрешение на изменение:&nbsp</span> {{ print_task.print_from_archive_details.permission_number }}
-    </div>
-
+    {% if print_task.print_from_archive %}
+        <div class="d-flex text-14px-bold ">
+            <span class="text-14px-light">Разрешение на изменение:&nbsp</span> {{ print_task.print_from_archive_details.permission_number }}
+        </div>
+        <div class="d-flex text-14px-bold ">
+            <span class="text-14px-light">Цель печати:&nbsp</span> {{ print_task.print_from_archive_details.get_purpose_of_printing_display }}
+        </div>
+    {% endif %}
     <div class="d-flex text-14px-bold ">
         <span class="text-14px-light">Исполнитель:&nbsp</span> {{ print_task.emp_upload_file }}
         ({{ print_task.emp_upload_file.user_phone }})
