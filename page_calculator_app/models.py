@@ -298,7 +298,7 @@ class PrintFilesModel(models.Model):
     mark_print_file = models.ForeignKey(MarkDocModel, verbose_name='Марка документации', null=True, blank=True,
                                         on_delete=models.SET_NULL, default=None)
     print_from_archive = models.BooleanField(verbose_name='Печать из архива', default=False)
-    print_from_archive_details = models.ForeignKey(ArchivePrintModel, verbose_name="Детали печати из архива",
+    print_from_archive_details = models.OneToOneField(ArchivePrintModel, verbose_name="Детали печати из архива",
                                                    default=None, null=True, blank=True, on_delete=models.SET_NULL)
     comment = models.CharField(verbose_name='Комментарий', null=True, blank=True, max_length=500)
 

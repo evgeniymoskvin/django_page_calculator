@@ -17,6 +17,14 @@ def get_short_name(user):
     full_user = EmployeeModel.objects.get(user=user)
     return f'{full_user.last_name} {full_user.first_name[:1]}.{full_user.middle_name[:1]}'
 
+@register.simple_tag()
+def get_permission_sidebar(user):
+    try:
+        user = EmployeeModel.objects.get(user=user)
+        user_permission = PrintPagePermissionModel.objects.get(emp=user)
+    except:
+        user_permission = False
+    return user_permission
 
 @register.simple_tag()
 def get_who_change_status_in_work(id_task):
@@ -66,3 +74,5 @@ def get_when_change_status_done(id_task):
     except Exception as e:
         print(f'Exception: {e}')
         return f'Данные отсутствуют'
+
+

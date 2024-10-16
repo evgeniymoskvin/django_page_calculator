@@ -24,7 +24,7 @@ from .functions import get_print_report_xls, get_dispatcher_report_xls
 from docxtpl import DocxTemplate
 
 from page_calculator_app.models import PrintFilesModel, ListsFileModel, EmployeeModel, PrintPagePermissionModel, \
-    ChangeStatusHistoryModel, OrdersModel, ObjectModel, ContractModel, MarkDocModel
+    ChangeStatusHistoryModel, OrdersModel, ObjectModel, ContractModel, MarkDocModel, ArchivePrintModel
 
 # Словарь с размерами листов по ГОСТ
 PAGE_SIZE_STANDARD = {
@@ -924,7 +924,6 @@ class AddArchiveFileView(View):
         print(f'request.FILES: {request.FILES["file"]}')
         print(f'request.COOKIES: {request.COOKIES}')
 
-
         clearance = int(request.COOKIES['clearance'])
         file = request.FILES["file"]
         pdf_size_file = {
@@ -1006,64 +1005,73 @@ class AddArchiveFileView(View):
         print(pdf_size_file)
 
         task_obj = PrintFilesModel.objects.get(id=int(request.POST.get('object_add_file')))
-        task_obj.count_pages = num_pages  # список листов по файлу
-        task_obj.a4_count_formats = a4_count  # количество форматов А4
         task_obj.file_to_print = request.FILES["file"]
-        task_obj.save()
 
         task_lists = ListsFileModel.objects.get(print_file=task_obj)
         # Вносим все листы в базу данных
 
-        if 'A0' in pdf_size_file:
-            task_lists.a0 = pdf_size_file['A0']
-        if 'A0x2' in pdf_size_file:
-            task_lists.a0x2 = pdf_size_file['A0x2']
-        if 'A0x3' in pdf_size_file:
-            task_lists.a0x3 = pdf_size_file['A0x3']
-        if 'A1' in pdf_size_file:
-            task_lists.a1 = pdf_size_file['A1']
-        if 'A1x3' in pdf_size_file:
-            task_lists.a1x3 = pdf_size_file['A1x3']
-        if 'A1x4' in pdf_size_file:
-            task_lists.a1x4 = pdf_size_file['A1x4']
-        if 'A2' in pdf_size_file:
-            task_lists.a2 = pdf_size_file['A2']
-        if 'A2x3' in pdf_size_file:
-            task_lists.a2x3 = pdf_size_file['A2x3']
-        if 'A2x4' in pdf_size_file:
-            task_lists.a2x4 = pdf_size_file['A2x4']
-        if 'A2x5' in pdf_size_file:
-            task_lists.a2x5 = pdf_size_file['A2x5']
-        if 'A3' in pdf_size_file:
-            task_lists.a3 = pdf_size_file['A3']
-        if 'A3x3' in pdf_size_file:
-            task_lists.a3x3 = pdf_size_file['A3x3']
-        if 'A3x4' in pdf_size_file:
-            task_lists.a3x4 = pdf_size_file['A3x4']
-        if 'A3x5' in pdf_size_file:
-            task_lists.a3x5 = pdf_size_file['A3x5']
-        if 'A3x6' in pdf_size_file:
-            task_lists.a3x6 = pdf_size_file['A3x6']
-        if 'A3x7' in pdf_size_file:
-            task_lists.a3x7 = pdf_size_file['A3x7']
-        if 'A4' in pdf_size_file:
-            task_lists.a4 = pdf_size_file['A4']
-        if 'A4x3' in pdf_size_file:
-            task_lists.a4x3 = pdf_size_file['A4x3']
-        if 'A4x4' in pdf_size_file:
-            task_lists.a4x4 = pdf_size_file['A4x4']
-        if 'A4x5' in pdf_size_file:
-            task_lists.a4x5 = pdf_size_file['A4x5']
-        if 'A4x6' in pdf_size_file:
-            task_lists.a4x6 = pdf_size_file['A4x6']
-        if 'A4x7' in pdf_size_file:
-            task_lists.a4x7 = pdf_size_file['A4x7']
-        if 'A4x8' in pdf_size_file:
-            task_lists.a4x8 = pdf_size_file['A4x8']
-        if 'A4x9' in pdf_size_file:
-            task_lists.a4x9 = pdf_size_file['A4x9']
+        archive_type_print_info = task_obj.print_from_archive_details.purpose_of_printing
+
+        if archive_type_print_info == 1:
+            task_obj.count_pages = num_pages  # список листов по файлу
+            task_obj.a4_count_formats = a4_count  # количество форматов А4
+
+            if 'A0' in pdf_size_file:
+                task_lists.a0 = pdf_size_file['A0']
+            if 'A0x2' in pdf_size_file:
+                task_lists.a0x2 = pdf_size_file['A0x2']
+            if 'A0x3' in pdf_size_file:
+                task_lists.a0x3 = pdf_size_file['A0x3']
+            if 'A1' in pdf_size_file:
+                task_lists.a1 = pdf_size_file['A1']
+            if 'A1x3' in pdf_size_file:
+                task_lists.a1x3 = pdf_size_file['A1x3']
+            if 'A1x4' in pdf_size_file:
+                task_lists.a1x4 = pdf_size_file['A1x4']
+            if 'A2' in pdf_size_file:
+                task_lists.a2 = pdf_size_file['A2']
+            if 'A2x3' in pdf_size_file:
+                task_lists.a2x3 = pdf_size_file['A2x3']
+            if 'A2x4' in pdf_size_file:
+                task_lists.a2x4 = pdf_size_file['A2x4']
+            if 'A2x5' in pdf_size_file:
+                task_lists.a2x5 = pdf_size_file['A2x5']
+            if 'A3' in pdf_size_file:
+                task_lists.a3 = pdf_size_file['A3']
+            if 'A3x3' in pdf_size_file:
+                task_lists.a3x3 = pdf_size_file['A3x3']
+            if 'A3x4' in pdf_size_file:
+                task_lists.a3x4 = pdf_size_file['A3x4']
+            if 'A3x5' in pdf_size_file:
+                task_lists.a3x5 = pdf_size_file['A3x5']
+            if 'A3x6' in pdf_size_file:
+                task_lists.a3x6 = pdf_size_file['A3x6']
+            if 'A3x7' in pdf_size_file:
+                task_lists.a3x7 = pdf_size_file['A3x7']
+            if 'A4' in pdf_size_file:
+                task_lists.a4 = pdf_size_file['A4']
+            if 'A4x3' in pdf_size_file:
+                task_lists.a4x3 = pdf_size_file['A4x3']
+            if 'A4x4' in pdf_size_file:
+                task_lists.a4x4 = pdf_size_file['A4x4']
+            if 'A4x5' in pdf_size_file:
+                task_lists.a4x5 = pdf_size_file['A4x5']
+            if 'A4x6' in pdf_size_file:
+                task_lists.a4x6 = pdf_size_file['A4x6']
+            if 'A4x7' in pdf_size_file:
+                task_lists.a4x7 = pdf_size_file['A4x7']
+            if 'A4x8' in pdf_size_file:
+                task_lists.a4x8 = pdf_size_file['A4x8']
+            if 'A4x9' in pdf_size_file:
+                task_lists.a4x9 = pdf_size_file['A4x9']
+        elif archive_type_print_info == 2:
+            task_lists.a4 = 2
+            task_obj.count_pages = 2  # список листов по файлу
+            task_obj.a4_count_formats = 2  # количество форматов А4
         # Нераспознанные листы
         task_lists.other_pages = pdf_unknown_size_file
         task_lists.save()
+
+        task_obj.save()
 
         return HttpResponse(status=200)
