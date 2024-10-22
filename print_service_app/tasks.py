@@ -25,14 +25,26 @@ def delete_files():
     count_delete_tasks_files = 0  # Счетчик удаленных файлов
     all_print_tasks = PrintFilesModel.objects.get_queryset().filter(Q(status=3) | Q(status=0))
     for task in all_print_tasks:
-        task_date = task.date_change_status.date()
-        task_date_delta = (today - task_date).days
-        count_tasks += 1
-        if task_date_delta > 7:
-            count_delete_tasks_files += 1
+        print(task)
+        if task.status == 3:
+            task_date = task.date_change_status.date()
+            task_date_delta = (today - task_date).days
+            count_tasks += 1
+            if task_date_delta > 28:
+                count_delete_tasks_files += 1
+                file_path = os.path.join(settings.MEDIA_ROOT, str(task.file_to_print))
+                try:
+                    os.remove(file_path)
+                except Exception as e:
+                    print(e)
+                task.file_to_print = None
+                task.save()
+        elif task.status == 0:
             file_path = os.path.join(settings.MEDIA_ROOT, str(task.file_to_print))
-            if os.path.exists(file_path):
+            try:
                 os.remove(file_path)
+            except Exception as e:
+                print(e)
             task.file_to_print = None
             task.save()
     return f'Всего обработано записей {count_tasks}. Удалено файлов: {count_delete_tasks_files}'

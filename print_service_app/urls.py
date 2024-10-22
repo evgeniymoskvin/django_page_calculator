@@ -42,5 +42,6 @@ urlpatterns = [
     path('download_dispatcher_report/', views.DownloadDispatcherExportReportView.as_view(), name='download-dispatcher-report'),
     path('report-list/', views.GeneratePrintReportListTableView.as_view(), name='generate_report_table_list'),
     path('report-disapetcher-list/', views.GenerateDispatcherReportListTableView.as_view(), name='generate_dispatchet_report_table_list'),
+    path('service/clear-files', views.DeleteOldFiles.as_view(), name='clear-files'),
 
 ]

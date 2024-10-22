@@ -1075,3 +1075,39 @@ class AddArchiveFileView(View):
         task_obj.save()
 
         return HttpResponse(status=200)
+
+
+class DeleteOldFiles(View):
+    def get(self, request):
+        """
+        Удаление приложенных файлов из хранилища и базы данных спустя 7 дней
+        для заданий со статусом 'Аннулировано' и 'Готов'
+        """
+        today = datetime.datetime.today()
+        count_tasks = 0  # Счетчик всех заданий
+        count_delete_tasks_files = 0  # Счетчик удаленных файлов
+        all_print_tasks = PrintFilesModel.objects.get_queryset().filter(Q(status=3) | Q(status=0))
+        for task in all_print_tasks:
+            print(task)
+            if task.status == 3:
+                task_date = task.date_change_status.date()
+                task_date_delta = (today - task_date).days
+                count_tasks += 1
+                if task_date_delta > 28:
+                    count_delete_tasks_files += 1
+                    file_path = os.path.join(settings.MEDIA_ROOT, str(task.file_to_print))
+                    try:
+                        os.remove(file_path)
+                    except Exception as e:
+                        print(e)
+                    task.file_to_print = None
+                    task.save()
+            elif task.status == 0:
+                file_path = os.path.join(settings.MEDIA_ROOT, str(task.file_to_print))
+                try:
+                    os.remove(file_path)
+                except Exception as e:
+                    print(e)
+                task.file_to_print = None
+                task.save()
+        return HttpResponse(status=200)

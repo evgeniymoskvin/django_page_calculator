@@ -15,10 +15,6 @@ app.conf.beat_schedule = {
         'task': 'print_service_app.tasks.delete_files',
         'schedule': crontab(day_of_week='sunday', minute=0, hour=2)
     },
-    'every_30_sec': {
-        'task': 'print_service_app.tasks.celery_30_sec',
-        'schedule': 30.0
-    }
 }
 
 # C:\projects\django_page_calculator\venv\Scripts\python.exe C:\projects\django_page_calculator\venv\Scripts\celery.exe -A django_page_calculator worker -l info --pool=solo
