@@ -600,4 +600,21 @@
             }
         })
     })
+
+    //Добавить архивный файл
+    $('#add_archive_file').click(function (e) {
+        e.preventDefault();
+        var form_url = $("#addFileModalWindow").attr("data-ajax-url")
+        var obj_id = $("#add_archive_file").attr("data-ajax-id")
+        $.ajax({
+            type: "GET",
+            url: form_url,
+            data: {'obj_id': obj_id},
+            success: function (data) {
+                $("#addFileModalWindow").html(data)
+                $('#detailModalWindow').modal('hide');
+                $('#addFileModalWindow').modal('show');
+            }
+        })
+    });
 </script>
