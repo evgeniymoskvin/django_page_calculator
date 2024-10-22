@@ -486,5 +486,10 @@ class PrintFromArchive(View):
         # Инфомрация о листах
         print_files_info = ListsFileModel()
         print_files_info.print_file_id = new_task_to_print.id
+        if new_archive_details.purpose_of_printing == 2:
+            print_files_info.a4 = 2
+            new_task_to_print.a4_count_formats = 2
+            new_task_to_print.count_pages = 2
+            new_task_to_print.save()
         print_files_info.save()
         return redirect('my-print-tasks')
