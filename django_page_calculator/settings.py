@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'page_calculator_app',
     'print_service_app',
     'login',
+    'personal_info'
     # 'cachalot',
 ]
 

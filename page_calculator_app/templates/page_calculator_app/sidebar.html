@@ -60,7 +60,8 @@
                 </li>
             {% endif %}
             <li>
-                <a href="#">
+{#                <a href="#" onclick='window.open("{% url "personal-info" %}","Popup", "location,status,scrollbars,resizable,width=800")'>#}
+                <a href="{% url "personal-info" %}">
                     <i class="fa">
                         <div class="icon-user-menu"></div>
                     </i>

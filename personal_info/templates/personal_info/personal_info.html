@@ -1,0 +1,49 @@
+{% extends  "personal_info/base.html" %}
+
+{% block title %}
+    Выполните вход
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex w-100 justify-content-start">
+        <div class="d-flex flex-column justify-content-start">
+            <div class="d-flex text-24px-bold mt-5">{{ emp }}</div>
+
+            <div class="d-flex text-16px-light mt-2">
+                <span class="text-16px-bold">ID:&nbsp</span> {{ emp.id }}
+            </div>
+
+            <div class="d-flex text-16px-light mt-2">
+                <span class="text-16px-bold">Login:&nbsp</span> {{ emp.user }}
+            </div>
+
+            <div class="d-flex text-16px-light mt-2">
+                <span class="text-16px-bold">Табельный номер:&nbsp</span> {{ emp.personnel_number }}
+            </div>
+
+            <div class="d-flex text-16px-light mt-2">
+                <span class="text-16px-bold">Управление:&nbsp</span> {{ emp.department_group.group_dep_name }}
+                ({{ emp.department_group.group_dep_abr }})
+            </div>
+
+            <div class="d-flex text-16px-light mt-2">
+                <span class="text-16px-bold">Отдел:&nbsp</span> {{ emp.department }}
+            </div>
+
+            <div class="d-flex text-16px-light mt-2">
+                <span class="text-16px-bold">Телефон:&nbsp</span> {{ emp.user_phone }}
+            </div>
+
+            <div class="d-flex text-16px-light mt-2">
+                <span class="text-16px-bold">Кабинет:&nbsp</span> {{ emp_more_info.room }}
+            </div>
+
+            <button onclick='window.open("{% url "change-password" %}","Popup", "location,status,scrollbars,resizable,width=800")'
+                    class="d-flex w-100 button_blue button_blue_center mt-3">
+                Изменить пароль
+            </button>
+        </div>
+    </div>
+{% endblock %}
+
+{#                <a href="#" onclick='window.open("{% url "personal-info" %}","Popup", "location,status,scrollbars,resizable,width=800")'>#}
