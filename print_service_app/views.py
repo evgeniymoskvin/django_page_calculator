@@ -165,6 +165,7 @@ class GetInfoPrintTaskView(View):
 class GetEditModalWindow(View):
     """ Редактирование задачи сотрудником типографии"""
 
+
     def get(self, request):
         """Загрузка модального окна редактирования задачи"""
         print(request.GET)

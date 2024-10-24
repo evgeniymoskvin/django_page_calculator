@@ -285,13 +285,7 @@ nav ul, nav li {
     padding-left: 16px; /* Or size of icon + spacing */
 }
 
-.icon-angles-down-solid-menu {
-    background-image: url('../icons/angles-down-solid.svg');
-    background-position: center center;
-    background-repeat: no-repeat;
-    height: 21px;
-    padding-left: 16px; /* Or size of icon + spacing */
-}
+
 
 .icon-power-off-menu {
     background-image: url('../icons/power-off-solid.svg');
@@ -301,16 +295,9 @@ nav ul, nav li {
     padding-left: 16px; /* Or size of icon + spacing */
 }
 
-.icon-sliders {
-    background-image: url('../icons/sliders-solid.svg');
-    background-position: center center;
-    background-repeat: no-repeat;
-    height: 15px;
-    margin-left: -17px;
-}
 
-.icon-favorites-menu {
-    background-image: url('../icons/bookmark-regular.svg');
+.icon-report-menu {
+    background-image: url('../icons/report2-svgrepo-com.svg');
     background-position: center center;
     background-repeat: no-repeat;
     height: 21px;

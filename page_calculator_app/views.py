@@ -13,6 +13,8 @@ from .functions import check_date_in_db, check_color_pages
 from print_service_app.tasks import celery_check_color_pages
 from print_service_app.views import check_permission_user
 from django.http import HttpResponse
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
 import os
 import ast
@@ -371,6 +373,7 @@ class PrintView(View):
 class MyPrintTaskView(View):
     """Список заданий на печать сотрудника"""
 
+    @method_decorator(login_required(login_url='login'))
     def get(self, request):
         # Проверяем права пользователя для корректного отображения модальных окон просмотра задач
         user_permission = check_permission_user(request.user)
@@ -432,6 +435,7 @@ class CancelMyTaskView(View):
 
 
 class PrintFromArchive(View):
+    @method_decorator(login_required(login_url='login'))
     def get(self, request):
         orders = OrdersModel.objects.get_queryset().order_by('order')
         objects = ObjectModel.objects.get_queryset().filter(show=True).order_by('object_code')
@@ -463,11 +467,17 @@ class PrintFromArchive(View):
         )
         new_archive_details.save()
 
+        try:
+            contract_id = int(request.POST.get('contract_id'))
+        except Exception as e:
+            print(e)
+            contract_id = None
+
         new_task_to_print = PrintFilesModel(
             inventory_number_file=request.POST.get('inventory_number'),
             order_id=request.POST.get('order_id'),
             object_id=request.POST.get('object_id'),
-            contract_id=request.POST.get('contract_id'),
+            contract_id=contract_id,
             copy_count=1,
             task_type_work=request.POST.get('TypeWorkTask_id'),
             emp_upload_file_id=EmployeeModel.objects.get(user=request.user).id,
